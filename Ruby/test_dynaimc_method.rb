@@ -1,0 +1,10 @@
+def define_methods
+  shared = 0
+
+  Kernel.send(:define_method, :counter) {|| shared}
+end
+
+
+define_methods
+
+puts counter

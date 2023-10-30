@@ -1,0 +1,28 @@
+from sympy import *
+x, y, z = symbols('x y z')
+init_printing(use_unicode=True)
+
+#xについての解を求める
+expr = Eq(x ** 2 - 1, 0) 
+print(solveset(expr, x)) # {-1, 1}が出力
+print(solveset(x**2 - 1, x)) # solverset はx**2 - 1 = 0 と認識してくれる
+
+#代数的に解を求める
+ans = solveset(x - x, x, domain=S.Reals) # domainに実数をセットして定義域を実数にする
+print(ans) #　Rと出力され実数集合であることが分かる
+ans = solveset(sin(x) - 1, x, domain=S.Reals) 
+print(ans) #解を集合で表す
+
+#二つの方程式の解を求める
+print(linsolve([x + y  + z - 1, x + y + 2*z - 3], (x, y, z))) #結果は{(-y - 1, y, 2)}
+
+#拡大行列を解く場合
+print(linsolve(Matrix(([1, 1, 1, 1], [1, 1, 2, 3])), (x, y, z))) #結果は{(-y - 1, y, 2)}
+
+#連立一次方程式を解く
+M = Matrix(((1, 1, 1, 1), (1, 1, 2, 3))) 
+system = A, b = M[:, :-1], M[:, -1]
+print(linsolve(system, x, y, z)) #同じく結果は{(-y - 1, y, 2)}
+
+
+

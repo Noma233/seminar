@@ -1,0 +1,7 @@
+lambda {
+  setups = []
+  events = {}
+
+  Kernel.send :define_method, :event do |name, &block|
+
+}
