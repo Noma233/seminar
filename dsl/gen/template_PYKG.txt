@@ -1,0 +1,12 @@
+
+EPI F64vec xi:pos
+EPJ F64vec xj:pos
+EPJ F64 mj:mass
+FORCE F64vec acc:acc
+rij = xi - xj
+r2 = rij * rij
+r_inv  = rsqrt(r2)
+r2_inv = r_inv * r_inv
+mr_inv  = mj * r_inv
+mr3_inv = r2_inv * mr_inv
+acc = acc + mr3_inv * rij

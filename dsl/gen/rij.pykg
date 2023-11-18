@@ -1,0 +1,3 @@
+EPI.pos vec3<F64> xi
+EPJ.pos vec3<F64> xj
+rij = xi - xj
