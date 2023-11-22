@@ -3,6 +3,7 @@ from sympy.codegen.ast import (CodeBlock, For, Variable, Declaration, FunctionDe
                                 Assignment, FunctionCall, String, IntBaseType,
                                FunctionPrototype, integer,Return)
 from Variable import Variable
+from PartExpression import PartExpression
 
 
 
@@ -16,7 +17,7 @@ def Parse(file_str):
 
     file_list = file_str.split('\n')
     expr_list = []
-    variable_type_map = {}
+    name_variable_map = {}
 
     #ファイルから読み取ったコードを一行ずつ
     for col in file_list:
@@ -29,93 +30,127 @@ def Parse(file_str):
             #空白等の式や変数宣言でない部分の処理を書く
             
             #変数宣言だった場合型の情報をVariableから取得
-            type_info = Variable(col)
-            variable_type_map[type_info.name] = type_info
+            v = Variable(col)
+            name_variable_map[v.name] = v
 
 
-    return expr_list, variable_type_map
+    return expr_list, name_variable_map
+
+def type_priority(x, y):
+    left_type = x.type_name
+    left_bit = x.bit
+    right_type = y.type_name
+    right_bit = y.bit
+
+    ret_type = left_type
+    ret_bit = left_bit
+
+    if left_bit < right_bit:
+           ret_bit = right_bit 
+
+    #typeの条件式も書く SとかF
+
+    return (ret_type, ret_bit)
 
 
-#sympy形式の式を探索するとき、探索しているノードがsymbolだった時の処理
-#まずそれが一時変数なのかどうか
-#一時変数なら、tableにその名前がないはずなので一時変数の処理をする。
-#宣言済み変数ならどうしよっか 
-#その上のノードでは型の情報がほしい。なぜなら、適切な型の演算のチェックと
-#vecなら複数の式を生成しないとだから。
-#なので、class Termにその情報を載せてあげるようにしたらいいかな？
-#-1なら
-def variable_pattern():
+def make_assignment_part():
+    return
+
+def operator_pattern(op_list, arg_partexpr_map, arg):
+    arg_partexpr = None
+    for pre_arg in arg.args:
+        # print(pre_arg)
+        pre_partexpr = arg_partexpr_map[pre_arg]
+
+        if arg_partexpr == None:
+            arg_partexpr = pre_partexpr
+            continue
+        
+        arg_partexpr.extend(pre_partexpr, type(arg))
     
-    return
+    return arg_partexpr
 
+def variable_pattern(name_variable_map, arg, new_var):
 
-#sympy形式の式を探索するとき、探索しているノードが演算だった時の処理
-#ここで項がvec3であれば、三つ作りたいけど、どないしようか？
-#termと式のmapがあれば、args[1]からそのtermに対応できる
-def operator_pattern():
-    return
+    if  str(arg) in name_variable_map or arg is Integer(-1):
+        variable = name_variable_map[str(arg)]
+        return PartExpression(variable)
+    
+    elif arg.name == new_var.name:
+        return None
+    #エラー
+    else:
+        print(arg)
+        return
 
-
-def CodeGen(expr_list, variable_type_map):
+def CodeGen(expr_list, name_variable_map):
 
     load_part = CodeBlock()
     store_part = CodeBlock()
     assign_part = CodeBlock()
-    term_expr_map = {}
 
+    arg_partexpr_map = {}
     op_list = {Add, Mul}
-
-
+    name_variable_map['-1'] = Integer(-1)
     for expr in expr_list:
         
-        new_var = None
+        #exprは式なのでAssignmentになっている。
+        #Assignmentの左辺が新しい変数なので、その変数を初期化
+        new_var = Variable()
+        new_var.name = expr.lhs.name
         
         for arg in postorder_traversal(expr):
-            if type(arg) is Symbol:
-                if  arg.name in variable_type_map:
-                    symbol_type = variable_type_map[arg.name]
 
-                    #typeが違う場合のエラー処理それとより優先度の高い型にあわせるようにする
-                    if new_var:
-                        new_var.typeinfo_assign_(symbol_type)
-                    print(srepr(arg))
-                 
-                #variable_type_mapに変数がないかつ新しい一時変数をまだ記録していないなら
-                #new_varをそれで更新し、symbolのテーブルを更新する
-                elif new_var == None:
-                    new_var = Variable()
-                    new_var.name = arg.name
-                    
-                    
-                    
-            elif type(arg) in op_list:
-               print(arg)
+            if type(arg) in op_list:
+                arg_partexpr = operator_pattern(op_list, arg_partexpr_map, arg)
 
+            elif type(arg) is Symbol or arg is Integer(-1):
+                arg_partexpr = variable_pattern(name_variable_map, arg, new_var)
+                if arg_partexpr == None:
+                    continue
+
+            #エラー処理
+            else:
+                print('error' + arg)
+
+            arg_partexpr_map[arg] = arg_partexpr
+            
+        #最後に　new_var.type_nameを完成したPartExpressionから読む 
+        expr_rhs_partexpr = arg_partexpr_map[expr.rhs]
     
+        new_var.type_name = expr_rhs_partexpr.type_name
+        assign_expr = PartExpression(new_var).extend(expr_rhs_partexpr, Assignment)
+        for e in assign_expr.exprs:
+            print(e)    
+
+
     return 
 
 
 def main():
     expr_list = []
-    variable_type_map = {}
+    name_variable_map = {}
 
 
     with open('rij.pykg', 'r', encoding='utf-8') as f:
         s = f.read()
-        expr_list, variable_type_map = Parse(s)
+        expr_list, name_variable_map = Parse(s)
 
     for expr in expr_list:
         print(expr)
 
-    for arg in variable_type_map:
-        print(variable_type_map[arg])
+    for arg in name_variable_map:
+        print(name_variable_map[arg])
 
-    CodeGen(expr_list, variable_type_map)
+    CodeGen(expr_list, name_variable_map)
 
     #チェック用
-    return expr_list, variable_type_map
+    return expr_list, name_variable_map
 
 
 if __name__ == "__main__":
 
     expr_list, type_map = main()
+
+x,y,z = symbols('x y z')
+

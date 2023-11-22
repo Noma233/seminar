@@ -14,8 +14,9 @@ class Variable:
         self.struct_name = ""
         self.memb_name = ""
         self.type_name = ""
+        self.bit = 0
         self.name = ""  
-        self.vec = "1"
+        self.vec = 1
         if str_type_col:
             word_lst = str_type_col.split()
             self.set_var(word_lst)
@@ -59,11 +60,17 @@ class Variable:
             
             #3or4次元であれば
             if s.find('<'):
-                vec, type_bit = s.split('<')
-                self.vec, self.type_name = vec, type_bit[:-1]
+                vec, bit = s.split('<')
+                vec = ''.join(filter(str.isdigit, vec))
+                t = ''.join(filter(str.isalpha, bit))
+                bit = ''.join(filter(str.isdigit, bit))
+                self.vec = int(vec)
+                self.type_name = t
+                self.bit = bit
             #1次元であれば
             else:
-                self.type_name = s
+                self.type_name = ''.join(filter(str.isalpha, s))
+                self.bit = ''.join(filter(str.isdigit, s))
                 
 
         #変数名をセット
@@ -77,3 +84,22 @@ class Variable:
     def typeinfo_assign_(self, other):
         self.type_name = other.type_name
         self.vec = other.vec
+
+
+    def type_priority(self, other):
+        self_type = self.type_name
+        self_bit = self.bit
+        other_type = other.type_name
+        other_bit = other.bit
+
+        type_ = self_type
+        bit = self_bit
+
+        if self_bit < other_bit:
+            bit = other_bit 
+
+        #typeの条件式も書く SとかF
+        self.type_name = type_
+        
+        self.bit = bit
+    
