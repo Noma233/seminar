@@ -36,27 +36,11 @@ def Parse(file_str):
 
     return expr_list, name_variable_map
 
-def type_priority(x, y):
-    left_type = x.type_name
-    left_bit = x.bit
-    right_type = y.type_name
-    right_bit = y.bit
-
-    ret_type = left_type
-    ret_bit = left_bit
-
-    if left_bit < right_bit:
-           ret_bit = right_bit 
-
-    #typeの条件式も書く SとかF
-
-    return (ret_type, ret_bit)
-
 
 def make_assignment_part():
     return
 
-def operator_pattern(op_list, arg_partexpr_map, arg):
+def operator_pattern(arg_partexpr_map, arg):
     arg_partexpr = None
     for pre_arg in arg.args:
         # print(pre_arg)
@@ -66,7 +50,7 @@ def operator_pattern(op_list, arg_partexpr_map, arg):
             arg_partexpr = pre_partexpr
             continue
         
-        arg_partexpr.extend(pre_partexpr, type(arg))
+        arg_partexpr.join(pre_partexpr, type(arg))
     
     return arg_partexpr
 
@@ -83,48 +67,51 @@ def variable_pattern(name_variable_map, arg, new_var):
         print(arg)
         return
 
-def CodeGen(expr_list, name_variable_map):
 
-    load_part = CodeBlock()
-    store_part = CodeBlock()
-    assign_part = CodeBlock()
 
-    arg_partexpr_map = {}
-    op_list = {Add, Mul}
-    name_variable_map['-1'] = Integer(-1)
-    for expr in expr_list:
+# def CodeGen(expr_list, name_variable_map):
+
+#     load_part = CodeBlock()
+#     store_part = CodeBlock()
+#     assign_part = CodeBlock()
+
+#     arg_partexpr_map = {}
+#     op_list = {Add, Mul}
+#     name_variable_map['-1'] = Integer(-1)
+#     for expr in expr_list:
         
-        #exprは式なのでAssignmentになっている。
-        #Assignmentの左辺が新しい変数なので、その変数を初期化
-        new_var = Variable()
-        new_var.name = expr.lhs.name
+#         #exprは式なのでAssignmentになっている。
+#         #Assignmentの左辺が新しい変数なので、その変数を初期化
+#         new_var = Variable()
+#         new_var.name = expr.lhs.name
         
-        for arg in postorder_traversal(expr):
+#         for arg in postorder_traversal(expr):
 
-            if type(arg) in op_list:
-                arg_partexpr = operator_pattern(op_list, arg_partexpr_map, arg)
-
-            elif type(arg) is Symbol or arg is Integer(-1):
-                arg_partexpr = variable_pattern(name_variable_map, arg, new_var)
-                if arg_partexpr == None:
-                    continue
-
-            #エラー処理
-            else:
-                print('error' + arg)
-
-            arg_partexpr_map[arg] = arg_partexpr
+#             if type(arg) is Symbol or arg is Integer(-1):
+#                 arg_partexpr = variable_pattern(name_variable_map, arg, new_var)
             
-        #最後に　new_var.type_nameを完成したPartExpressionから読む 
-        expr_rhs_partexpr = arg_partexpr_map[expr.rhs]
+#             elif type(arg) in op_list:
+#                 arg_partexpr = operator_pattern(op_list, arg_partexpr_map, arg)
+#             #エラー処理
+#             else:
+#                 print('error' + arg)
+
+#             if arg_partexpr == None:
+#                 continue
+#             arg_partexpr_map[arg] = arg_partexpr
+            
+#         #最後に　new_var.type_nameを完成したPartExpressionから読む
+#         expr_rhs_partexpr = arg_partexpr_map[expr.rhs]
     
-        new_var.type_name = expr_rhs_partexpr.type_name
-        assign_expr = PartExpression(new_var).extend(expr_rhs_partexpr, Assignment)
-        for e in assign_expr.exprs:
-            print(e)    
+#         new_var.type_name = expr_rhs_partexpr.type_name
+#         assign_expr = PartExpression(new_var).join(expr_rhs_partexpr, Assignment)
+#         #assign_partに追加する．
+#         #name_variable_mapにnew_varを追加
 
+#         for e in assign_expr.exprs:
+#             print(e)
 
-    return 
+#     return 
 
 
 def main():
@@ -142,7 +129,7 @@ def main():
     for arg in name_variable_map:
         print(name_variable_map[arg])
 
-    CodeGen(expr_list, name_variable_map)
+#    CodeGen(expr_list, name_variable_map)
 
     #チェック用
     return expr_list, name_variable_map

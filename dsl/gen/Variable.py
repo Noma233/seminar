@@ -1,5 +1,5 @@
 import re
-
+from sympy import *
 #一つの変数の型情報を持つクラス
 # EPI.pos vec3<F64> xi -> 
 # struct_name = 'EPI'
@@ -17,6 +17,7 @@ class Variable:
         self.bit = 0
         self.name = ""  
         self.vec = 1
+        self.symbol = None
         if str_type_col:
             word_lst = str_type_col.split()
             self.set_var(word_lst)
@@ -80,6 +81,7 @@ class Variable:
         if check_pat:
             s = check_pat.group()
             self.name = s
+            self.symbol = sympify(s)
 
     def typeinfo_assign_(self, other):
         self.type_name = other.type_name

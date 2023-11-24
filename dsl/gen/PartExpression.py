@@ -2,29 +2,33 @@ from sympy import *
 from Variable import Variable
 
 class PartExpression:
-    def __init__(self, arg=None) -> None:
+    def __init__(self, arg=None):
         
-        self.arg = arg
         self.vec = 0
-        self.exprs = []
         self.type_name = ""
         self.bit = 0
+        self.sym_expr = None
+        self.exprs = []
+        self.arg = arg
 
         if type(arg) is Variable:
             self.vec = arg.vec
             self.type_name = arg.type_name
             self.bit = arg.bit
-            self.formula = arg.name
-            for i in range(self.vec):
-                self.exprs.append(sympify(arg.name))
+            self.sym_expr = arg.symbol
+            
+            if self.vec == 1:
+                    self.exprs.append(arg.symbol)
+            else:    
+                for i in range(self.vec):
+                    self.exprs.append(sympify(arg.name + f'.v{i}'))
         
         elif arg == Integer(-1):
             self.vec = 1
             self.exprs.append(Integer(-1))
-            self.formula = str(Integer(-1))
             self.bit = 16
             self.type_name = "F"
-        #式で渡されてそれをpartexpressionに当てはめるでもいいけど、今すぐ使わないからいい
+        
         else:
             return 
 
@@ -34,17 +38,19 @@ class PartExpression:
         right_type = other.type_name
         right_bit = other.bit
 
-        ret_type = left_type
-        ret_bit = left_bit
+        self.type_name = left_type
+        self.bit = left_bit
 
         if left_bit < right_bit:
             ret_bit = right_bit 
 
-        #typeの条件式も書く S,F
+        #TODO typeの条件式
+        
+
     
     #部分式と部分式を連結させて、一つの式にしている．
-
-    def extend(self, other, op):
+    #この後，selfとotherぐちゃぐちゃになってるやん．　使わんからええけど　
+    def join(self, other, op):
 
         #今は4次元は考えてないからまた今度!
         if self.vec != other.vec:
