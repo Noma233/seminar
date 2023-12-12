@@ -18,6 +18,7 @@ class Variable:
         self.name = ""  
         self.vec = 1
         self.symbol = None
+        self.tmp_name = ''
         if str_type_col:
             word_lst = str_type_col.split()
             self.set_var(word_lst)
@@ -82,6 +83,10 @@ class Variable:
             s = check_pat.group()
             self.name = s
             self.symbol = sympy.sympify(s)
+            if self.struct_name != "":
+                self.tmp_name = s + '_tmp'
+            else:
+                self.tmp_name = s
 
     def typeinfo_assign_(self, other):
         self.type_name = other.type_name
