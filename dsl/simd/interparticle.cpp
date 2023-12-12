@@ -79,7 +79,6 @@ void evaluate_gravity_simd(
         __m256d ayI = init_a;
         __m256d azI = init_a;
 
-        bool flag = true;
 
         for (j = 0; j < nj; j++) {
 

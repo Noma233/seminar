@@ -1,5 +1,5 @@
 from sympy import *
-from Variable import Variable
+from dsl.gen.Var import Variable
 
 class PartExpression:
     def __init__(self, arg=None):

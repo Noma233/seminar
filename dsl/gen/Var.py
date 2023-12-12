@@ -1,5 +1,5 @@
 import re
-from sympy import *
+import sympy
 #一つの変数の型情報を持つクラス
 # EPI.pos vec3<F64> xi -> 
 # struct_name = 'EPI'
@@ -55,23 +55,23 @@ class Variable:
         #型のチェック
         check_pat = re.match(var_type_pattern, word_lst[0])
 
-        #TODO失敗した場合の処理書く
+        #TODO 失敗した場合の処理書く
         if check_pat:
             s = check_pat.group() 
             
             #3or4次元であれば
-            if s.find('<'):
-                vec, bit = s.split('<')
+            if s.find('<') != -1:
+                vec, type_ = s.split('<')
                 vec = ''.join(filter(str.isdigit, vec))
-                t = ''.join(filter(str.isalpha, bit))
-                bit = ''.join(filter(str.isdigit, bit))
+                t = ''.join(filter(str.isalpha, type_))
+                bit = ''.join(filter(str.isdigit, type_))
                 self.vec = int(vec)
                 self.type_name = t
-                self.bit = bit
+                self.bit = int(bit)
             #1次元であれば
             else:
                 self.type_name = ''.join(filter(str.isalpha, s))
-                self.bit = ''.join(filter(str.isdigit, s))
+                self.bit = int(''.join(filter(str.isdigit, s)))
                 
 
         #変数名をセット
@@ -81,7 +81,7 @@ class Variable:
         if check_pat:
             s = check_pat.group()
             self.name = s
-            self.symbol = sympify(s)
+            self.symbol = sympy.sympify(s)
 
     def typeinfo_assign_(self, other):
         self.type_name = other.type_name

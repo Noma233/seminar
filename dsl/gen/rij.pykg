@@ -1,3 +1,4 @@
-EPI.pos vec3<F64> xi
-EPJ.pos vec3<F64> xj
-rij = xi - xj
+EPI.pos F64 xi
+EPJ.pos F64 xj
+F64 eps
+check_sub = xi ** xj + eps

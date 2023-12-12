@@ -10,6 +10,7 @@ int vec_add(double a[], double b[], double c[], int n){
       __m256d va = _mm256_load_pd(&a[i]);
       __m256d vb = _mm256_load_pd(&b[i]);
       __m256d vc = va + vb;
+      vc = _mm256_mul_pd(_mm256_add_pd(va, vb), vb);
       _mm256_store_pd(&c[i], vc);
    };
    return 0;
@@ -56,5 +57,6 @@ int main() {
     check_particles(true_val, c, n, ans);
 
     printf("max reldiff = %lf, min reldiff = %lf\n", ans[0], ans[1]);
-
+    int aaa = 10;
+    int x = aaa * -aaa;
 }
