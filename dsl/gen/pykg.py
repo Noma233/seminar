@@ -7,12 +7,13 @@ import Var
 SIMD = 'AVX2'
 # SIMD = None
 
-MUL_FUNCTION_NAME = 'mul_pd'
-ADD_FUNCTION_NAME = 'add_pd'
-SUB_FUNCTION_NAME = 'sub_pd'
-POW_FUNCTION_NAME = 'pow_pd'
-DIV_FUNCTION_NAME = 'div_pd'
-SQRT_FUNCTION_NAME = 'sqrt_pd'
+#TODO 関数名
+MUL_FUNCTION_NAME = '_mm256_mul_pd'
+ADD_FUNCTION_NAME = '_mm256_add_pd'
+SUB_FUNCTION_NAME = '_mm256_sub_pd'
+POW_FUNCTION_NAME = '_mm256_pow_pd'
+DIV_FUNCTION_NAME = '_mm256_div_pd'
+SQRT_FUNCTION_NAME = '_mm256_sqrt_pd'
 
 REGISTER = 'm256'
 #テスト用
@@ -133,8 +134,8 @@ def trans_mid_expr(arg, name_variable_map, i):
 
     if str(arg) in name_variable_map:
 
-        ret = arg
         v = name_variable_map[str(arg)]
+        ret = Symbol(v.tmp_name)
         if v.vec != 1:
             ret = Symbol(f'{v.tmp_name}_v{i}')
         # elif str(arg) in prim_map:
@@ -166,9 +167,14 @@ def trans_mid_expr(arg, name_variable_map, i):
 #TODO 単精度少数の場合も
 def avx2_load(v, i):
     if v.struct_name == 'EPI':
-        index = 'i'
+        var_name = f'&{v.name}[i]'
+        function_name = '_mm256_load_'
+    elif v.struct_name == 'EPJ':
+        var_name = f'{v.name}[j]'
+        function_name = '_mm256_set1_'
     else:
-        index = 'j'
+        var_name = v.name
+        function_name = '_mm256_set1_'
 
     if v.vec != 1:
         vector_name = f'[{i}]'
@@ -183,7 +189,7 @@ def avx2_load(v, i):
         elif v.bit == 64:
             
             return Assignment(Symbol(v.tmp_name + tmp_vec_name),
-                    FunctionCall('_m256d_load_pd', [Symbol(f'&{v.name}[{index}]'+ vector_name)]))
+                    FunctionCall(function_name + 'pd', [Symbol(var_name + vector_name)]))
 
     return
 
@@ -195,29 +201,43 @@ def load_part(struct_name, name_variable_map):
             if v.struct_name == struct_name:
                 if SIMD == 'AVX2':
                     load_lst.append(avx2_load(v, i))
-
+                elif SIMD == 'AVX512':
+                    #TODO 
+                    print('not imprement')
 
     return CodeBlock(*load_lst)
 
 #TODO 単精度少数の場合も
-def avx2_store(v):
+def avx2_store(v, i):
+    if v.vec != 1:
+        vector_name = f'[{i}]'
+        tmp_vec_name = f'_v{i}'
+    else:
+        vector_name = ''
+        tmp_vec_name = ''
 
     if v.type_name == 'F':
         if v.bit == 32:
-            return
+            return 
         elif v.bit == 64:
-            return Assignment(Symbol(v.tmp_name),
-                    FunctionCall('_m256d_store_pd', [Symbol(f'&{v.name}[i]')]))
+            return FunctionCall('_mm256_store_pd', [
+                    Symbol(f'&{v.name}[i]' + vector_name), Symbol(v.tmp_name + tmp_vec_name)])
+        
     return 
 
-def store_part(struct_name, name_variable_map):
+def store_part(name_variable_map):
     store_lst = []
-    for v in name_variable_map.values():
-        if v.struct_name == struct_name:
-            if SIMD == 'AVX2':
-                store_lst.append(avx2_store(v))
 
-    return
+    for v in name_variable_map.values():
+        if v.struct_name == 'FORCE':
+            for i in range(v.vec):
+                if SIMD == 'AVX2':
+                    store_lst.append(avx2_store(v, i))
+                elif SIMD == 'AVX512':
+                    #TODO 
+                    return
+            
+    return CodeBlock(*store_lst)
 
 def loop_wide(name_variable_map):
 
@@ -228,8 +248,45 @@ def loop_wide(name_variable_map):
                     return 4
                 elif v.bit == 32:
                     return 8
+            elif SIMD == 'AVX512':
+                #TODO 
+                return 
     return None
 
+def declear_tmp_var(name_variable_map):
+
+    dec_list = []
+
+    for v in name_variable_map.values():
+        for i in range(v.vec):
+                
+            if SIMD == 'AVX2':
+                tmp_var = v.name
+                if v.struct_name != '':
+                    tmp_var = v.tmp_name
+                
+                type_ = '_m256'
+                if v.bit == 64:
+                    type_  += 'd'
+                elif v.bit == 32:
+                    type_ += 's'                    
+                
+                if tmp_var == '':
+                    #debag
+                    print(v)
+
+                if v.vec != 1:
+                    vector_name = f'_v{i}'
+                else:
+                    vector_name = ''
+
+                dec_list.append(Declaration(Variable(Symbol(tmp_var + vector_name), type=type_)))
+
+            elif SIMD == 'AVX512':
+                #TODO 
+                return            
+
+    return CodeBlock(*dec_list)
 
 def CodeGen(expr_list, name_variable_map, prim_map):
 
@@ -241,7 +298,9 @@ def CodeGen(expr_list, name_variable_map, prim_map):
     iloop_load = None
     jloop_load = None
     tmp_def = None
+    result_store = None
 
+    #引数の作成
     for v in name_variable_map.values():
         if v.name in prim_map:
             continue        
@@ -256,11 +315,11 @@ def CodeGen(expr_list, name_variable_map, prim_map):
         if v.type_name == 'F':
             arg_symbol_list.append(Symbol(sym_name, real=True))
 
-    #TODO 一次変数の定義 型がSIMD命令が行えるように変数を定義できるようにする
 
-
+    tmp_def = declear_tmp_var(name_variable_map)
     iloop_load = load_part('EPI', name_variable_map)
     jloop_load = load_part('EPJ', name_variable_map)
+    result_store = store_part(name_variable_map)
 
     for expr in expr_list:
         prim_var = name_variable_map[str(expr.lhs)]
@@ -273,7 +332,7 @@ def CodeGen(expr_list, name_variable_map, prim_map):
 
     i, j, n = symbols('i, j n', integer=True)
     loop_code = For(j, Range(0, n, 1), CodeBlock(jloop_load, loop_inner))
-    loop_code2 = For(i, Range(0, n, iwide), CodeBlock(iloop_load,loop_code))
+    loop_code2 = For(i, Range(0, n, iwide), CodeBlock(iloop_load,loop_code, result_store))
  
     int_i = Variable(i, type=IntBaseType(String('integer')))
     int_j = Variable(j, type=IntBaseType(String('integer')))
@@ -281,6 +340,7 @@ def CodeGen(expr_list, name_variable_map, prim_map):
     func_body = CodeBlock(
             Declaration(int_i),
             Declaration(int_j),
+            tmp_def,
             loop_code2,
             Return(0)
         )
@@ -345,6 +405,10 @@ def expr_binary_tree(expr_list):
 
     return new_expr_list
 
+def expr_to_cse(expr_list):
+
+    return 
+
 #一次変数の型推論
 def type_inference(expr_list, name_variable_map):
 
@@ -353,10 +417,12 @@ def type_inference(expr_list, name_variable_map):
     operator_list = [Add, Mul, Pow]
 
     for expr in expr_list:
+        if str(expr.lhs) in name_variable_map:
+            continue
         prim_var = Var.Variable()
         prim_var.name = str(expr.lhs)
         prim_var.tmp_name = str(expr.lhs)
-        # print(name_variable_map)
+        
         for arg in preorder_traversal(expr.rhs):
 
             if str(arg) in name_variable_map:
@@ -392,14 +458,15 @@ def main():
         expr_list, name_variable_map = Parse(s)
 
     # print('name_variable_map check')
-    # for i in name_variable_map:
+    # for i in name_variable_map.values():
     #     print(i)
 
     #TODO cseを適用させる
 
     #構文木を完全2分木にする処理
     biexpr_list = expr_binary_tree(expr_list)
-    
+
+
     #expr_binary_treeのテスト用
     # check_new_bitree(biexpr_list)
 
@@ -409,7 +476,6 @@ def main():
     # check_name_table(name_variable_map)
     #type_inferenceのテスト用
     # check_type_infer(prim_map)
-
 
     CodeGen(biexpr_list, name_variable_map, prim_map)
     
