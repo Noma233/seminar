@@ -6,6 +6,7 @@ from sympy.core.numbers import Integer
 import Var
 SIMD = 'AVX2'
 # SIMD = None
+from sympy.codegen.ast import float64
 
 #TODO 関数名
 MUL_FUNCTION_NAME = '_mm256_mul_pd'
@@ -16,6 +17,7 @@ DIV_FUNCTION_NAME = '_mm256_div_pd'
 SQRT_FUNCTION_NAME = '_mm256_sqrt_pd'
 
 REGISTER = 'm256'
+iwide = 1
 #テスト用
 x, y, z = symbols('x, y, z')
 
@@ -135,9 +137,9 @@ def trans_mid_expr(arg, name_variable_map, i):
     if str(arg) in name_variable_map:
 
         v = name_variable_map[str(arg)]
-        ret = Symbol(v.tmp_name)
+        ret = Symbol(v.get_tmp_name(i))
         if v.vec != 1:
-            ret = Symbol(f'{v.tmp_name}_v{i}')
+            ret = Symbol(v.get_tmp_name(i))
         # elif str(arg) in prim_map:
         return ret
     elif arg is Integer(-1) or arg is Rational(1, 2) or type(arg) is Integer:
@@ -163,33 +165,85 @@ def trans_mid_expr(arg, name_variable_map, i):
         return
 
 
+vindex_count = 0
+def col_adr_vindex(vec_size):
+    code_list = []
+    global vindex_count
+    index_name = f'index_gather_{vindex_count}'
+    index_type = 'int'
+    # print('iwide is ', iwide)
+    index_num = '{0'
+    for i in range(iwide):
+        if i == 0:
+            continue
+        index_num += f', {i * vec_size}'
+
+    index_num += '}'
+
+    code_list.append(index_type + ' ' + index_name + f'[iwide]' + ' = ' + index_num)
+    vindex_name = f'vindex_gather_{vindex_count}'
+    code_list.append(f'__m128i {vindex_name} = _mm_load_si128((const __m128i*){index_name})')
+
+    vindex_count += 1
+    return code_list, vindex_name
+
+def EPI_load(v, i):
+    var_name = f'&{v.name}[i]'
+    tmp_name = v.tmp_name
+
+    if v.bit == 32:
+        type_name = 'ps'
+        type_byte = 4
+    
+    elif v.bit == 64:
+        type_name = 'pd'
+        type_byte = 8
+    else:
+        pass
+    
+    if v.vec != 1:
+        var_name += f'[{i}]'
+        tmp_name += f'_v{i}'
+        function_name = '_mm256_i32gather_'
+        code_list, vindex_name = col_adr_vindex(v.vec)
+        
+        load_expr = Assignment(Symbol(tmp_name), FunctionCall(function_name + type_name, [Symbol(var_name), Symbol(vindex_name), type_byte]))
+        return CodeBlock(*code_list, load_expr)
+    else:
+        function_name = '_mm256_load_'
+        tmp_name = v.name + "_tmp"
+        return Assignment(Symbol(tmp_name), FunctionCall(function_name + type_name, [Symbol(var_name)]))
+
 
 #TODO 単精度少数の場合も
 def avx2_load(v, i):
+
+    var_name = v.name
+    tmp_name = v.tmp_name
+    
     if v.struct_name == 'EPI':
-        var_name = f'&{v.name}[i]'
-        function_name = '_mm256_load_'
+        return EPI_load(v, i)
+
     elif v.struct_name == 'EPJ':
-        var_name = f'{v.name}[j]'
+        var_name += '[j]'
         function_name = '_mm256_set1_'
     else:
-        var_name = v.name
         function_name = '_mm256_set1_'
 
     if v.vec != 1:
-        vector_name = f'[{i}]'
-        tmp_vec_name = f'_v{i}'
+        var_name += f'[{i}]'
+        tmp_name += f'_v{i}'
+
     else:
-        vector_name = ''
-        tmp_vec_name = ''
+        pass
 
     if v.type_name == 'F':
         if v.bit == 32:
             return
         elif v.bit == 64:
             
-            return Assignment(Symbol(v.tmp_name + tmp_vec_name),
-                    FunctionCall(function_name + 'pd', [Symbol(var_name + vector_name)]))
+            return Assignment(Symbol(tmp_name),
+                    FunctionCall(function_name + 'pd', [Symbol(var_name)]))
 
     return
 
@@ -209,21 +263,38 @@ def load_part(struct_name, name_variable_map):
 
 #TODO 単精度少数の場合も
 def avx2_store(v, i):
-    if v.vec != 1:
-        vector_name = f'[{i}]'
-        tmp_vec_name = f'_v{i}'
-    else:
-        vector_name = ''
-        tmp_vec_name = ''
+    tmp_vec_name = ''
 
     if v.type_name == 'F':
         if v.bit == 32:
-            return 
+            type_name = 'ps'
         elif v.bit == 64:
-            return FunctionCall('_mm256_store_pd', [
-                    Symbol(f'&{v.name}[i]' + vector_name), Symbol(v.tmp_name + tmp_vec_name)])
+            type_name = 'pd'
+
+    else: 
+        type_name = ''
+
+    code_list = []
+    
+    if v.vec != 1:
+        vector_name = f'[{i}]'
+        tmp_vec_name = f'_v{i}'
+        tmp_simd_index = f'[{v.vec}]'
+        for ii in range(iwide):
+            if ii == 0: 
+                inc = ''
+            else:
+                inc = f' + {ii}'
+            code_list.append(Assignment(Symbol(f'{v.name}[i{inc}][{i}]'), 
+                                        Symbol(v.tmp_name + tmp_vec_name + f'[{ii}]')))
+    else:
+
+        vector_name = ''
+    
+        code_list.append(FunctionCall('_mm256_store_' + type_name, 
+                            [Symbol(f'&{v.name + vector_name}[i]'), Symbol(v.tmp_name + tmp_vec_name)]))
         
-    return 
+    return CodeBlock(*code_list)
 
 def store_part(name_variable_map):
     store_lst = []
@@ -236,6 +307,8 @@ def store_part(name_variable_map):
                 elif SIMD == 'AVX512':
                     #TODO 
                     return
+                else:
+                    pass
             
     return CodeBlock(*store_lst)
 
@@ -258,6 +331,9 @@ def declear_tmp_var(name_variable_map):
     dec_list = []
 
     for v in name_variable_map.values():
+        #TODO 名前のない変数が存在してる
+        if v.name == '':
+            continue
         for i in range(v.vec):
                 
             if SIMD == 'AVX2':
@@ -265,11 +341,11 @@ def declear_tmp_var(name_variable_map):
                 if v.struct_name != '':
                     tmp_var = v.tmp_name
                 
-                type_ = '_m256'
+                type_ = '__m256'
                 if v.bit == 64:
                     type_  += 'd'
                 elif v.bit == 32:
-                    type_ += 's'                    
+                    type_ += ''                    
                 
                 if tmp_var == '':
                     #debag
@@ -284,7 +360,19 @@ def declear_tmp_var(name_variable_map):
 
             elif SIMD == 'AVX512':
                 #TODO 
-                return            
+                return
+            else:
+                
+                if v.struct_name == '':
+                    tmp_var = v.get_tmp_name(i)
+                    tmp_type = v.get_type()
+                    dec_list.append(Declaration(Variable(Symbol(tmp_var), type=tmp_type)))
+
+                else:
+                    continue
+
+
+
 
     return CodeBlock(*dec_list)
 
@@ -293,7 +381,7 @@ def CodeGen(expr_list, name_variable_map, prim_map):
     #式を計算する部分のリスト
     assign_list = []
     #カーネル関数の引数を表すためのリスト
-    arg_symbol_list = []
+    arg_symbol_list = [Symbol('n', integer=True)]
 
     iloop_load = None
     jloop_load = None
@@ -316,6 +404,8 @@ def CodeGen(expr_list, name_variable_map, prim_map):
             arg_symbol_list.append(Symbol(sym_name, real=True))
 
 
+    global iwide
+    iwide = loop_wide(name_variable_map)
     tmp_def = declear_tmp_var(name_variable_map)
     iloop_load = load_part('EPI', name_variable_map)
     jloop_load = load_part('EPJ', name_variable_map)
@@ -327,7 +417,6 @@ def CodeGen(expr_list, name_variable_map, prim_map):
             assign_list.append(trans_mid_expr(expr, name_variable_map, i))
 
     loop_inner = CodeBlock(*assign_list)
-    iwide = loop_wide(name_variable_map)
 
 
     i, j, n = symbols('i, j n', integer=True)
@@ -405,9 +494,6 @@ def expr_binary_tree(expr_list):
 
     return new_expr_list
 
-def expr_to_cse(expr_list):
-
-    return 
 
 #一次変数の型推論
 def type_inference(expr_list, name_variable_map):
@@ -448,6 +534,16 @@ def type_inference(expr_list, name_variable_map):
 
     return prim_map
 
+def apply_cse(expr_list):
+    cse_list = cse(expr_list)
+    
+    pre_culc = cse_list[0]
+    new_list = []
+    for expr in pre_culc:
+        new_list.append(Assignment(expr[0], expr[1]))
+    new_list += cse_list[1]
+    return new_list
+
 def main():
     expr_list = []
     name_variable_map = {}
@@ -462,9 +558,10 @@ def main():
     #     print(i)
 
     #TODO cseを適用させる
+    after_cse_expr_list = apply_cse(expr_list)
 
     #構文木を完全2分木にする処理
-    biexpr_list = expr_binary_tree(expr_list)
+    biexpr_list = expr_binary_tree(after_cse_expr_list)
 
 
     #expr_binary_treeのテスト用
@@ -504,9 +601,6 @@ def check_name_table(name_table):
 #型推論のチェック
 def check_type_infer(prim_map):
 
-    # print('prim_map')
-    # for i in prim_map:
-    #         print(i)
     print(prim_map)
 
     if 'rij' in prim_map:
@@ -521,6 +615,12 @@ if __name__ == "__main__":
 
     expr_list, type_map = main()
 
-x,y,z = symbols('x y z')
+# x, y, z, a, b, c, d, e, f, g = symbols('x y z a b c d e f g')
 
-expr = x + (x * y * -z)
+# expr1 = Assignment(a, (x + y + z) * (z + y + b))
+# expr2 = Assignment(c, (y + z + b) * (z + a + b))
+
+# expr_list = [expr1, expr2]
+# new_list = apply_cse(expr_list)
+# print(new_list)
+

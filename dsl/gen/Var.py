@@ -7,26 +7,40 @@ import sympy
 # type_name = 'F64'
 # vec_name = 'vec3'
 # var_name = 'xi'
+SIMD = 'AVX2'
+# SIMD  = None
 class Variable:
-   
+    struct_name = ""
+    memb_name = ""
+    type_name = ""
+    bit = 0
+    name = ""  
+    vec = 1
+    symbol = None
+    tmp_name = ''
+    index_name = ''
+
+    def index_def(self):
+        if self.struct_name == 'EPI' or self.struct_name == 'FORCE':
+            self.index_name = 'i'
+        elif self.struct_name == 'EPJ':
+            self.index_name = 'j'
+        else:
+            pass
+
     #行を空白で区切りwordのリストにしそれをセットする
     def __init__(self, str_type_col=None):
-        self.struct_name = ""
-        self.memb_name = ""
-        self.type_name = ""
-        self.bit = 0
-        self.name = ""  
-        self.vec = 1
-        self.symbol = None
-        self.tmp_name = ''
         if str_type_col:
             word_lst = str_type_col.split()
             self.set_var(word_lst)
+        
+        self.index_def()
 
     def __repr__(self) -> str:
         ret = f"name = {self.name} , struct = {self.struct_name},  member_name = {self.memb_name} \n" 
         ret +=  f" type_name = {self.type_name} , vec_name = {self.vec} \n"
         return ret
+
 
     #宣言の1行から型情報を取得
     def set_var(self, word_lst):
@@ -110,3 +124,59 @@ class Variable:
         
         self.bit = bit
     
+    # def get_tmp_name(self):
+    #     if SIMD:
+    #         return self.tmp_name
+    #     else:
+    #         return self.name
+        
+    def get_tmp_name(self, i):
+
+        if SIMD:
+            ret_name = self.tmp_name
+
+            if self.vec == 1:
+                return ret_name 
+            
+            return ret_name + f'_v{i}'
+        else:
+
+            ret_name = self.name
+            if self.index_name != '':
+                ret_name += f'[{self.index_name}]'
+                if self.vec == 1:
+                    return ret_name
+                else:
+                    return ret_name + f'[{i}]'
+            else:
+                return ret_name + f'_v{i}'
+
+    def get_type(self):
+
+        if SIMD == 'AVX2':
+            pass
+        elif SIMD == 'AVX512':
+            pass
+        
+        else:
+            if self.type_name == 'F':
+                if self.bit == 32:
+                    return 'float'
+                elif self.bit == 64:
+                    return 'double'
+                else:
+                    print(self)
+                    return "not_defined"
+            elif self.type_name == 'S':
+                if self.bit == 32:
+                    return 'int'
+                elif self.bit == 64:
+                    return 'long long int'
+                else:
+                    print(self)
+                    return 'not_defined'
+            else:
+                print(self)
+                return 'not_defined'
+        
+        return

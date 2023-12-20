@@ -1,5 +1,5 @@
-EPI.pos vec3<F64> xi
-EPJ.pos vec3<F64> xj
-FORCE.acc vec3<F64> ai
-check_sub = xi ** 3
-ai = sqrt(check_sub)
+EPI.pos F64 xi
+EPJ.pos F64 xj
+FORCE.acc F64 ai
+F64 eps
+ai = (xi + xj + eps) * (xi + xj)
