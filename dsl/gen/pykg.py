@@ -4,8 +4,8 @@ from sympy.codegen.ast import (CodeBlock, For, Variable, Declaration, FunctionDe
                                FunctionPrototype, integer,Return)
 from sympy.core.numbers import Integer
 import Var
-SIMD = 'AVX2'
-# SIMD = None
+# SIMD = 'AVX2'
+SIMD = None
 from sympy.codegen.ast import float64
 
 #TODO 関数名
@@ -53,10 +53,12 @@ def inv_op(arg, func_name, inv_func_name):
     
     if type(arg) is Symbol or arg is Integer(-1):
         return arg, None
-
-    if str(arg.name) == func_name and Integer(-1) in arg.function_args:
-        ret = list(filter(lambda x: x is not Integer(-1), arg.function_args))
-        return ret[0], inv_func_name
+    try:
+        if str(arg.name) == func_name and Integer(-1) in arg.function_args:
+            ret = list(filter(lambda x: x is not Integer(-1), arg.function_args))
+            return ret[0], inv_func_name
+    except AttributeError:
+        print(arg)
     else:
         return arg, None
 
@@ -133,7 +135,7 @@ def pow_pattern(left_arg, right_arg):
         return Pow(left_arg, right_arg)
 
 def trans_mid_expr(arg, name_variable_map, i):
-
+    
     if str(arg) in name_variable_map:
 
         v = name_variable_map[str(arg)]
@@ -180,7 +182,7 @@ def col_adr_vindex(vec_size):
 
     index_num += '}'
 
-    code_list.append(index_type + ' ' + index_name + f'[iwide]' + ' = ' + index_num)
+    code_list.append(index_type + ' ' + index_name + f'[{iwide}]' + ' = ' + index_num)
     vindex_name = f'vindex_gather_{vindex_count}'
     code_list.append(f'__m128i {vindex_name} = _mm_load_si128((const __m128i*){index_name})')
 
@@ -277,9 +279,7 @@ def avx2_store(v, i):
     code_list = []
     
     if v.vec != 1:
-        vector_name = f'[{i}]'
         tmp_vec_name = f'_v{i}'
-        tmp_simd_index = f'[{v.vec}]'
         for ii in range(iwide):
             if ii == 0: 
                 inc = ''
@@ -288,12 +288,9 @@ def avx2_store(v, i):
             code_list.append(Assignment(Symbol(f'{v.name}[i{inc}][{i}]'), 
                                         Symbol(v.tmp_name + tmp_vec_name + f'[{ii}]')))
     else:
-
-        vector_name = ''
-    
         code_list.append(FunctionCall('_mm256_store_' + type_name, 
-                            [Symbol(f'&{v.name + vector_name}[i]'), Symbol(v.tmp_name + tmp_vec_name)]))
-        
+                            [Symbol(f'&{v.name}[i]'), Symbol(v.tmp_name + tmp_vec_name)]))
+ 
     return CodeBlock(*code_list)
 
 def store_part(name_variable_map):
@@ -370,13 +367,18 @@ def declear_tmp_var(name_variable_map):
 
                 else:
                     continue
-
-
-
-
     return CodeBlock(*dec_list)
 
+def get_include_text():
+    text = "#include<math.h>\n"
+    if SIMD == 'AVX2':
+        text += "#include<x86intrin.h>"
+    return text
+
+
 def CodeGen(expr_list, name_variable_map, prim_map):
+
+    file_name = 'check_gravity_code.cpp'
 
     #式を計算する部分のリスト
     assign_list = []
@@ -410,6 +412,8 @@ def CodeGen(expr_list, name_variable_map, prim_map):
     iloop_load = load_part('EPI', name_variable_map)
     jloop_load = load_part('EPJ', name_variable_map)
     result_store = store_part(name_variable_map)
+    include_text = get_include_text()
+
 
     for expr in expr_list:
         prim_var = name_variable_map[str(expr.lhs)]
@@ -417,6 +421,9 @@ def CodeGen(expr_list, name_variable_map, prim_map):
             assign_list.append(trans_mid_expr(expr, name_variable_map, i))
 
     loop_inner = CodeBlock(*assign_list)
+
+    if SIMD == None:
+        assign_list = expr_list
 
 
     i, j, n = symbols('i, j n', integer=True)
@@ -436,28 +443,34 @@ def CodeGen(expr_list, name_variable_map, prim_map):
     
     fp = FunctionPrototype(integer, 'kernel', arg_symbol_list)
     fd = FunctionDefinition.from_FunctionPrototype(fp, [func_body])
-    print(ccode(fd))
-    return
+    fd_h = CodeBlock(include_text, fd)
+    return ccode(fd_h)
 
 def inv_pattern(expr):
 
-    op_inverse_list = [(Mul, Integer(-1)), (Pow, Integer(-1)), (Pow, Rational(1, 2))]
-    
+    op_inverse_list = [(Mul, Integer(-1)), (Pow, Integer(-1))]
+
     for op, inverse in op_inverse_list:
         if type(expr) is op and inverse in expr.args:
             return inverse
 
     return None
 
+def rational_pattern(expr):
+    frac, inv = expr.as_content_primitive()
+    return inv, Rational(1, 2), frac.p
+    
 #完全二分木に変換
 def new_bitree(expr):
     op = type(expr)
+    print("new_bitree expr = ", srepr(expr))
     if len(expr.args) >= 3:
 
         tmp = None
         for a in expr.args:
-            if a is Integer(-1) or a is Rational(1, 2):
+            if a is Integer(-1):
                 continue
+
             else:
                 new_expr = new_bitree(a)
                 if tmp == None:
@@ -475,19 +488,49 @@ def new_bitree(expr):
     elif len(expr.args) == 2:
         left_expr = new_bitree(expr.args[0])
         right_expr = new_bitree(expr.args[1])
+        
         if op is Assignment:
             return op(left_expr, right_expr)
+        
+        #TODO 1/x乗 みたいな場合はまだ
+        elif op is Pow:
+            pow_expr = None
+            if type(left_expr) is not Rational and type(right_expr) is not Rational:
+                return Pow(left_expr, right_expr)
+            
+            else:
+                if type(right_expr) is Rational:
+                    r = right_expr
+                    x = left_expr
+                elif type(left_expr) is Rational:
+                    r = left_expr
+                    x = right_expr
+                
+                
+                pow_expr = Pow(x, Rational(1, 2))
+                
+                frac, inv = r.as_content_primitive()
+                if frac.p != 1:
+                    print('frac.p is ', frac.p)
+                    pow_expr = Pow(pow_expr, frac.p, evaluate=False)
+
+        
+                if inv == -1:
+                    pow_expr = Pow(pow_expr, Integer(-1), evaluate=False)
+                print('pow pattern', srepr(pow_expr))
+                return pow_expr
         else:
             return op(left_expr, right_expr, evaluate=False)
-    elif type(expr) is Symbol or type(expr) is Integer or expr is Rational(1, 2) or expr is Integer(-1):
-        return expr
-    
+
+    elif type(expr) is Symbol or type(expr) is Integer or type(expr) is Rational or expr is Integer(-1):
+        return expr    
     else:
         print('!!!!!!error!!!!!!! at new_bitree ', 'arg is ', expr)
 
 #構文木から完全二分木を取得
 def expr_binary_tree(expr_list):
-
+    # if SIMD == None:
+    #     return expr_list
     new_expr_list = []
     for expr in expr_list:
         new_expr_list.append(new_bitree(expr))
@@ -523,6 +566,8 @@ def type_inference(expr_list, name_variable_map):
                     prim_var.vec = v.vec
             elif type(arg) in operator_list or arg is Integer(-1) or arg is Rational(1, 2) or type(arg) is Integer:
                 continue
+
+            
                 
             else:
                 #エラー
@@ -544,6 +589,7 @@ def apply_cse(expr_list):
     new_list += cse_list[1]
     return new_list
 
+
 def main():
     expr_list = []
     name_variable_map = {}
@@ -552,19 +598,19 @@ def main():
     with open('rij.pykg', 'r', encoding='utf-8') as f:
         s = f.read()
         expr_list, name_variable_map = Parse(s)
-
+    
     # print('name_variable_map check')
     # for i in name_variable_map.values():
     #     print(i)
 
-    #TODO cseを適用させる
+    
     after_cse_expr_list = apply_cse(expr_list)
 
     #構文木を完全2分木にする処理
     biexpr_list = expr_binary_tree(after_cse_expr_list)
 
 
-    #expr_binary_treeのテスト用
+    # expr_binary_treeのテスト用
     # check_new_bitree(biexpr_list)
 
     #型推論　それから一次変数の型を決定
@@ -574,11 +620,27 @@ def main():
     #type_inferenceのテスト用
     # check_type_infer(prim_map)
 
-    CodeGen(biexpr_list, name_variable_map, prim_map)
     
 
+    # 木構造のチェック
+    check_tree(biexpr_list)
+
+    s = CodeGen(biexpr_list, name_variable_map, prim_map)
+
+    file_name = 'gravity_code'
+    with open(f'{file_name}.hpp','w', encoding='utf-8') as f:
+        f.write(s) 
+    f.close()
     #チェック用
     return biexpr_list, name_variable_map
+
+
+def check_tree(expr_list):
+    for expr in expr_list:
+        # print(dotprint(expr))
+        print(srepr(expr))
+
+    return
 
 #完全二分木に変換する処理のチェック
 def check_new_bitree(expr_list):

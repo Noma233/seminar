@@ -7,8 +7,8 @@ import sympy
 # type_name = 'F64'
 # vec_name = 'vec3'
 # var_name = 'xi'
-SIMD = 'AVX2'
-# SIMD  = None
+# SIMD = 'AVX2'
+SIMD  = None
 class Variable:
     struct_name = ""
     memb_name = ""
@@ -64,7 +64,9 @@ class Variable:
     def set_type(self, word_lst):
 
         var_type_pattern = r'(vec(3|4)<)?F(16|32|64)>?'
-        var_name_pattern = r'[a-zA-Z]\w+'
+        var_name_pattern = r'\w+'
+
+        #debag
 
         #型名をセット
         #型のチェック
@@ -89,10 +91,12 @@ class Variable:
                 self.bit = int(''.join(filter(str.isdigit, s)))
                 
 
+        
+
         #変数名をセット
         #変数名の規則をチェック
         check_pat = re.match(var_name_pattern, word_lst[1])
-        #TODO失敗した場合の処理書く
+        #TODO 失敗した場合の処理書く
         if check_pat:
             s = check_pat.group()
             self.name = s
@@ -149,7 +153,10 @@ class Variable:
                 else:
                     return ret_name + f'[{i}]'
             else:
-                return ret_name + f'_v{i}'
+                if self.vec == 1:
+                    return ret_name
+                else:
+                    return ret_name + f'_v{i}'
 
     def get_type(self):
 

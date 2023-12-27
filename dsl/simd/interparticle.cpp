@@ -9,13 +9,16 @@
 #include<set>
 using namespace std;
 
+#include "../gen/gravity_code.hpp"
+
 void evaluate_gravity(
 int ni,
 int nj,
 double posi[][3],
 double posj[][3],
 double mj[],
-double acci[][3]) {
+double acci[][3],
+double eps2) {
                   
 for (int i = 0; i < ni; i++) {
     double xi = posi[i][0];
@@ -30,7 +33,7 @@ for (int i = 0; i < ni; i++) {
         double dx = double(posj[j][0] - xi);
         double dy = double(posj[j][1] - yi);
         double dz = double(posj[j][2] - zi);
-        double r2 = dx * dx + dy * dy + dz * dz;
+        double r2 = dx * dx + dy * dy + dz * dz + eps2;
         double ri2 = 1.0f / sqrt(r2); // <- 1.0f / r2 となっていて
                                       //evaluate_gravityが速くなっていた
         
@@ -63,10 +66,12 @@ void evaluate_gravity_simd(
     double mj[],
     double axi[],
     double ayi[],
-    double azi[]
+    double azi[],
+    double eps2
 ) {
     __m256d init_a =  _mm256_set1_pd(0.0);
     __m256d onev =  _mm256_set1_pd(1.0);
+    __m256d eps2v = _mm256_set1_pd(eps2);
     int i, j;
     for (i = 0; i < ni; i+=4) {
 
@@ -91,15 +96,11 @@ void evaluate_gravity_simd(
             __m256d dyv = yjv - yI;
             __m256d dzv = zjv - zI;
 
-            __m256d rv = dxv * dxv + dyv * dyv + dzv * dzv;
+            __m256d rv = dxv * dxv + dyv * dyv + dzv * dzv + eps2v;
             __m256d rv_sq = _mm256_sqrt_pd(rv);
             __m256d rv_inv = _mm256_div_pd(onev, rv_sq);
             __m256d r3v_inv = rv_inv * rv_inv * rv_inv;
             __m256d mr = mjv * r3v_inv;
-
-            if(i == j || i + 1 == j || i + 2 == j || i + 3 == j) {
-                mr[j - i] = 0.0;
-            }
             
             axI = axI + mr * dxv;
             ayI = ayI + mr * dyv;
@@ -121,14 +122,16 @@ void print_vec(vector<vector<double>> a, int n, FILE *fp) {
     fprintf(fp, "\n");
 }
 
-void check_particles(double axi[], double ayi[],
+vector<double> check_particles(double axi[], double ayi[],
                      double azi[], double acci[][3],
-                     int n, vector<double> &ans) {
+                     int n) {
     bool flag = true;
     double eps = 0.000001;
     double max_relerr = 0.0;
-    double min_relerr = 10000000;
+    double min_relerr = 10000000.0;
+    vector<double> ans = {0, 0};
     for(int i = 0;i < n;i++) {
+
         
         double ai0 = acci[i][0];
         double ai1 = acci[i][1];
@@ -153,12 +156,18 @@ void check_particles(double axi[], double ayi[],
         min_relerr = min({min_relerr, abs(acci[i][0] - axi[i]) / abs(ai0),
                                       abs(acci[i][1] - ayi[i]) / abs(ai1),
                                       abs(acci[i][2] - azi[i]) / abs(ai2)});
+        if(i % 100 == 0){
+            cout << "max is " << max_relerr << endl;
+            cout << "min is " << min_relerr << endl;
+            cout << acci[i][0] << endl;
+            cout << axi[i] << endl;
+        }
     }
 
 
-    ans.push_back(max_relerr);
-    ans.push_back(min_relerr);
-
+    ans[0] = max_relerr;
+    ans[1] = min_relerr;
+    return ans;
 }
 
 int main() {
@@ -175,6 +184,12 @@ int main() {
     double acci[n][3];
     int id[n];
 
+    //pykg用のデータ
+    double ai[n][3];
+    double g = 6.67430 * pow(1/10, 11);
+    double eps2 = 1.0 * pow(1/10, 14);
+
+
     __attribute__((aligned(32))) double X[n];
     __attribute__((aligned(32))) double Y[n];
     __attribute__((aligned(32))) double Z[n];
@@ -182,6 +197,8 @@ int main() {
     __attribute__((aligned(32))) double ayi[n];
     __attribute__((aligned(32))) double azi[n];
     __attribute__((aligned(32))) double j_element[n][4]; //及ぼす粒子jの要素{x, y, z, m}
+
+
     for(i = 0;i < n;i++) {
         double x = ud(mt);
         double y = ud(mt);
@@ -205,14 +222,20 @@ int main() {
 
     clock_t start, end;
     start = clock();
-    evaluate_gravity(n, n,pos, pos, mj, acci);
+    evaluate_gravity(n, n,pos, pos, mj, acci, eps2);
     end = clock();
     double non_simd_elapsed = (double)(end - start) / CLOCKS_PER_SEC;
     printf("N = %d\n", n);
     printf("evaluate_gravity of elapsed time = %lfsec\n", non_simd_elapsed);
 
     start = clock();
-    evaluate_gravity_simd(n, n, X, Y, Z, X, Y, Z, j_element, mj, axi, ayi, azi);
+    kernel(n, pos, pos, mj, ai, g, eps2);
+    end = clock();
+    double gen_code_time = (double)(end - start) / CLOCKS_PER_SEC;
+    printf("genarate code time = %lfsec\n", gen_code_time);
+
+    start = clock();
+    evaluate_gravity_simd(n, n, X, Y, Z, X, Y, Z, j_element, mj, axi, ayi, azi, eps2);
     end = clock();
     double simd_elapsed = (double)(end - start) / CLOCKS_PER_SEC;
 
@@ -247,10 +270,10 @@ int main() {
 
     vector<double> ans;
 
-    check_particles(axi, ayi, azi, acci, n, ans);
+    // check_particles(axi, ayi, azi, acci, n, ans);
+    ans = check_particles(axi, ayi, azi, ai, n);
 
-    printf("max reldiff = %lf, min reldiff = %lf\n", ans[0], ans[1]);
 
-
+    printf("max reldiff = %lf, min reldiff = %lf\n", ans[1], ans[0]);
 
 }

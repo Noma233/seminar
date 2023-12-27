@@ -28,6 +28,7 @@ int kernel(double xi[][3], double xj[][3], double ai[][3], int n){
       int index_gather_0[4] = {0, 3, 6, 9};
       __m128i vindex_gather_0 = _mm_load_si128((const __m128i*)index_gather_0);
       xi_tmp_v0 = _mm256_i32gather_pd(&xi[i][0], vindex_gather_0, 8);
+      xi_tmp_v0 = _mm256_load_pd(&xi[i][0]);
       int index_gather_1[4] = {0, 3, 6, 9};
       __m128i vindex_gather_1 = _mm_load_si128((const __m128i*)index_gather_1);
       xi_tmp_v1 = _mm256_i32gather_pd(&xi[i][1], vindex_gather_1, 8);
