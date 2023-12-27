@@ -422,10 +422,6 @@ def CodeGen(expr_list, name_variable_map, prim_map):
 
     loop_inner = CodeBlock(*assign_list)
 
-    if SIMD == None:
-        assign_list = expr_list
-
-
     i, j, n = symbols('i, j n', integer=True)
     loop_code = For(j, Range(0, n, 1), CodeBlock(jloop_load, loop_inner))
     loop_code2 = For(i, Range(0, n, iwide), CodeBlock(iloop_load,loop_code, result_store))
