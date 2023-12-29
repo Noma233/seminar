@@ -4,8 +4,8 @@ from sympy.codegen.ast import (CodeBlock, For, Variable, Declaration, FunctionDe
                                FunctionPrototype, integer,Return)
 from sympy.core.numbers import Integer
 import Var
-# SIMD = 'AVX2'
-SIMD = None
+SIMD = 'AVX2'
+# SIMD = None
 from sympy.codegen.ast import float64
 
 #TODO 関数名
@@ -107,9 +107,10 @@ def or_Integer(left_arg, right_arg):
         expr = left_arg
 
     if num:
-        new_expr = FunctionCall(MUL_FUNCTION_NAME, [expr, expr])
-        for i in range(num - 2):
+        new_expr = expr
+        for i in range(num - 1):
             new_expr = FunctionCall(MUL_FUNCTION_NAME, [expr, new_expr])
+        
         return new_expr
     else:
         return None
@@ -191,7 +192,7 @@ def col_adr_vindex(vec_size):
 
 def EPI_load(v, i):
     var_name = f'&{v.name}[i]'
-    tmp_name = v.tmp_name
+    tmp_name = v.get_tmp_name(i)
 
     if v.bit == 32:
         type_name = 'ps'
@@ -205,7 +206,6 @@ def EPI_load(v, i):
     
     if v.vec != 1:
         var_name += f'[{i}]'
-        tmp_name += f'_v{i}'
         function_name = '_mm256_i32gather_'
         code_list, vindex_name = col_adr_vindex(v.vec)
         
@@ -221,7 +221,7 @@ def EPI_load(v, i):
 def avx2_load(v, i):
 
     var_name = v.name
-    tmp_name = v.tmp_name
+    tmp_name = v.get_tmp_name(i)
     
     if v.struct_name == 'EPI':
         return EPI_load(v, i)
@@ -234,10 +234,6 @@ def avx2_load(v, i):
 
     if v.vec != 1:
         var_name += f'[{i}]'
-        tmp_name += f'_v{i}'
-
-    else:
-        pass
 
     if v.type_name == 'F':
         if v.bit == 32:
@@ -265,7 +261,7 @@ def load_part(struct_name, name_variable_map):
 
 #TODO 単精度少数の場合も
 def avx2_store(v, i):
-    tmp_vec_name = ''
+    tmp_vec_name = v.get_tmp_name(i)
 
     if v.type_name == 'F':
         if v.bit == 32:
@@ -279,14 +275,13 @@ def avx2_store(v, i):
     code_list = []
     
     if v.vec != 1:
-        tmp_vec_name = f'_v{i}'
         for ii in range(iwide):
             if ii == 0: 
                 inc = ''
             else:
                 inc = f' + {ii}'
             code_list.append(Assignment(Symbol(f'{v.name}[i{inc}][{i}]'), 
-                                        Symbol(v.tmp_name + tmp_vec_name + f'[{ii}]')))
+                                        Symbol(tmp_vec_name + f'[{ii}]')))
     else:
         code_list.append(FunctionCall('_mm256_store_' + type_name, 
                             [Symbol(f'&{v.name}[i]'), Symbol(v.tmp_name + tmp_vec_name)]))
@@ -334,9 +329,9 @@ def declear_tmp_var(name_variable_map):
         for i in range(v.vec):
                 
             if SIMD == 'AVX2':
-                tmp_var = v.name
+                tmp_var = v.get_tmp_name(i)
                 if v.struct_name != '':
-                    tmp_var = v.tmp_name
+                    tmp_var = v.get_tmp_name(i)
                 
                 type_ = '__m256'
                 if v.bit == 64:
@@ -348,12 +343,8 @@ def declear_tmp_var(name_variable_map):
                     #debag
                     print(v)
 
-                if v.vec != 1:
-                    vector_name = f'_v{i}'
-                else:
-                    vector_name = ''
 
-                dec_list.append(Declaration(Variable(Symbol(tmp_var + vector_name), type=type_)))
+                dec_list.append(Declaration(Variable(Symbol(tmp_var), type=type_)))
 
             elif SIMD == 'AVX512':
                 #TODO 
@@ -513,7 +504,6 @@ def new_bitree(expr):
                 if frac.p != 1:
                     print('frac.p is ', frac.p)
                     pow_expr = Pow(pow_expr, frac.p, evaluate=False)
-
         
                 if inv == -1:
                     pow_expr = Pow(pow_expr, Integer(-1), evaluate=False)

@@ -7,8 +7,8 @@ import sympy
 # type_name = 'F64'
 # vec_name = 'vec3'
 # var_name = 'xi'
-# SIMD = 'AVX2'
-SIMD  = None
+SIMD = 'AVX2'
+# SIMD  = None
 class Variable:
     struct_name = ""
     memb_name = ""
@@ -101,10 +101,6 @@ class Variable:
             s = check_pat.group()
             self.name = s
             self.symbol = sympy.sympify(s)
-            if self.struct_name != "":
-                self.tmp_name = s + '_tmp'
-            else:
-                self.tmp_name = s
 
     def typeinfo_assign_(self, other):
         self.type_name = other.type_name
@@ -137,7 +133,7 @@ class Variable:
     def get_tmp_name(self, i):
 
         if SIMD:
-            ret_name = self.tmp_name
+            ret_name = self.name + '_tmp'
 
             if self.vec == 1:
                 return ret_name 
@@ -145,7 +141,7 @@ class Variable:
             return ret_name + f'_v{i}'
         else:
 
-            ret_name = self.name
+            ret_name = self.name + '_tmp'
             if self.index_name != '':
                 ret_name += f'[{self.index_name}]'
                 if self.vec == 1:
