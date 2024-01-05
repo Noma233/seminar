@@ -219,7 +219,6 @@ def EPI_load(v, i):
 
 #TODO 単精度少数の場合も
 def avx2_load(v, i):
-
     var_name = v.name
     tmp_name = v.get_tmp_name(i)
     
@@ -557,8 +556,6 @@ def type_inference(expr_list, name_variable_map):
             elif type(arg) in operator_list or arg is Integer(-1) or arg is Rational(1, 2) or type(arg) is Integer:
                 continue
 
-            
-                
             else:
                 #エラー
                 print('error', arg)
@@ -608,9 +605,7 @@ def main():
 
     # check_name_table(name_variable_map)
     #type_inferenceのテスト用
-    # check_type_infer(prim_map)
-
-    
+    # check_type_infer(prim_map) 
 
     # 木構造のチェック
     check_tree(biexpr_list)

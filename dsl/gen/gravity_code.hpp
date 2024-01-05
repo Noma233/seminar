@@ -36,14 +36,8 @@ int kernel(int n, double xi[][3], double xj[][3], double mass[], double ai[][3],
          x0_tmp_v0 = _mm256_sub_pd(xj_tmp_v0, xi_tmp_v0);
          x0_tmp_v1 = _mm256_sub_pd(xj_tmp_v1, xi_tmp_v1);
          x0_tmp_v2 = _mm256_sub_pd(xj_tmp_v2, xi_tmp_v2);
-         ai_tmp_v0 = _mm256_div_pd(_mm256_mul_pd(_mm256_mul_pd(g_tmp, mass_tmp), x0_tmp_v0),
-                      _mm256_mul_pd(_mm256_sqrt_pd(_mm256_add_pd(eps2_tmp, _mm256_mul_pd(x0_tmp_v0, x0_tmp_v0))), 
-                      _mm256_mul_pd(_mm256_sqrt_pd(_mm256_add_pd(eps2_tmp, _mm256_mul_pd(x0_tmp_v0, x0_tmp_v0))), 
-                                    _mm256_sqrt_pd(_mm256_add_pd(eps2_tmp, _mm256_mul_pd(x0_tmp_v0, x0_tmp_v0))))));
-
-   
-         ai_tmp_v1 = _mm256_div_pd(_mm256_mul_pd(_mm256_mul_pd(g_tmp, mass_tmp), x0_tmp_v1), 
-         _mm256_mul_pd(_mm256_sqrt_pd(_mm256_add_pd(eps2_tmp, _mm256_mul_pd(x0_tmp_v1, x0_tmp_v1))), _mm256_mul_pd(_mm256_sqrt_pd(_mm256_add_pd(eps2_tmp, _mm256_mul_pd(x0_tmp_v1, x0_tmp_v1))), _mm256_sqrt_pd(_mm256_add_pd(eps2_tmp, _mm256_mul_pd(x0_tmp_v1, x0_tmp_v1))))));
+         ai_tmp_v0 = _mm256_div_pd(_mm256_mul_pd(_mm256_mul_pd(g_tmp, mass_tmp), x0_tmp_v0), _mm256_mul_pd(_mm256_sqrt_pd(_mm256_add_pd(eps2_tmp, _mm256_mul_pd(x0_tmp_v0, x0_tmp_v0))), _mm256_mul_pd(_mm256_sqrt_pd(_mm256_add_pd(eps2_tmp, _mm256_mul_pd(x0_tmp_v0, x0_tmp_v0))), _mm256_sqrt_pd(_mm256_add_pd(eps2_tmp, _mm256_mul_pd(x0_tmp_v0, x0_tmp_v0))))));
+         ai_tmp_v1 = _mm256_div_pd(_mm256_mul_pd(_mm256_mul_pd(g_tmp, mass_tmp), x0_tmp_v1), _mm256_mul_pd(_mm256_sqrt_pd(_mm256_add_pd(eps2_tmp, _mm256_mul_pd(x0_tmp_v1, x0_tmp_v1))), _mm256_mul_pd(_mm256_sqrt_pd(_mm256_add_pd(eps2_tmp, _mm256_mul_pd(x0_tmp_v1, x0_tmp_v1))), _mm256_sqrt_pd(_mm256_add_pd(eps2_tmp, _mm256_mul_pd(x0_tmp_v1, x0_tmp_v1))))));
          ai_tmp_v2 = _mm256_div_pd(_mm256_mul_pd(_mm256_mul_pd(g_tmp, mass_tmp), x0_tmp_v2), _mm256_mul_pd(_mm256_sqrt_pd(_mm256_add_pd(eps2_tmp, _mm256_mul_pd(x0_tmp_v2, x0_tmp_v2))), _mm256_mul_pd(_mm256_sqrt_pd(_mm256_add_pd(eps2_tmp, _mm256_mul_pd(x0_tmp_v2, x0_tmp_v2))), _mm256_sqrt_pd(_mm256_add_pd(eps2_tmp, _mm256_mul_pd(x0_tmp_v2, x0_tmp_v2))))));
       };
       ai[i][0] = ai_tmp_v0[0];
