@@ -22,6 +22,8 @@ iwide = 1
 x, y, z = symbols('x, y, z')
 
 #式をsympyに適応させる
+
+
 def expr_part(var_col):
     left_exp, right_exp = tuple(map(lambda x: sympify(x, evaluate=False), var_col.split('='))) 
     return Assignment(left_exp, right_exp)
@@ -449,9 +451,8 @@ def rational_pattern(expr):
 #完全二分木に変換
 def new_bitree(expr):
     op = type(expr)
-    print("new_bitree expr = ", srepr(expr))
+    # print("new_bitree expr = ", srepr(expr))
     if len(expr.args) >= 3:
-
         tmp = None
         for a in expr.args:
             if a is Integer(-1):
@@ -572,6 +573,46 @@ def apply_cse(expr_list):
     new_list += cse_list[1]
     return new_list
 
+def not_op(expr):
+    if type(expr) is Add or type(expr) is Mul or type(expr) is Pow:
+        return False
+    else:
+        return True
+
+#構文木の演算子の戻り値のmapを生成する。
+def get_op_ret_map(expr, op_ret_map, name_variable_map):
+    
+    new_op_map = {}
+    if not_op(expr):
+        v = name_variable_map[expr]
+        vec = 0
+        if expr in name_variable_map:
+            v = name_variable_map[expr]
+            new_op_map[expr] = v.vec
+        else:
+            new_op_map[expr] = 1
+        return new_op_map
+    
+    new_args = []
+    for arg in expr.args:
+        op_ret_map = get_op_ret_map(arg, op_ret_map) 
+
+
+    return
+
+#構文木(expr)を自分で定義した演算子に変換する。
+def trans_new_op(expr_list, name_variable_map):
+
+    op_ret_map = {}
+    
+    for expr in expr_list:
+        
+        op_ret_map = get_op_ret_map(expr, op_ret_map, name_variable_map)
+        
+        
+         
+    return 
+
 
 def main():
     expr_list = []
@@ -589,6 +630,9 @@ def main():
     
     after_cse_expr_list = apply_cse(expr_list)
 
+    #ここでdot演算子を変換
+    
+
     #構文木を完全2分木にする処理
     biexpr_list = expr_binary_tree(after_cse_expr_list)
 
@@ -604,7 +648,7 @@ def main():
     # check_type_infer(prim_map) 
 
     # 木構造のチェック
-    check_tree(biexpr_list)
+    # check_tree(biexpr_list)
 
     s = CodeGen(biexpr_list, name_variable_map, prim_map)
 
