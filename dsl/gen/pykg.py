@@ -16,27 +16,15 @@ POW_FUNCTION_NAME = '_mm256_pow_pd'
 DIV_FUNCTION_NAME = '_mm256_div_pd'
 SQRT_FUNCTION_NAME = '_mm256_sqrt_pd'
 
-MATRIX = ImmutableDenseMatrix
-
 REGISTER = 'm256'
 iwide = 1
 #テスト用
 x, y, z = symbols('x, y, z')
 
 #式をsympyに適応させる
-def expr_part(var_col, var_sympy_map):
-    var_name, right_expr =tuple(var_col.split('='))
-    var_name = var_name.strip()
-    eval_expr = eval(right_expr, var_sympy_map)
-    if type(eval_expr) is Matrix:
-        tmp = []
-        for i in range(len(eval_expr)):
-            tmp.append(Symbol(f'{var_name}{i}'))
-        left_expr = Matrix(tmp)
-    else:
-        left_expr = sympify(var_name)
-    print(left_expr, eval_expr)
-    return Eq(left_expr, eval_expr)
+def expr_part(var_col):
+    left_exp, right_exp = tuple(map(lambda x: sympify(x, evaluate=False), var_col.split('='))) 
+    return Assignment(left_exp, right_exp)
 
 #source code から構文木(sympyのシンボルに変換),変数と型の対応の表を作る
 def Parse(file_str):
@@ -44,14 +32,13 @@ def Parse(file_str):
     file_list = file_str.split('\n')
     expr_list = []
     name_variable_map = {}
-    var_sympy_map = {}
 
     #ファイルから読み取ったコードを一行ずつ
     for col in file_list:
         
         #＝演算子があれば、式なので、その時、sympyの式に変換
         if col.find('=') != -1:
-            expr_list.append(expr_part(col, var_sympy_map))
+            expr_list.append(expr_part(col))
         
         else:
             #空白等の式や変数宣言でない部分の処理を書く
@@ -59,7 +46,6 @@ def Parse(file_str):
             #変数宣言だった場合型の情報をVariableから取得
             v = Var.Variable(col)
             name_variable_map[v.name] = v
-            var_sympy_map[v.name] = v.sympy_symbol
 
     return expr_list, name_variable_map
 
@@ -72,7 +58,7 @@ def inv_op(arg, func_name, inv_func_name):
             ret = list(filter(lambda x: x is not Integer(-1), arg.function_args))
             return ret[0], inv_func_name
     except AttributeError:
-        print('attributeError at inv_op',arg)
+        print(arg)
     else:
         return arg, None
 
@@ -174,8 +160,8 @@ def trans_mid_expr(arg, name_variable_map, i):
         return pow_pattern(trans_mid_expr(arg.args[0], name_variable_map, i),
                             trans_mid_expr(arg.args[1], name_variable_map, i))
 
-    elif type(arg) is Eq:
-        return Eq(trans_mid_expr(arg.lhs, name_variable_map, i),
+    elif type(arg) is Assignment:
+        return Assignment(trans_mid_expr(arg.lhs, name_variable_map, i),
                             trans_mid_expr(arg.rhs, name_variable_map, i))
     else:
         print('!!!!!! error!!!!! at trans_mid_expr ', arg)
@@ -223,12 +209,12 @@ def EPI_load(v, i):
         function_name = '_mm256_i32gather_'
         code_list, vindex_name = col_adr_vindex(v.vec)
         
-        load_expr = Eq(Symbol(tmp_name), FunctionCall(function_name + type_name, [Symbol(var_name), Symbol(vindex_name), type_byte]))
+        load_expr = Assignment(Symbol(tmp_name), FunctionCall(function_name + type_name, [Symbol(var_name), Symbol(vindex_name), type_byte]))
         return CodeBlock(*code_list, load_expr)
     else:
         function_name = '_mm256_load_'
         tmp_name = v.name + "_tmp"
-        return Eq(Symbol(tmp_name), FunctionCall(function_name + type_name, [Symbol(var_name)]))
+        return Assignment(Symbol(tmp_name), FunctionCall(function_name + type_name, [Symbol(var_name)]))
 
 
 #TODO 単精度少数の場合も
@@ -253,7 +239,7 @@ def avx2_load(v, i):
             return
         elif v.bit == 64:
             
-            return Eq(Symbol(tmp_name),
+            return Assignment(Symbol(tmp_name),
                     FunctionCall(function_name + 'pd', [Symbol(var_name)]))
 
     return
@@ -293,7 +279,7 @@ def avx2_store(v, i):
                 inc = ''
             else:
                 inc = f' + {ii}'
-            code_list.append(Eq(Symbol(f'{v.name}[i{inc}][{i}]'), 
+            code_list.append(Assignment(Symbol(f'{v.name}[i{inc}][{i}]'), 
                                         Symbol(tmp_vec_name + f'[{ii}]')))
     else:
         code_list.append(FunctionCall('_mm256_store_' + type_name, 
@@ -396,8 +382,6 @@ def CodeGen(expr_list, name_variable_map, prim_map):
 
     #引数の作成
     for v in name_variable_map.values():
-        print(v) 
-        print(prim_map)
         if v.name in prim_map:
             continue        
 
@@ -458,12 +442,6 @@ def inv_pattern(expr):
 
     return None
 
-def not_op(expr):
-    if expr is not Mul or expr is not Add or expr is not Pow:
-        return true
-    else:
-        return false
-
 def rational_pattern(expr):
     frac, inv = expr.as_content_primitive()
     return inv, Rational(1, 2), frac.p
@@ -471,9 +449,8 @@ def rational_pattern(expr):
 #完全二分木に変換
 def new_bitree(expr):
     op = type(expr)
-    if not_op(expr):
-        return expr
-    elif len(expr.args) >= 3:
+    print("new_bitree expr = ", srepr(expr))
+    if len(expr.args) >= 3:
 
         tmp = None
         for a in expr.args:
@@ -498,7 +475,7 @@ def new_bitree(expr):
         left_expr = new_bitree(expr.args[0])
         right_expr = new_bitree(expr.args[1])
         
-        if op is Eq:
+        if op is Assignment:
             return op(left_expr, right_expr)
         
         #TODO 1/x乗 みたいな場合はまだ
@@ -515,7 +492,7 @@ def new_bitree(expr):
                     r = left_expr
                     x = right_expr
                 
-
+                
                 pow_expr = Pow(x, Rational(1, 2))
                 
                 frac, inv = r.as_content_primitive()
@@ -528,7 +505,10 @@ def new_bitree(expr):
                 print('pow pattern', srepr(pow_expr))
                 return pow_expr
         else:
-            return op(left_expr, right_expr, evaluate=False)  
+            return op(left_expr, right_expr, evaluate=False)
+
+    elif type(expr) is Symbol or type(expr) is Integer or type(expr) is Rational or expr is Integer(-1):
+        return expr    
     else:
         print('!!!!!!error!!!!!!! at new_bitree ', 'arg is ', expr)
 
@@ -542,14 +522,7 @@ def expr_binary_tree(expr_list):
 
     return new_expr_list
 
-def get_symbol_name(expr):
-    ret_name = ''
-    if type(expr) is MATRIX:
-        ret_name = expr[0].name[:-1]
 
-    else:
-        ret_name = str(expr)
-    return ret_name
 #一次変数の型推論
 def type_inference(expr_list, name_variable_map):
 
@@ -558,49 +531,30 @@ def type_inference(expr_list, name_variable_map):
     operator_list = [Add, Mul, Pow]
 
     for expr in expr_list:
-        symbol_name = get_symbol_name(expr.lhs)
-        if symbol_name in name_variable_map:
+        if str(expr.lhs) in name_variable_map:
             continue
-        # print('type_inference ', symbol_name)
-        
         prim_var = Var.Variable()
-        prim_var.name = symbol_name
+        prim_var.name = str(expr.lhs)
+        prim_var.tmp_name = str(expr.lhs)
         
-        if type(expr.lhs) is MATRIX:
-            prim_var.vec = len(expr.lhs)
-        else:
-            prim_var.vec = 1
-        print(srepr(expr ))
         for arg in preorder_traversal(expr.rhs):
 
-            arg_name = ''
-            arg_ = None
-            #ベクトルの要素の式が知りたいから
-            if type(arg) is MATRIX:
-                arg_name = str(arg[0])
-                arg_ = arg[0]
-            else:
-                arg_name = str(arg)
-                arg_ = arg
-                
-            print(f'\n type_inference arg_ = {arg} \n')
-
-            if arg_name in name_variable_map:
-                v = name_variable_map[arg_]
+            if str(arg) in name_variable_map:
+                v = name_variable_map[str(arg)]
                 if v.type_name == 'F':
                     prim_var.type_name = 'F'
 
                 if prim_var.bit < v.bit:
                     prim_var.bit = v.bit
 
-            elif type(arg_) in operator_list or arg_ is Integer(-1) or arg_ is Rational(1, 2) or type(arg_) is Integer:
+                if prim_var.vec < v.vec:
+                    prim_var.vec = v.vec
+            elif type(arg) in operator_list or arg is Integer(-1) or arg is Rational(1, 2) or type(arg) is Integer:
                 continue
-            
+
             else:
                 #エラー
-                print('error in type_inference', type(arg), Matrix)
-                if type(arg) is Matrix:
-                    print('matrix is ' , arg)
+                print('error', arg)
                 return 
 
         prim_map[str(expr.lhs)] = prim_var
@@ -614,7 +568,7 @@ def apply_cse(expr_list):
     pre_culc = cse_list[0]
     new_list = []
     for expr in pre_culc:
-        new_list.append(Eq(expr[0], expr[1]))
+        new_list.append(Assignment(expr[0], expr[1]))
     new_list += cse_list[1]
     return new_list
 
@@ -641,8 +595,6 @@ def main():
 
     # expr_binary_treeのテスト用
     # check_new_bitree(biexpr_list)
-
-    
 
     #型推論　それから一次変数の型を決定
     prim_map = type_inference(biexpr_list, name_variable_map)
@@ -708,8 +660,8 @@ if __name__ == "__main__":
 
 # x, y, z, a, b, c, d, e, f, g = symbols('x y z a b c d e f g')
 
-# expr1 = Eq(a, (x + y + z) * (z + y + b))
-# expr2 = Eq(c, (y + z + b) * (z + a + b))
+# expr1 = Assignment(a, (x + y + z) * (z + y + b))
+# expr2 = Assignment(c, (y + z + b) * (z + a + b))
 
 # expr_list = [expr1, expr2]
 # new_list = apply_cse(expr_list)
