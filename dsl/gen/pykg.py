@@ -59,6 +59,7 @@ def Parse(file_str):
             #変数宣言だった場合型の情報をVariableから取得
             v = Var.Variable(col)
             name_variable_map[v.name] = v
+            #変数名とその変数のSympyにおける形式のmap
             var_sympy_map[v.name] = v.sympy_symbol
 
     return expr_list, name_variable_map
@@ -551,6 +552,12 @@ def get_symbol_name(expr):
         ret_name = str(expr)
     return ret_name
 #一次変数の型推論
+
+def test_type(expr_list):
+    for expr in expr_list:
+       print(expr) 
+    return
+
 def type_inference(expr_list, name_variable_map):
 
     prim_map = {}
@@ -570,7 +577,7 @@ def type_inference(expr_list, name_variable_map):
             prim_var.vec = len(expr.lhs)
         else:
             prim_var.vec = 1
-        print(srepr(expr ))
+        print(srepr(expr))
         for arg in preorder_traversal(expr.rhs):
 
             arg_name = ''

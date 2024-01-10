@@ -38,9 +38,6 @@ class Variable:
         self.index_def()
         
 
-
-
-
     def __repr__(self) -> str:
         ret = f"name = {self.name} , struct = {self.struct_name},  member_name = {self.memb_name} \n" 
         ret +=  f" type_name = {self.type_name} , vec_name = {self.vec} \n"
