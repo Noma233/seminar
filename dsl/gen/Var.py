@@ -1,5 +1,6 @@
 import re
-import sympy
+from sympy.core import Symbol
+from sympy.matrices import Matrix
 #一つの変数の型情報を持つクラス
 # EPI.pos vec3<F64> xi -> 
 # struct_name = 'EPI'
@@ -16,9 +17,9 @@ class Variable:
     bit = 0
     name = ""  
     vec = 1
-    symbol = None
     tmp_name = ''
     index_name = ''
+    sympy_symbol = None
 
     def index_def(self):
         if self.struct_name == 'EPI' or self.struct_name == 'FORCE':
@@ -35,6 +36,10 @@ class Variable:
             self.set_var(word_lst)
         
         self.index_def()
+        
+
+
+
 
     def __repr__(self) -> str:
         ret = f"name = {self.name} , struct = {self.struct_name},  member_name = {self.memb_name} \n" 
@@ -58,7 +63,15 @@ class Variable:
         else:
             self.set_type(word_lst)
 
-    
+    def var_info(self, s):
+        tmp = []
+        if self.vec != 1:
+            for i in range(self.vec):
+                tmp.append(Symbol(f'{s}{i}'))
+            return Matrix(tmp)
+        else:
+            return Symbol(s)
+        
 
     #vec3<F64> xi -> F64, vec3, xi をそれぞれセット
     def set_type(self, word_lst):
@@ -100,7 +113,7 @@ class Variable:
         if check_pat:
             s = check_pat.group()
             self.name = s
-            self.symbol = sympy.sympify(s)
+            self.sympy_symbol = self.var_info(s)
 
     def typeinfo_assign_(self, other):
         self.type_name = other.type_name

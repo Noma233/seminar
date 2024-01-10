@@ -1,7 +1,3 @@
 EPI.pos vec3<F64> xi
 EPJ.pos vec3<F64> xj
-EPJ.m F64 mass
-FORCE.acc vec3<F64> ai
-F64 g
-F64 eps2
-ai = g * mass * (xj - xi) / sqrt((xj - xi) ** 2 + eps2) ** 3
+rij = xi + xj
