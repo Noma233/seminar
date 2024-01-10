@@ -18,7 +18,6 @@ int kernel(int n, double xi[][3], double xj[][3], double mass[], double ai[][3],
    __m256d x0_tmp_v0;
    __m256d x0_tmp_v1;
    __m256d x0_tmp_v2;
-
    for (i = 0; i < n; i += 4) {
       int index_gather_0[4] = {0, 3, 6, 9};
       __m128i vindex_gather_0 = _mm_load_si128((const __m128i*)index_gather_0);
