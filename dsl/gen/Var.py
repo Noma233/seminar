@@ -7,8 +7,8 @@ import sympy
 # type_name = 'F64'
 # vec_name = 'vec3'
 # var_name = 'xi'
-SIMD = 'AVX2'
-# SIMD  = None
+# SIMD = 'AVX2'
+SIMD  = None
 class Variable:
     struct_name = ""
     memb_name = ""

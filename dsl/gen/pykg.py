@@ -4,8 +4,8 @@ from sympy.codegen.ast import (CodeBlock, For, Variable, Declaration, FunctionDe
                                FunctionPrototype, integer,Return)
 from sympy.core.numbers import Integer
 import Var
-SIMD = 'AVX2'
-# SIMD = None
+# SIMD = 'AVX2'
+SIMD = None
 from sympy.codegen.ast import float64
 
 #TODO 関数名
@@ -137,6 +137,23 @@ def pow_pattern(left_arg, right_arg):
     else:
         return Pow(left_arg, right_arg)
 
+def get_func_name(expr):
+    return str(expr.name)
+
+def dot_pattern(left_args, right_args):
+
+    mul_list = []
+    for i in range(len(left_args)):
+        mul_list.append(mul_pattern(left_args[i], right_args[i]))
+    
+    dot_expr = mul_list[0]
+    for i in range(len(mul_list)):
+        if i == 0:
+            continue
+        dot_expr = add_pattern(dot_expr, mul_list[i])
+    
+    return dot_expr
+
 def trans_mid_expr(arg, name_variable_map, i):
     
     if str(arg) in name_variable_map:
@@ -163,8 +180,20 @@ def trans_mid_expr(arg, name_variable_map, i):
                             trans_mid_expr(arg.args[1], name_variable_map, i))
 
     elif type(arg) is Assignment:
+        print(arg)
         return Assignment(trans_mid_expr(arg.lhs, name_variable_map, i),
                             trans_mid_expr(arg.rhs, name_variable_map, i))
+    elif type(arg) is FunctionCall:
+        if get_func_name(arg) == 'dot3':
+            args = get_expr_args(arg)
+            left_exprs = []
+            right_exprs = []
+            for i in range(3):
+                left_exprs.append(trans_mid_expr(args[0], name_variable_map, i))
+                right_exprs.append(trans_mid_expr(args[1], name_variable_map, i))
+            
+            return dot_pattern(left_exprs, right_exprs)
+            # return dot_pattern(trans_mid_expr())
     else:
         print('!!!!!! error!!!!! at trans_mid_expr ', arg)
         return
@@ -246,6 +275,10 @@ def avx2_load(v, i):
 
     return
 
+def nonsimd_load(v, i):
+    
+    return 
+
 def load_part(struct_name, name_variable_map):
     
     load_lst = []
@@ -257,7 +290,7 @@ def load_part(struct_name, name_variable_map):
                 elif SIMD == 'AVX512':
                     #TODO 
                     print('not imprement')
-
+                
     return CodeBlock(*load_lst)
 
 #TODO 単精度少数の場合も
@@ -448,17 +481,35 @@ def rational_pattern(expr):
     frac, inv = expr.as_content_primitive()
     return inv, Rational(1, 2), frac.p
     
+def expr_args_len(expr):
+    if type(expr) is FunctionCall:
+        return len(expr.function_args)
+    elif not_op(expr) == False:
+        return len(expr.args)
+    else:
+        print(f'!!error!! expr_args_len {expr}')
+        return 0
+    
+def eval_func(op, left_expr, right_expr):
+    if type(op) is FunctionCall:
+        return op(left_expr, right_expr)
+
+    
+    
 #完全二分木に変換
 def new_bitree(expr):
     op = type(expr)
-    # print("new_bitree expr = ", srepr(expr))
-    if len(expr.args) >= 3:
+    print("new_bitree expr = ", srepr(expr))
+
+    if not_op(expr):
+        return expr    
+    elif expr_args_len(expr) >= 3:
         tmp = None
         for a in expr.args:
             if a is Integer(-1):
                 continue
 
-            else:
+            else: 
                 new_expr = new_bitree(a)
                 if tmp == None:
                     tmp = new_expr
@@ -472,7 +523,7 @@ def new_bitree(expr):
             tmp = op(inverse, tmp, evaluate=False)        
         return tmp
     
-    elif len(expr.args) == 2:
+    elif expr_args_len(expr) == 2:
         left_expr = new_bitree(expr.args[0])
         right_expr = new_bitree(expr.args[1])
         
@@ -505,11 +556,11 @@ def new_bitree(expr):
                     pow_expr = Pow(pow_expr, Integer(-1), evaluate=False)
                 print('pow pattern', srepr(pow_expr))
                 return pow_expr
+        elif type(expr) is FunctionCall:
+            return expr
         else:
             return op(left_expr, right_expr, evaluate=False)
 
-    elif type(expr) is Symbol or type(expr) is Integer or type(expr) is Rational or expr is Integer(-1):
-        return expr    
     else:
         print('!!!!!!error!!!!!!! at new_bitree ', 'arg is ', expr)
 
@@ -523,9 +574,21 @@ def expr_binary_tree(expr_list):
 
     return new_expr_list
 
+def get_expr_args(expr):
+    if type(expr) is FunctionCall:
+        return expr.function_args
+    elif not_op(expr) is False:
+        return expr.args
+    else:
+        print('!! error !! at get_expr_args')
+        return 0
+
+def prim_vec(expr, op_ret_map_list):
+    op_ret_map = op_ret_map_list[expr]    
+    return op_ret_map[expr.rhs]
 
 #一次変数の型推論
-def type_inference(expr_list, name_variable_map):
+def type_inference(expr_list, name_variable_map, op_ret_map_list):
 
     prim_map = {}
 
@@ -537,26 +600,35 @@ def type_inference(expr_list, name_variable_map):
         prim_var = Var.Variable()
         prim_var.name = str(expr.lhs)
         prim_var.tmp_name = str(expr.lhs)
-        
-        for arg in preorder_traversal(expr.rhs):
 
-            if str(arg) in name_variable_map:
-                v = name_variable_map[str(arg)]
-                if v.type_name == 'F':
-                    prim_var.type_name = 'F'
 
-                if prim_var.bit < v.bit:
-                    prim_var.bit = v.bit
+        prim_var.vec = prim_vec(expr, op_ret_map_list)
+        #TODO とりあえず全部浮動小数
+        prim_var.type_name = 'F'
+        #TODO とりあえず全部倍精度
+        prim_var.bit = 64
 
-                if prim_var.vec < v.vec:
-                    prim_var.vec = v.vec
-            elif type(arg) in operator_list or arg is Integer(-1) or arg is Rational(1, 2) or type(arg) is Integer:
-                continue
+        # for arg in preorder_traversal(expr.rhs):
 
-            else:
-                #エラー
-                print('error', arg)
-                return 
+        #     if str(arg) in name_variable_map:
+        #         v = name_variable_map[str(arg)]
+        #         if v.type_name == 'F':
+        #             prim_var.type_name = 'F'
+
+        #         if prim_var.bit < v.bit:
+        #             prim_var.bit = v.bit
+
+        #         if prim_var.vec < v.vec:
+        #             prim_var.vec = v.vec
+            
+            
+        #     elif type(arg) in operator_list or arg is Integer(-1) or arg is Rational(1, 2) or type(arg) is Integer:
+        #         continue
+            
+        #     else:
+        #         #エラー
+        #         print('error!! in type_interference', arg)
+        #         return 
 
         prim_map[str(expr.lhs)] = prim_var
         name_variable_map[str(expr.lhs)] = prim_var
@@ -573,46 +645,165 @@ def apply_cse(expr_list):
     new_list += cse_list[1]
     return new_list
 
+def op_type(expr):
+    if type(expr) is type:
+        return expr
+    else:
+        return type(expr) 
+
 def not_op(expr):
-    if type(expr) is Add or type(expr) is Mul or type(expr) is Pow:
+    if op_type(expr) is Add or op_type(expr) is Mul or op_type(expr) is Pow or op_type(expr) is Assignment:
         return False
     else:
         return True
 
+def ret_add(expr, op_ret_map):
+    vec = 0
+    for arg in expr.args:
+        if vec == 0:
+            vec = arg.vec 
+            continue
+        if vec != arg.vec:
+            print('!!!! error !!!! at ret_add' )
+            return 0
+
+    return vec 
+def ret_mul(expr, op_ret_map):
+    vec = 0
+    vec_count = 0
+    for arg in expr.args:
+        arg_v = op_ret_map[arg]
+        print(f'ret_mul {arg} {arg_v}')
+        if arg_v != 1:
+            vec_count += 1
+            vec = arg_v
+
+    if vec_count == 1:
+        return vec
+    elif vec_count == 2:
+        return 1
+    elif vec_count == 0:
+        return 0
+    else:
+        print('!!error!! at ret_mul')
+        return 0    
+    
+
+def ret_pow(expr, op_ret_map):
+    vec = 0
+    for arg in expr.args:
+        if vec == 0:
+            vec = arg.vec 
+            continue
+        if vec != arg.vec:
+            print('!!!! error !!!! at ret_pow')
+            return 0
+
+    return vec
+
+def get_name_variable(key, name_variable_map):
+    if type(key) is not str:
+        return name_variable_map[str(key)]
+    else:
+        return name_variable_map[key]
+
+def in_name_variable(key, name_variable_map):
+    if type(key) is not str:
+        return str(key) in name_variable_map
+    else:
+        return key in name_variable_map
+
 #構文木の演算子の戻り値のmapを生成する。
 def get_op_ret_map(expr, op_ret_map, name_variable_map):
     
-    new_op_map = {}
+    print(f'get_op_ret_map {expr}')
     if not_op(expr):
-        v = name_variable_map[expr]
         vec = 0
-        if expr in name_variable_map:
-            v = name_variable_map[expr]
-            new_op_map[expr] = v.vec
+        if in_name_variable(expr, name_variable_map):
+            v = get_name_variable(expr, name_variable_map)
+            op_ret_map[expr] = v.vec
+            # print(f'get_op_ret_map in not op {v.vec}, {expr}')
         else:
-            new_op_map[expr] = 1
-        return new_op_map
+            op_ret_map[expr] = 1
+        return op_ret_map
     
     new_args = []
     for arg in expr.args:
-        op_ret_map = get_op_ret_map(arg, op_ret_map) 
+        op_ret_map = get_op_ret_map(arg, op_ret_map, name_variable_map)
+
+    expr_ret = 0
+    if type(expr) is Add:
+        expr_ret = ret_add(expr, op_ret_map) 
+    elif type(expr) is Mul:
+        expr_ret = ret_mul(expr, op_ret_map)
+    elif type(expr) is Pow:
+        expr_ret = ret_pow(expr, op_ret_map)
+    op_ret_map[expr] = expr_ret
+
+    return op_ret_map
+
+def get_op_ret_map_list(expr_list, name_variable_map):
+    op_ret_map_list = {}
+    for expr in expr_list:
+        op_ret_map = {}
+        op_ret_map = get_op_ret_map(expr, op_ret_map, name_variable_map)
+        op_ret_map_list[expr] = op_ret_map
+
+    return op_ret_map_list
 
 
-    return
+#dot演算子に置き換える
+#
+def trans_dot(expr, op_ret_map):
+
+    if not_op(expr) or type(expr) is not Mul:
+        return expr
+
+    elif type(expr) is Mul:
+        new_args = []
+        vec3_args = []
+        new_expr = None
+        for arg in expr.args:
+            new_arg = trans_dot(arg, op_ret_map)
+            new_arg_vec = op_ret_map[new_arg]
+            if new_arg_vec != 1:
+                vec3_args.append(new_arg) 
+            else:
+                new_args.append(new_arg)
+        
+        new_expr = Mul(*new_args)
+
+        # 複数次元の要素数は1または偶数
+        # スカラー倍のパターンがある。だけど，内積の計算を複数
+        #する場合、順番が分からなくなるからしない．
+        n = len(vec3_args)
+        if n > 2:
+            print('error')
+            return
+        for i in range(0, n, 2):
+            arg1 = vec3_args[i]
+            arg2 = vec3_args[i + 1]
+            dot_op = FunctionCall('dot3', [arg1, arg2])
+            new_expr = Mul(new_expr, dot_op)
+
+    return new_expr
+
+#trans_dot()テスト用データ
+# test_x, test_y = symbols('test_x, test_y')
+# trans_dot_test_expr = test_x * test_y
+# test_op_ret_map = {}
+
 
 #構文木(expr)を自分で定義した演算子に変換する。
-def trans_new_op(expr_list, name_variable_map):
+def trans_new_op(expr_list, op_ret_map_list):
 
-    op_ret_map = {}
-    
+    new_expr_list = []
     for expr in expr_list:
-        
-        op_ret_map = get_op_ret_map(expr, op_ret_map, name_variable_map)
-        
-        
+        op_ret_map = op_ret_map_list[expr]
+        new_expr = trans_dot(expr.rhs, op_ret_map)
+        new_expr_list.append(Assignment(expr.lhs, new_expr))
          
-    return 
-
+    return new_expr_list
 
 def main():
     expr_list = []
@@ -623,25 +814,29 @@ def main():
         s = f.read()
         expr_list, name_variable_map = Parse(s)
     
-    # print('name_variable_map check')
-    # for i in name_variable_map.values():
-    #     print(i)
+    print('name_variable_map check')
+    for i in name_variable_map.values():
+        print(i)
 
     
     after_cse_expr_list = apply_cse(expr_list)
 
+    op_ret_map_list = get_op_ret_map_list(expr_list, name_variable_map)
     #ここでdot演算子を変換
-    
+    new_op_expr_list = trans_new_op(after_cse_expr_list, op_ret_map_list) 
+    op_ret_map_list = get_op_ret_map_list(new_op_expr_list, name_variable_map)
+    check_tree(new_op_expr_list)
 
+    #型推論　それから一次変数の型を決定
+    prim_map = type_inference(new_op_expr_list, name_variable_map, op_ret_map_list)
+    
     #構文木を完全2分木にする処理
-    biexpr_list = expr_binary_tree(after_cse_expr_list)
+    biexpr_list = expr_binary_tree(new_op_expr_list)
 
 
     # expr_binary_treeのテスト用
-    # check_new_bitree(biexpr_list)
+    check_new_bitree(biexpr_list)
 
-    #型推論　それから一次変数の型を決定
-    prim_map = type_inference(biexpr_list, name_variable_map)
 
     # check_name_table(name_variable_map)
     #type_inferenceのテスト用
@@ -661,6 +856,7 @@ def main():
 
 
 def check_tree(expr_list):
+    print('check_tree')
     for expr in expr_list:
         # print(dotprint(expr))
         print(srepr(expr))
@@ -676,6 +872,7 @@ def check_new_bitree(expr_list):
             if len(arg.args) >= 3:
                 print('incorrect', 'expr = ', expr)
                 return
+        print(srepr(expr))
                 
     print('correct\n')
     return 
