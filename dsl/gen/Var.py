@@ -8,7 +8,7 @@ import sympy
 # vec_name = 'vec3'
 # var_name = 'xi'
 # SIMD = 'AVX2'
-SIMD  = None
+SIMD = None
 class Variable:
     struct_name = ""
     memb_name = ""
@@ -141,7 +141,7 @@ class Variable:
             return ret_name + f'_v{i}'
         else:
 
-            ret_name = self.name + '_tmp'
+            ret_name = self.name
             if self.index_name != '':
                 ret_name += f'[{self.index_name}]'
                 if self.vec == 1:
