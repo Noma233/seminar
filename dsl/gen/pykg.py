@@ -955,7 +955,7 @@ def main():
 
     arg_ret_map_list = get_arg_ret_map_list(expr_list, name_variable_map)
     #ここでdot演算子を変換
-    new_op_expr_list = trans_new_op(after_cse_expr_list, arg_ret_map_list) 
+    new_op_expr_list = trans_new_op(after_cse_expr_list, arg_ret_map_list)
     arg_ret_map_list = get_arg_ret_map_list(new_op_expr_list, name_variable_map)
     check_tree(new_op_expr_list)
 

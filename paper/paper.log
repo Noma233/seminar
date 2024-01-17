@@ -1,11 +1,13 @@
-This is e-pTeX, Version 3.14159265-p3.8.2-190908-2.6 (utf8.euc) (TeX Live 2019/Debian) (preloaded format=platex 2023.12.28)  5 JAN 2024 16:56
+This is e-pTeX, Version 3.14159265-p3.8.2-190908-2.6 (utf8.euc) (TeX Live 2019/Debian) (preloaded format=platex 2024.1.17)  17 JAN 2024 15:30
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **paper.tex
 (./paper.tex
 pLaTeX2e <2020-02-02>+2 (based on LaTeX2e <2020-02-02> patch level 2)
-L3 programming layer <2020-02-14>
+L3 programming layer <2020-02-14> (./U-AizuGT.cls
+Document Class: U-AizuGT 2019/12/04 Ver 1.2.0 University of Aizu Graduation The
+sis format
 (/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2019/12/20 v1.4l Standard LaTeX document class
 (/usr/share/texlive/texmf-dist/tex/latex/base/size10.clo
@@ -23,66 +25,99 @@ File: size10.clo 2019/12/20 v1.4l Standard LaTeX file (size option)
 \belowcaptionskip=\skip48
 \bibindent=\dimen150
 )
-(/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-dvips.def
-File: l3backend-dvips.def 2020-02-03 L3 backend support: dvips
-\l__pdf_internal_box=\box61
-\g__pdf_backend_object_int=\count174
-\l__pdf_backend_content_box=\box62
-\l__pdf_backend_model_box=\box63
-\g__pdf_backend_annotation_int=\count175
-\g__pdf_backend_link_int=\count176
-\g__pdf_backend_link_sf_int=\count177
+\@year=\count174
+
+(/usr/share/texlive/texmf-dist/tex/latex/psnfss/times.sty
+Package: times 2005/04/12 PSNFSS-v9.2a (SPQR) 
+)
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2020/01/20 v2.17e AMS math features
+\@mathmargin=\skip49
+
+For additional information on amsmath, use the `?' option.
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amstext.sty
+Package: amstext 2000/06/29 v2.01 AMS text
+
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks15
+\ex@=\dimen151
+))
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen152
+)
+(/usr/share/texlive/texmf-dist/tex/latex/amsmath/amsopn.sty
+Package: amsopn 2016/03/08 v2.02 operator names
+)
+\inf@bad=\count175
+LaTeX Info: Redefining \frac on input line 227.
+\uproot@=\count176
+\leftroot@=\count177
+LaTeX Info: Redefining \overline on input line 389.
+\classnum@=\count178
+\DOTSCASE@=\count179
+LaTeX Info: Redefining \ldots on input line 486.
+LaTeX Info: Redefining \dots on input line 489.
+LaTeX Info: Redefining \cdots on input line 610.
+\Mathstrutbox@=\box61
+\strutbox@=\box62
+\big@size=\dimen153
+LaTeX Font Info:    Redeclaring font encoding OML on input line 733.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 734.
+\macc@depth=\count180
+\c@MaxMatrixCols=\count181
+\dotsspace@=\muskip16
+\c@parentequation=\count182
+\dspbrk@lvl=\count183
+\tag@help=\toks16
+\row@=\count184
+\column@=\count185
+\maxfields@=\count186
+\andhelp@=\toks17
+\eqnshift@=\dimen154
+\alignsep@=\dimen155
+\tagshift@=\dimen156
+\tagwidth@=\dimen157
+\totwidth@=\dimen158
+\lineht@=\dimen159
+\@envbody=\toks18
+\multlinegap=\skip50
+\multlinetaggap=\skip51
+\mathdisplay@stack=\toks19
+LaTeX Info: Redefining \[ on input line 2859.
+LaTeX Info: Redefining \] on input line 2860.
+)
+(/usr/share/texlive/texmf-dist/tex/latex/amscls/amsthm.sty
+Package: amsthm 2017/10/31 v2.20.4
+\thm@style=\toks20
+\thm@bodyfont=\toks21
+\thm@headfont=\toks22
+\thm@notefont=\toks23
+\thm@headpunct=\toks24
+\thm@preskip=\skip52
+\thm@postskip=\skip53
+\thm@headsep=\skip54
+\dth@everypar=\toks25
 )
 
-LaTeX Warning: Unused global option(s):
-    [a4j].
+! LaTeX Error: File `newtxtext.sty' not found.
 
-(./paper.aux)
-\openout1 = `paper.aux'.
+Type X to quit or <RETURN> to proceed,
+or enter new name. (Default extension: sty)
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for JY1/mc/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    Checking defaults for JT1/mc/m/n on input line 14.
-LaTeX Font Info:    ... okay on input line 14.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12> on input line 15.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 15.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 15.
-LaTeX Font Info:    Font shape `JT1/mc/b/n' in size <14.4> not available
-(Font)              Font shape `JT1/mc/bx/n' tried instead on input line 16.
-LaTeX Font Info:    Font shape `JT1/mc/bx/n' in size <14.4> not available
-(Font)              Font shape `JT1/gt/m/n' tried instead on input line 16.
-LaTeX Font Info:    Font shape `JY1/mc/b/n' in size <14.4> not available
-(Font)              Font shape `JY1/mc/bx/n' tried instead on input line 16.
-LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <14.4> not available
-(Font)              Font shape `JY1/gt/m/n' tried instead on input line 16.
-LaTeX Font Info:    Font shape `JT1/mc/b/n' in size <12> not available
-(Font)              Font shape `JT1/mc/bx/n' tried instead on input line 18.
-LaTeX Font Info:    Font shape `JT1/mc/bx/n' in size <12> not available
-(Font)              Font shape `JT1/gt/m/n' tried instead on input line 18.
-LaTeX Font Info:    Font shape `JY1/mc/b/n' in size <12> not available
-(Font)              Font shape `JY1/mc/bx/n' tried instead on input line 18.
-LaTeX Font Info:    Font shape `JY1/mc/bx/n' in size <12> not available
-(Font)              Font shape `JY1/gt/m/n' tried instead on input line 18.
+Enter file name: x
 
-! Missing $ inserted.
-<inserted text> 
-                $
-l.21 ...イーブな実装の場合、粒子の数Nに対してO(N^
-                                                 2)で計算量が増�
+ ) )
+(\end occurred when \ifx on line 66 was incomplete)
+(\end occurred when \ifx on line 66 was incomplete) 
+Here is how much of TeX's memory you used:
+ 947 strings out of 482863
+ 10802 string characters out of 5959218
+ 248821 words of memory out of 5000000
+ 16332 multiletter control sequences out of 15000+600000
+ 536209 words of font info for 41 fonts, out of 8000000 for 9000
+ 264 hyphenation exceptions out of 8191
+ 38i,1n,29p,244b,35s stack positions out of 5000i,500n,10000p,200000b,80000s
+
+No pages of output.
