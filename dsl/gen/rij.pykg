@@ -2,4 +2,4 @@ EPI.pos vec3<F64> xi
 EPJ.pos vec3<F64> xj
 F64 eps2
 F64 g
-rij = sqrt((xi-xj) ** 2 + eps2) ** 3
+rij = g * (xi - xj) / sqrt((xi-xj) ** 2 + eps2) ** 3
