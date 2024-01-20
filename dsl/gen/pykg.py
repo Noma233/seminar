@@ -162,7 +162,7 @@ def sub_pattern(left_arg, right_arg):
 
 def trans_mid_expr(arg, name_variable_map, i):
     if str(arg) in name_variable_map:
-
+   
         v = name_variable_map[str(arg)]
         ret = Symbol(v.get_tmp_name(i))
         if v.vec != 1:
@@ -360,7 +360,13 @@ def loop_wide(name_variable_map):
                 return 
     return None
 
-def declear_tmp_var(name_variable_map):
+def in_prim_map(v, prim_map):
+    if v.name in prim_map:
+        return True
+    else:
+        return False
+
+def declear_tmp_var(name_variable_map, prim_map):
 
     dec_list = []
 
@@ -391,7 +397,7 @@ def declear_tmp_var(name_variable_map):
                 return
             else:
                 
-                if v.struct_name == '':
+                if v.struct_name == '' and in_prim_map(v, prim_map) is True:
                     tmp_var = v.get_tmp_name(i)
                     tmp_type = v.get_type()
                     dec_list.append(Declaration(Variable(Symbol(tmp_var), type=tmp_type)))
@@ -453,7 +459,7 @@ def CodeGen(expr_list, name_variable_map, prim_map):
     assign_list = CodeBlock(*mid_code_list) 
     global iwide
     iwide = loop_wide(name_variable_map)
-    tmp_def = declear_tmp_var(name_variable_map)
+    tmp_def = declear_tmp_var(name_variable_map, prim_map)
     iloop_load = load_part('EPI', name_variable_map)
     jloop_load = load_part('EPJ', name_variable_map)
     result_store = store_part(name_variable_map)
@@ -659,8 +665,8 @@ def apply_cse(expr_list, name_variable_map):
     for expr in pre_culc:
         new_list.append(Assignment(expr[0], expr[1]))
     new_list += cse_list[1]
-    type_inference(new_list, name_variable_map, None)
-    return new_list
+    prim_map = type_inference(new_list, name_variable_map, None)
+    return new_list, prim_map
 
 def op_type(expr):
     if type(expr) is type:
@@ -793,6 +799,8 @@ def pow_dot_int(expr, arg_ret_map):
         new_expr = Pow(new_arg, int_arg)
         
     arg_ret_map[new_expr] = vec
+    # print('pow_dot_int')
+    # print(f'new_expr={new_expr}\n vec={vec}')
     return new_expr
 
 #Powのdot演算に置き換える(項が分数の場合)
@@ -805,8 +813,6 @@ def pow_dot_rat(expr, arg_ret_map):
     new_expr = Pow(new_arg, rat_arg)
     vec = arg_ret_map[new_arg]
     arg_ret_map[new_expr] = vec
-    print('new_expr, vec')
-    print(new_expr, '\n', vec, '\n')
     return new_expr
 
 #pow演算の場合の内積への変換
@@ -865,7 +871,6 @@ def trans_dot(expr, arg_ret_map):
         elif n == 0:
             new_ret = 1
         else:
-            print('trans_dot in vec3_args\n', vec3_args, '\n')
 
             arg1 = vec3_args[0]
             arg2 = vec3_args[1]
@@ -879,7 +884,9 @@ def trans_dot(expr, arg_ret_map):
         for arg in expr.args:
             new_expr = trans_dot(arg, arg_ret_map)
             new_expr_list.append(new_expr)
-            arg_ret = arg_ret_map[arg]
+            arg_ret = arg_ret_map[new_expr]
+            # print('in trans_dot op')
+            # print(f'new_expr={new_expr}\n, arg_ret={arg_ret}')
             new_ret = max(new_ret, arg_ret)
         
         op = type(expr)
@@ -890,6 +897,8 @@ def trans_dot(expr, arg_ret_map):
         return 0
 
     arg_ret_map[new_expr] = new_ret    
+    # print('in trans_dot() memo hash')
+    # print(f'new_expr ={new_expr}\n new_ret={new_ret}')
     return new_expr
 
 #trans_dot()テスト用データ
@@ -959,8 +968,8 @@ def main():
 
     
     after_cse_expr_list = apply_cse(expr_list, name_variable_map)
-    print('after_cse_expr_list')
-    check_tree(after_cse_expr_list)
+    # print('after_cse_expr_list')
+    # check_tree(after_cse_expr_list)
 
     arg_ret_map_list = get_arg_ret_map_list(after_cse_expr_list, name_variable_map)
     #ここでdot演算子を変換
@@ -970,12 +979,13 @@ def main():
 
     #型推論　それから一次変数の型を決定
     prim_map = type_inference(new_op_expr_list, name_variable_map, arg_ret_map_list)
-    
+    check_prim_map(prim_map) 
+     
     #構文木を完全2分木にする処理
     biexpr_list = expr_binary_tree(new_op_expr_list)
     
     # expr_binary_treeのテスト用
-    check_new_bitree(biexpr_list)
+    # check_new_bitree(biexpr_list)
 
 
     # check_name_table(name_variable_map)
@@ -994,6 +1004,10 @@ def main():
     #チェック用
     return biexpr_list, name_variable_map
 
+def check_prim_map(prim_map):
+    print('check prim_map')
+    print(prim_map)
+    return 
 
 def check_tree(expr_list):
     print('check_tree')
