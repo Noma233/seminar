@@ -2,6 +2,7 @@ from sympy import *
 from sympy.codegen.ast import (CodeBlock, For, Variable, Declaration, FunctionDefinition,
                                 Assignment, FunctionCall, String, IntBaseType,
                                FunctionPrototype, integer,Return)
+from sympy.codegen.ast import aug_assign
 from sympy.core.numbers import Integer
 import Var
 # SIMD = 'AVX2'
@@ -185,8 +186,15 @@ def trans_mid_expr(arg, name_variable_map, i):
                             trans_mid_expr(arg.args[1], name_variable_map, i))
 
     elif type(arg) is Assignment:
-        return Assignment(trans_mid_expr(arg.lhs, name_variable_map, i),
-                            trans_mid_expr(arg.rhs, name_variable_map, i))
+        left_arg = arg.lhs
+        left_v = get_name_variable(left_arg, name_variable_map)
+        left_mid_expr = trans_mid_expr(arg.lhs, name_variable_map, i)
+        right_mid_expr = trans_mid_expr(arg.rhs, name_variable_map, i)
+        if left_v.struct_name == 'FORCE':
+            mid_expr = aug_assign(left_mid_expr, '+', right_mid_expr)
+        else:
+            mid_expr = Assignment(left_mid_expr, right_mid_expr)
+        return mid_expr
     elif type(arg) is FunctionCall:
         func_name = get_func_name(arg)
         if func_name == 'dot3':
@@ -255,6 +263,9 @@ def EPI_load(v, i):
         tmp_name = v.name + "_tmp"
         return Assignment(Symbol(tmp_name), FunctionCall(function_name + type_name, [Symbol(var_name)]))
 
+def init_(tmp):
+    return Assignment(Symbol(tmp), 
+            FunctionCall('_mm256_set1_pd', [Symbol('0.0')]))
 
 #TODO 単精度少数の場合も
 def avx2_load(v, i):
@@ -267,6 +278,8 @@ def avx2_load(v, i):
     elif v.struct_name == 'EPJ':
         var_name += '[j]'
         function_name = '_mm256_set1_'
+    elif v.struct_name == 'FORCE':
+        return init_(tmp_name)
     else:
         function_name = '_mm256_set1_'
 
@@ -366,6 +379,7 @@ def in_prim_map(v, prim_map):
     else:
         return False
 
+
 def declear_tmp_var(name_variable_map, prim_map):
 
     dec_list = []
@@ -389,9 +403,11 @@ def declear_tmp_var(name_variable_map, prim_map):
                 
                 # if tmp_var == '':
                     #debag
-
-                dec_list.append(Declaration(Variable(Symbol(tmp_var), type=type_)))
-
+                tmp_dec = Declaration(Variable(Symbol(tmp_var), type=type_))
+                dec_list.append(tmp_dec)
+                if v.argument and v.struct_name == '':
+                    tmp_dec = avx2_load(v,i)
+                    dec_list.append(tmp_dec)
             elif SIMD == 'AVX512':
                 #TODO 
                 return
@@ -461,6 +477,7 @@ def CodeGen(expr_list, name_variable_map, prim_map):
     iwide = loop_wide(name_variable_map)
     tmp_def = declear_tmp_var(name_variable_map, prim_map)
     iloop_load = load_part('EPI', name_variable_map)
+    force_init = load_part('FORCE', name_variable_map)
     jloop_load = load_part('EPJ', name_variable_map)
     result_store = store_part(name_variable_map)
     include_text = get_include_text()
@@ -469,7 +486,7 @@ def CodeGen(expr_list, name_variable_map, prim_map):
     # loop_inner = CodeBlock()
     i, j, n = symbols('i, j n', integer=True)
     loop_code = For(j, Range(0, n, 1), CodeBlock(jloop_load, loop_inner))
-    loop_code2 = For(i, Range(0, n, iwide), CodeBlock(iloop_load,loop_code, result_store))
+    loop_code2 = For(i, Range(0, n, iwide), CodeBlock(iloop_load,force_init,loop_code, result_store))
  
     int_i = Variable(i, type=IntBaseType(String('integer')))
     int_j = Variable(j, type=IntBaseType(String('integer')))
@@ -619,7 +636,11 @@ def type_inference(expr_list, name_variable_map, arg_ret_map_list):
 
     for expr in expr_list:
         if in_name_variable(expr.lhs, name_variable_map):
+            v = get_name_variable(expr.lhs, name_variable_map)
+            if v.prime == True:
+                prim_map[str(expr.lhs)] = v
             continue
+
         prim_var = Var.Variable()
         prim_var.name = str(expr.lhs)
         prim_var.tmp_name = str(expr.lhs)
@@ -627,6 +648,7 @@ def type_inference(expr_list, name_variable_map, arg_ret_map_list):
         prim_var.type_name = 'F'
         #TODO とりあえず全部倍精度
         prim_var.bit = 64
+        prim_var.prime = True
         
         if arg_ret_map_list:
             prim_var.vec = prim_vec(expr, arg_ret_map_list)
@@ -645,7 +667,7 @@ def type_inference(expr_list, name_variable_map, arg_ret_map_list):
                         prim_var.vec = v.vec
                 
                 
-                elif type(arg) in operator_list or arg is Integer(-1) or arg is Rational(1, 2) or type(arg) is Integer:
+                elif type(arg) in operator_list or arg is Integer(-1) or arg is Rational(1, 2) or type(arg) is Integer or type(arg) is Rational:
                     continue
                 
                 else:
@@ -666,7 +688,7 @@ def apply_cse(expr_list, name_variable_map):
         new_list.append(Assignment(expr[0], expr[1]))
     new_list += cse_list[1]
     prim_map = type_inference(new_list, name_variable_map, None)
-    return new_list, prim_map
+    return new_list
 
 def op_type(expr):
     if type(expr) is type:
@@ -748,6 +770,7 @@ def get_arg_ret_map(expr, arg_ret_map, name_variable_map):
             v = get_name_variable(expr, name_variable_map)
             arg_ret_map[expr] = v.vec
         else:
+            print('in get_arg_ret_map  expr =',expr)
             arg_ret_map[expr] = 1
         return arg_ret_map
     

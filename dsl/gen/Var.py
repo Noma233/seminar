@@ -19,6 +19,8 @@ class Variable:
     symbol = None
     tmp_name = ''
     index_name = ''
+    prime = None
+    argument = None
 
     def index_def(self):
         if self.struct_name == 'EPI' or self.struct_name == 'FORCE':
@@ -101,6 +103,7 @@ class Variable:
             s = check_pat.group()
             self.name = s
             self.symbol = sympy.sympify(s)
+            self.argument = True
 
     def typeinfo_assign_(self, other):
         self.type_name = other.type_name

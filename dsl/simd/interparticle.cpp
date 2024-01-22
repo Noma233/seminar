@@ -29,7 +29,6 @@ for (int i = 0; i < ni; i++) {
     double az = 0.0;
 
     for (int j = 0; j < nj; j++) {
-        if(i == j) continue;
         double dx = double(posj[j][0] - xi);
         double dy = double(posj[j][1] - yi);
         double dz = double(posj[j][2] - zi);
@@ -122,6 +121,53 @@ void print_vec(vector<vector<double>> a, int n, FILE *fp) {
     fprintf(fp, "\n");
 }
 
+//aiy が確かめたいデータの配列
+vector<double> check_particles_v3_v3(double aix[][3], double aiy[][3], int n){
+    bool flag = true;
+    double eps = 0.000001;
+    double max_relerr = 0.0;
+    double min_relerr = 10000000.0;
+    vector<double> ans = {0, 0};
+    for(int i = 0;i < n;i++) {
+
+        
+        double ai0 = aiy[i][0];
+        double ai1 = aiy[i][1];
+        double ai2 = aiy[i][2];
+
+        //真値が0の時，相対誤差は絶対誤差になるため
+        if(ai0 == 0) {
+            ai0 = 1;
+        }
+        if(ai1 == 0) {
+            ai1 = 1;
+        }
+        if(ai2 == 0) {
+            ai2 = 1;
+        }
+
+
+        max_relerr = max({max_relerr, abs(aiy[i][0] - aix[i][0]) / abs(ai0),
+                                      abs(aiy[i][1] - aix[i][1]) / abs(ai1),
+                                      abs(aiy[i][2] - aix[i][2]) / abs(ai2)});
+
+        min_relerr = min({min_relerr, abs(aiy[i][0] - aix[i][0]) / abs(ai0),
+                                      abs(aiy[i][1] - aix[i][1]) / abs(ai1),
+                                      abs(aiy[i][2] - aix[i][2]) / abs(ai2)});
+        if(i % 1000 == 0){
+            // cout << "max is " << max_relerr << endl;
+            // cout << "min is " << min_relerr << endl;
+            // cout << aix[i][0] << endl;
+            // cout << aiy[i][0] << endl;
+        }
+    }
+
+
+    ans[0] = max_relerr;
+    ans[1] = min_relerr;
+    return ans;
+}
+
 vector<double> check_particles(double axi[], double ayi[],
                      double azi[], double acci[][3],
                      int n) {
@@ -185,9 +231,11 @@ int main() {
     int id[n];
 
     //pykg用のデータ
-    double ai[n][3];
-    double g = 6.67430 * pow(1/10, 11);
-    double eps2 = 1.0 * pow(1/10, 14);
+    __attribute__((aligned(32))) double xij[n][3];
+    __attribute__((aligned(32))) double pykg_m[n];
+    __attribute__((aligned(32))) double ai[n][3];
+    __attribute__((aligned(32))) double g = 1;
+    __attribute__((aligned(32))) double eps2 = pow(2, -5);
 
 
     __attribute__((aligned(32))) double X[n];
@@ -211,6 +259,11 @@ int main() {
         pos[i][2] = z;
         mj[i] = m;
 
+        xij[i][0] = x;
+        xij[i][1] = y;
+        xij[i][2] = z;
+        pykg_m[i] = m;
+
         X[i] = x;
         Y[i] = y;
         Z[i] = z;
@@ -229,7 +282,7 @@ int main() {
     printf("evaluate_gravity of elapsed time = %lfsec\n", non_simd_elapsed);
 
     start = clock();
-    kernel(n, pos, pos, mj, ai, g, eps2);
+    kernel(n, xij, xij, pykg_m, ai, eps2, g);
     end = clock();
     double gen_code_time = (double)(end - start) / CLOCKS_PER_SEC;
     printf("genarate code time = %lfsec\n", gen_code_time);
@@ -271,8 +324,9 @@ int main() {
     vector<double> ans;
 
     // check_particles(axi, ayi, azi, acci, n, ans);
-    ans = check_particles(axi, ayi, azi, ai, n);
-
+    // ans = check_particles(axi, ayi, azi, ai, n);
+    // ans = check_particles(pos[0], pos[1], pos[2], ai, n);
+    ans = check_particles_v3_v3(acci, ai, n);
 
     printf("max reldiff = %lf, min reldiff = %lf\n", ans[1], ans[0]);
 
