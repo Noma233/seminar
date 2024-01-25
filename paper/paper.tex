@@ -3,7 +3,13 @@
 \usepackage{graphicx}
 \usepackage{cite}
 \usepackage{mathtools}
+\usepackage{listings,jvlisting}
 
+\lstset{
+    frame=single,
+    numbers=left,
+    tabsize=2
+}
 \bibliographystyle{ieice}
 \author{Ryuki Hiwada}
 \studentid{s1280076}
@@ -30,32 +36,77 @@ simulation, the above problems are solved. To realize the parallelization,
 we will develop Domain Specific Language \lparen DSL \rparen, which is a 
 programming language specialized to a domain, for example, SQL and HTML.
 \subsection{parallelization}
+SIMD is one of the categories in Flynn's taxonomy 1, related to computer arithmetic
+ processing. Using SIMD, arithmetic operations can be applied simultaneously to
+multiple data. In this paper, we compute and parallelize multiple particles. For example, 
+as shown in Figure 1, the computation of acceleration for different particles is independent
+of each other, allowing the process to be parallelized. As a result, for instance Assuming 
+that the variables for particles are double-precision floating-point numbers, we can execute 
+an operation on four elements simultaneously using the AVX2 instruction, it is possible to 
+perform operations on four elements. Therefore, compared to non-parallelized code, there is
+a potential to accelerate the computation by four times. We will describe the design of a 
+DSL in the next section to generate such parallelized code from the formulation of particle-particle interactions.
 \subsection{Overview of DSL}
+
+We have created a Domain Specific Language \lparen DSL \rparen named \lparen DSL name \rparen. This language's 
+processor can read code describing particle interaction formulas and generate code 
+that accelerates these computations. The language allows for the definition of 
+variables and the description of interaction formulas. In the variable definition 
+section, it's possible to define variables such as the mass and position of 
+particles, variables for storing results, and other necessary variables. For the formula
+part, we have enabled calculations including basic arithmetic operations, sqrt, power 
+functions, and computing the norm of vectors. From this description, a kernel function 
+is generated, which can then be called and used. We have created a Domain Specific 
+Language \lparen DSL \rparen named \lparen DSL name\rparen. This language's processor can read code describing particle 
+interaction formulas and generate code that accelerates these computations. The language allows
+for the definition of variables and the description of interaction formulas. In the variable
+definition section, it's possible to define variables such as the mass and position of 
+particles, variables for storing results, and other necessary variables. For the formula part, 
+we have enabled calculations including basic arithmetic operations, sqrt, power functions, and 
+computing the norm of vectors. From this description, a kernel function is generated, which can then be called and used.
 \subsection{Aim of this paper}
 
+
+
 \section{implementation}
-What is Sympy
-
-parallelization for AVX2 and explain about AVX2
-
-
-\subsection{parallelizationAVX2 for parallelization}
-AoS -> SoA
+We use Sympy, a library in Python for implementing  the implementation of our \lparen DSL\rparen .
+SymPy supports various operations, and the formulas using these operations are internally treated as 
+syntax trees. We leveraged this functionality to read formulas and generate code capable of parallel execution.
+For parallelization, we used an instruction set named Advanced Vector Extensions 2 (AVX2). AVX2 is one of the 
+extended instruction sets implemented in Intel's CPUs. The next section will explain how parallelization is carried out using AVX2.
 
 
-gather interaction
-
-
-how to store
+\subsection{AVX2 for parallelization}
+To execute SIMD operations, SIMD-specific registers are used, 
+and multiple data are computed simultaneously to match the bit 
+size of the registers. For example, in the case of CPUs that 
+support AVX2 instructions, the registers are 256 bits, allowing 
+four double-precision floating-point numbers to be stored and 
+computed at the same time. To explicitly handle SIMD instructions
+ in high-level programming languages like C and C++, intrinsic 
+ functions are used. Additionally, to handle SIMD-specific registers, 
+ specialized types are used. For C++, the file immintrin.h, 
+ which is available as a standard in the language, is included to 
+ handle these. As an example of parallelization, the paper explains
+  the parallelization of the gravitational interaction formula shown 
+  in Figure 1.
 
 
 \subsection{design of (name of DSL)}
 
+\begin{lstlisting}[language=c++]
+#include <iostream>
+
+int main(){
+    std::cout << "Hello, world!" << std::endl;
+    return 0;
+}
+\end{lstlisting}
 \subsection{implementation of (name of DSL)}
 
 
 
-\subsection{Use Sympy for DSL development.}
+\subsection{Use Sympy for DSL development}
 
 \section{Conclusion}
 \section{Acknowledgement}

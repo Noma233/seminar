@@ -1,5 +1,5 @@
 #include<stdio.h>
-#include <x86intrin.h>
+// #include <x86intrin.h> これは全部のint命令が使えるようになる奴
 #include<algorithm>
 #include<math.h>
 #include <immintrin.h>
@@ -9,7 +9,9 @@
 #include<set>
 using namespace std;
 
-#include "../gen/gravity_code.hpp"
+// #include "../gen/gravity_code.hpp"
+#include "../gen/gen_0122_goodscore.hpp"
+// #include "../gen/gen_0122_simd_correctans.hpp"
 
 void evaluate_gravity(
 int ni,
@@ -294,7 +296,7 @@ int main() {
 
     printf("evaluate_gravity_simd of elapsed time = %lfsec\n", simd_elapsed);
 
-    printf("%lf times\n", non_simd_elapsed / simd_elapsed);
+    // printf("%lf times\n", non_simd_elapsed / simd_elapsed);
 
     FILE *non_simd_fp, *simd_fp;
     non_simd_fp = fopen("non_simd_result.txt", "w");

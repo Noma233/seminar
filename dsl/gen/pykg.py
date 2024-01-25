@@ -134,7 +134,7 @@ def pow_pattern(left_arg, right_arg):
                 #TODO 整数ではなく、変数**変数の場合　とりあえず保留
                 return FunctionCall(POW_FUNCTION_NAME, [left_arg, right_arg])
     else:
-        
+         
         return Pow(left_arg, right_arg)
 
 def get_func_name(expr):
@@ -956,12 +956,40 @@ def trans_sub(expr):
     else:
         return expr
 
+
+def sqrt_pat(expr):
+    if type(expr) is Pow and type(expr.exp) is Rational:
+        r = expr.exp
+        if r.denominator == 2:
+            return True
+        
+    return False
+
+
+
+#sqrtであるような要素を探し、変換する. 
+#Rationalの分母が2だったらsqrtに変換する。
+def trans_sqrt(expr, arg_ret_map):
+    if sqrt_pat(expr):
+        r = expr.exp
+        pow_num = r.numerator
+        b = expr.base
+        new_expr = trans_sqrt(b, arg_ret_map)
+        if pow_num == 2:
+             return Mul(new_expr, new_expr)
+        return 
+    elif not_op(expr):
+        return expr
+    return
+    
+
 #構文木(expr)を自分で定義した演算子に変換する。
 def trans_new_op(expr_list, arg_ret_map_list):
     new_expr_list = []
     for expr in expr_list:
         arg_ret_map = arg_ret_map_list[expr.lhs]
         # new_expr = trans_sub(expr.rhs)
+
         new_expr = trans_dot(expr.rhs, arg_ret_map)
         new_expr_list.append(Assignment(expr.lhs, new_expr))
          

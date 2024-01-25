@@ -19,7 +19,8 @@ int kernel(int n, double xi[][3], double xj[][3], double mass[], double ai[][3],
          x0_v1 = xj[j][1] - xi[i][1];
          x0_v2 = xj[j][2] - xi[i][2];
          double r = 1.0f / sqrt(eps2 + (x0_v2*x0_v2 + (x0_v0*x0_v0 + x0_v1*x0_v1)));
-         double r2 = g*mass[j] * r * r * r;
+         double r2 = g * mass[j] * pow(r, 3);
+         // double r2 = g*mass[j] * r * r * r;
 
          ax += x0_v0*r2;
          ay += x0_v1*r2;
