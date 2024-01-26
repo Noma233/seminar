@@ -232,6 +232,7 @@ int main() {
     double acci[n][3];
     int id[n];
 
+    //__attribute__((aligned(32))) 
     //pykg用のデータ
     __attribute__((aligned(32))) double xij[n][3];
     __attribute__((aligned(32))) double pykg_m[n];

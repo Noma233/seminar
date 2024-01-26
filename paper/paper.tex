@@ -72,27 +72,37 @@ computing the norm of vectors. From this description, a kernel function is gener
 We use Sympy, a library in Python for implementing  the implementation of our \lparen DSL\rparen .
 SymPy supports various operations, and the formulas using these operations are internally treated as 
 syntax trees. We leveraged this functionality to read formulas and generate code capable of parallel execution.
-For parallelization, we used an instruction set named Advanced Vector Extensions 2 (AVX2). AVX2 is one of the 
+For parallelization, we used an instruction set named Advanced Vector Extensions 2 \lparen AVX2\rparen. AVX2 is one of the 
 extended instruction sets implemented in Intel's CPUs. The next section will explain how parallelization is carried out using AVX2.
 
 
 \subsection{AVX2 for parallelization}
-To execute SIMD operations, SIMD-specific registers are used, 
-and multiple data are computed simultaneously to match the bit 
-size of the registers. For example, in the case of CPUs that 
-support AVX2 instructions, the registers are 256 bits, allowing 
-four double-precision floating-point numbers to be stored and 
-computed at the same time. To explicitly handle SIMD instructions
- in high-level programming languages like C and C++, intrinsic 
- functions are used. Additionally, to handle SIMD-specific registers, 
- specialized types are used. For C++, the file immintrin.h, 
- which is available as a standard in the language, is included to 
- handle these. As an example of parallelization, the paper explains
-  the parallelization of the gravitational interaction formula shown 
-  in Figure 1.
+To perform SIMD operations, just like with regular computations, data is first loaded from memory, computed based on that data,
+and the results are stored. However, in the case of SIMD, computations are performed using SIMD-specific registers, so the 
+methods of loading, computing, and storing differ. When loading, multiple elements that will undergo the same instruction are
+stored in a SIMD-specific register. These are then used to perform computations simultaneously, and the results are stored for
+each. For instance, consider a calculation like C = X + Y, where elements of double-precision floating arrays x and y are computed
+. When using AVX2 for SIMD, since the registers are 256 bits, four elements from x and y are loaded each. These are then added 
+simultaneously, and the results are stored in the array C. When loading into SIMD registers, if it's a 1-dimensional array, 
+contiguous memory access is sufficient, but for data structures like Array of Structures \lparen AoS \rparen shown in Figure a., elements need
+to be loaded individually. For example, when considering the 3-dimensional coordinates of particles as double-precision floats 
+in pos\lbrack n\rbrack \lbrack 3\rbrack  \lparen where n is the total number of particles, and pos\lbrack i \rbrack \lbrack 0\rbrack , pos\lbrack i\rbrack \lbrack 1\rbrack , 
+pos\lbrack i\rbrack \lbrack 2\rbrack  represent the x, y, z coordinates 
+of the i-th particle, respectively\rparen, and calculating the difference in x coordinates between particles i and j, it becomes dx = 
+pos\lbrack i\rbrack \lbrack 0\rbrack  - pos\lbrack j\rbrack \lbrack 0\rbrack . However, for parallelization with SIMD, desiring dx0 = pos\lbrack i\rbrack \lbrack 0\rbrack  - pos\lbrack j \rbrack \lbrack 0\rbrack , dx1 = pos\lbrack i+1\rbrack \lbrack 0\rbrack  - pos\lbrack j\rbrack \lbrack 0\rbrack 
+, dx2 = pos\lbrack i+2\rbrack \lbrack 0\rbrack  - pos\lbrack j\rbrack \lbrack 0\rbrack , dx3 = pos\lbrack i+3\rbrack \lbrack 0\rbrack  - pos\lbrack j\rbrack \lbrack 0\rbrack , 
+the data are packed as \lparen pos\lbrack i\rbrack \lbrack 0\rbrack , pos\lbrack i+1\rbrack \lbrack 0\rbrack , pos\lbrack i+2\rbrack \lbrack  0\rbrack , pos\lbrack  i+3\rbrack \lbrack  0\rbrack \rparen,
+\lparen pos\lbrack  j\rbrack \lbrack  0\rbrack , pos\lbrack  j\rbrack \lbrack  0\rbrack , pos\lbrack  j\rbrack \lbrack  0\rbrack , pos\lbrack  j\rbrack \lbrack  0\rparen, \lparen dx0, dx1, dx2, dx3\rparen and subtraction is performed simultaneously. However, since data needs
+to be loaded onto SIMD registers all at once, the gather instruction is used to load data for particle i. The gather instruction is used
+to read non-contiguous data elements from memory addresses by specifying addresses. An explanation of the gather instruction is shown in 
+Figure x. Data loaded in this way are computed simultaneously using SIMD instructions. When storing computation results, addresses may 
+not be contiguous. In such cases, there is an instruction called scatter, which is the counterpart to gather, but it is not supported 
+in AVX2, so data are stored using pointers individually. In this way, parallelization is achieved with SIMD. Moreover, these instructions
+can be explicitly handled in high-level programming languages like C and C++ using intrinsic functions. To handle intrinsic functions 
+in C and C++, include the file immintrin.h, which is available as a standard in the language. An example of C++ code that calculates the difference in x coordinates, simd\_tmp.cpp, is shown. { DSL name}  generates C++ code capable of executing SIMD instructions like simd\_tmp.cpp
+from the described formulas. The next section will explain the design of { DSL name}.
 
-
-\subsection{design of (name of DSL)}
+\subsection{design of name of DSL}
 
 \begin{lstlisting}[language=c++]
 #include <iostream>
