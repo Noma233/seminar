@@ -1,0 +1,8 @@
+EPI.pos vec3<F64> xi
+EPJ.pos vec3<F64> xj
+EPJ.m F64 mass
+FORCE.acc vec3<F64> ai
+F64 eps2
+F64 g
+dr = xj -xi
+ai = g * mass *  dr / sqrt(dr ** 2 + eps2) ** 3

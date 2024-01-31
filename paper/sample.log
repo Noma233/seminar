@@ -1,0 +1,650 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2024.1.22)  31 JAN 2024 14:50
+entering extended mode
+ restricted \write18 enabled.
+ file:line:error style messages enabled.
+ %&-line parsing enabled.
+**/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex
+(/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex
+LaTeX2e <2020-02-02> patch level 2
+L3 programming layer <2020-02-14> (/usr/share/texlive/texmf-dist/tex/platex/base/jarticle.cls
+
+/usr/share/texlive/texmf-dist/tex/platex/base/jarticle.cls:16: LaTeX Error: This file needs format `pLaTeX2e'
+               but this is `LaTeX2e'.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.16 \NeedsTeXFormat{pLaTeX2e}
+                              
+The current input file will not be processed further,
+because it was written for some other flavor of TeX.
+You're in trouble here.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+) (/usr/share/texlive/texmf-dist/tex/latex/listings/listings.sty (/usr/share/texlive/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks14
+)
+\lst@mode=\count167
+\lst@gtempboxa=\box45
+\lst@token=\toks15
+\lst@length=\count168
+\lst@currlwidth=\dimen134
+\lst@column=\count169
+\lst@pos=\count170
+\lst@lostspace=\dimen135
+\lst@width=\dimen136
+\lst@newlines=\count171
+\lst@lineno=\count172
+\abovecaptionskip=\skip47
+\belowcaptionskip=\skip48
+\lst@maxwidth=\dimen137
+ (/usr/share/texlive/texmf-dist/tex/latex/listings/lstmisc.sty
+File: lstmisc.sty 2019/09/10 1.8c (Carsten Heinz)
+\c@lstnumber=\count173
+\lst@skipnumbers=\count174
+\lst@framebox=\box46
+) (/usr/share/texlive/texmf-dist/tex/latex/listings/listings.cfg
+File: listings.cfg 2019/09/10 1.8c listings configuration
+))
+Package: listings 2019/09/10 1.8c (Carsten Heinz)
+ (/usr/share/texlive/texmf-dist/tex/latex/jvlisting/jvlisting.sty
+Package: jvlisting 2011/11/17 v0.7 Formatted Program Listings
+\jvl@idt=\count175
+\jvl@tmphyphenchar=\count176
+\jvl@fileinput=\read2
+\listingskipamount=\skip49
+\listingindent=\dimen138
+\prelistingpenalty=\count177
+\listingpenalty=\count178
+\postlistingpenalty=\count179
+) (/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdfmode.def
+File: l3backend-pdfmode.def 2020-02-03 L3 backend support: PDF mode
+\l__kernel_color_stack_int=\count180
+\l__pdf_internal_box=\box47
+) (/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.aux)
+\openout1 = `sample.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 23.
+LaTeX Font Info:    ... okay on input line 23.
+
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:23: LaTeX Error: The font size command \normalsize is not defined:
+               there is probably something wrong with the class file.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.23 \begin{document}
+                     
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+\c@lstlisting=\count181
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:24: Package inputenc Error: Unicode character の (U+306E)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.24 HelloWorldの
+                  ソースコードを，ソースコード\ref{fuga}に示...
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:24: Package inputenc Error: Unicode character ソ (U+30BD)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.24 HelloWorldのソ
+                     ースコードを，ソースコード\ref{fuga}に示...
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:24: Package inputenc Error: Unicode character ー (U+30FC)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.24 HelloWorldのソー
+                        スコードを，ソースコード\ref{fuga}に示...
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:24: Package inputenc Error: Unicode character ス (U+30B9)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.24 HelloWorldのソース
+                           コードを，ソースコード\ref{fuga}に示...
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:24: Package inputenc Error: Unicode character コ (U+30B3)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.24 HelloWorldのソースコ
+                              ードを，ソースコード\ref{fuga}に示...
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:24: Package inputenc Error: Unicode character ー (U+30FC)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.24 HelloWorldのソースコー
+                                 ドを，ソースコード\ref{fuga}に示...
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:24: Package inputenc Error: Unicode character ド (U+30C9)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.24 HelloWorldのソースコード
+                                    を，ソースコード\ref{fuga}に示...
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:24: Package inputenc Error: Unicode character を (U+3092)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.24 HelloWorldのソースコードを
+                                       ，ソースコード\ref{fuga}に示...
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:24: Package inputenc Error: Unicode character ， (U+FF0C)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.24 HelloWorldのソースコードを，
+                                          ソースコード\ref{fuga}に示...
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:24: Package inputenc Error: Unicode character ソ (U+30BD)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.24 HelloWorldのソースコードを，ソ
+                                             ースコード\ref{fuga}に示...
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:24: Package inputenc Error: Unicode character ー (U+30FC)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.24 HelloWorldのソースコードを，ソー
+                                                スコード\ref{fuga}に示...
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:24: Package inputenc Error: Unicode character ス (U+30B9)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.24 ...oWorldのソースコードを，ソース
+                                                  コード\ref{fuga}に示�...
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:24: Package inputenc Error: Unicode character コ (U+30B3)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.24 ...rldのソースコードを，ソースコ
+                                                  ード\ref{fuga}に示す．
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:24: Package inputenc Error: Unicode character ー (U+30FC)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.24 ...のソースコードを，ソースコー
+                                                  ド\ref{fuga}に示す．
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:24: Package inputenc Error: Unicode character ド (U+30C9)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.24 ...ソースコードを，ソースコード
+                                                  \ref{fuga}に示す．
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:24: Undefined control sequence.
+<write> ...ing: Reference `fuga' on page \thepage 
+                                                  \space undefined\on@line .
+l.24 ...��ードを，ソースコード\ref{fuga}
+                                                  に示す．
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+LaTeX Warning: Reference `fuga' on page  undefined on input line 24.
+
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:24: Package inputenc Error: Unicode character に (U+306B)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.24 ...��ドを，ソースコード\ref{fuga}に
+                                                  示す．
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:24: Package inputenc Error: Unicode character 示 (U+793A)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.24 ...��を，ソースコード\ref{fuga}に示
+                                                  す．
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:24: Package inputenc Error: Unicode character す (U+3059)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.24 ...��，ソースコード\ref{fuga}に示す
+                                                  ．
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:24: Package inputenc Error: Unicode character ． (U+FF0E)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.24 ...��ソースコード\ref{fuga}に示す．
+                                                  
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:26: LaTeX Error: The font size command \normalsize is not defined:
+               there is probably something wrong with the class file.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.26 \begin{lstlisting}[caption=hoge,label=fuga]
+                                                
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:26: Illegal unit of measure (pt inserted).
+<to be read again> 
+                   z
+l.26 \begin{lstlisting}[caption=hoge,label=fuga]
+                                                
+Dimensions can be in units of em, ex, in, pt, pc,
+cm, mm, dd, cc, nd, nc, bp, or sp; but yours is a new one!
+I'll assume that you meant to say pt, for printer's points.
+To recover gracefully from this error, it's best to
+delete the erroneous units; e.g., type `2' to delete
+two letters. (See Chapter 27 of The TeXbook.)
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:26: Illegal unit of measure (pt inserted).
+<to be read again> 
+                   z
+l.26 \begin{lstlisting}[caption=hoge,label=fuga]
+                                                
+Dimensions can be in units of em, ex, in, pt, pc,
+cm, mm, dd, cc, nd, nc, bp, or sp; but yours is a new one!
+I'll assume that you meant to say pt, for printer's points.
+To recover gracefully from this error, it's best to
+delete the erroneous units; e.g., type `2' to delete
+two letters. (See Chapter 27 of The TeXbook.)
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:26: Illegal unit of measure (pt inserted).
+<to be read again> 
+                   z
+l.26 \begin{lstlisting}[caption=hoge,label=fuga]
+                                                
+Dimensions can be in units of em, ex, in, pt, pc,
+cm, mm, dd, cc, nd, nc, bp, or sp; but yours is a new one!
+I'll assume that you meant to say pt, for printer's points.
+To recover gracefully from this error, it's best to
+delete the erroneous units; e.g., type `2' to delete
+two letters. (See Chapter 27 of The TeXbook.)
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:27: Undefined control sequence.
+\lst@numberstyle ->\scriptsize 
+                               
+l.27 #i
+       nclude<stdio.h>
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:27: Illegal unit of measure (pt inserted).
+<to be read again> 
+                   z
+l.27 #i
+       nclude<stdio.h>
+Dimensions can be in units of em, ex, in, pt, pc,
+cm, mm, dd, cc, nd, nc, bp, or sp; but yours is a new one!
+I'll assume that you meant to say pt, for printer's points.
+To recover gracefully from this error, it's best to
+delete the erroneous units; e.g., type `2' to delete
+two letters. (See Chapter 27 of The TeXbook.)
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:27: Undefined control sequence.
+\lst@thestyle ->\small 
+                       
+l.27 #include<
+              stdio.h>
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:27: Undefined control sequence.
+\lst@thestyle ->\small 
+                       
+l.27 #include<stdio.
+                    h>
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:27: Undefined control sequence.
+\lst@thestyle ->\small 
+                       
+l.27 #include<stdio.h>
+                      
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:28: Undefined control sequence.
+\lst@numberstyle ->\scriptsize 
+                               
+l.28 int 
+         main(){
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:28: Illegal unit of measure (pt inserted).
+<to be read again> 
+                   z
+l.28 int 
+         main(){
+Dimensions can be in units of em, ex, in, pt, pc,
+cm, mm, dd, cc, nd, nc, bp, or sp; but yours is a new one!
+I'll assume that you meant to say pt, for printer's points.
+To recover gracefully from this error, it's best to
+delete the erroneous units; e.g., type `2' to delete
+two letters. (See Chapter 27 of The TeXbook.)
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:28: Undefined control sequence.
+\lst@thestyle ->\small 
+                       
+l.28 int 
+         main(){
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:28: Undefined control sequence.
+\lst@thestyle ->\small 
+                       
+l.28 int main(
+              ){
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:29: Undefined control sequence.
+\lst@numberstyle ->\scriptsize 
+                               
+l.29    printf(
+               "Hello world!");
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:29: Illegal unit of measure (pt inserted).
+<to be read again> 
+                   z
+l.29    printf(
+               "Hello world!");
+Dimensions can be in units of em, ex, in, pt, pc,
+cm, mm, dd, cc, nd, nc, bp, or sp; but yours is a new one!
+I'll assume that you meant to say pt, for printer's points.
+To recover gracefully from this error, it's best to
+delete the erroneous units; e.g., type `2' to delete
+two letters. (See Chapter 27 of The TeXbook.)
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:29: Undefined control sequence.
+\lst@thestyle ->\small 
+                       
+l.29    printf(
+               "Hello world!");
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:29: Undefined control sequence.
+\lst@thestyle ->\small 
+                       
+l.29    printf("Hello 
+                      world!");
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:29: Undefined control sequence.
+\lst@thestyle ->\small 
+                       
+l.29    printf("Hello world!
+                            ");
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:30: Undefined control sequence.
+\lst@numberstyle ->\scriptsize 
+                               
+l.30 }
+      
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:30: Illegal unit of measure (pt inserted).
+<to be read again> 
+                   z
+l.30 }
+      
+Dimensions can be in units of em, ex, in, pt, pc,
+cm, mm, dd, cc, nd, nc, bp, or sp; but yours is a new one!
+I'll assume that you meant to say pt, for printer's points.
+To recover gracefully from this error, it's best to
+delete the erroneous units; e.g., type `2' to delete
+two letters. (See Chapter 27 of The TeXbook.)
+
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:32: LaTeX Error: The font size command \normalsize is not defined:
+               there is probably something wrong with the class file.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.32 \end{document}
+                   
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:32: Undefined control sequence.
+<write> \newlabel{fuga}{{1}{\thepage 
+                                     }}
+l.32 \end{document}
+                   
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.tex:32: Undefined control sequence.
+<write> ...\protect \numberline {1}hoge}{\thepage 
+                                                  }\protected@file@percent }
+l.32 \end{document}
+                   
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+] (/home/noma/school/seminar_origin/seminar/seminar1/paper/sample.aux)
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+ ) 
+Here is how much of TeX's memory you used:
+ 1887 strings out of 481239
+ 27392 string characters out of 5920377
+ 260878 words of memory out of 5000000
+ 17216 multiletter control sequences out of 15000+600000
+ 532814 words of font info for 26 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 28i,4n,36p,259b,1071s stack positions out of 5000i,500n,10000p,200000b,80000s
+</usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
+Output written on /home/noma/school/seminar_origin/seminar/seminar1/paper/sample.pdf (1 page, 36748 bytes).
+PDF statistics:
+ 20 PDF objects out of 1000 (max. 8388607)
+ 13 compressed objects within 1 object stream
+ 0 named destinations out of 1000 (max. 500000)
+ 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+

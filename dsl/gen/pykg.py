@@ -87,6 +87,7 @@ def mul_pattern(left_arg, right_arg):
             return FunctionCall(MUL_FUNCTION_NAME, [left_arg, right_arg])
         
     else:
+        # print(left_arg, right_arg)
         return Mul(left_arg, right_arg, evaluate=False)
     
 def sqrt_op(left_arg, right_arg):
@@ -1009,7 +1010,7 @@ def main():
 
     
 
-    with open('rij.pykg', 'r', encoding='utf-8') as f:
+    with open('test.pykg', 'r', encoding='utf-8') as f:
         s = f.read()
         expr_list, name_variable_map = Parse(s)
     
