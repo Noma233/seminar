@@ -1,0 +1,101 @@
+\documentclass[ams, a4j]{U-AizuGT}
+\usepackage{pifont}
+% \usepackage{graphicx}
+\usepackage{cite}
+\usepackage{mathtools}
+\usepackage{listings,jvlisting}
+% \documentclass[a4j]{jarticle} %ここは関係ない
+\usepackage{listings,jvlisting} 
+\usepackage[dvipdfmx]{graphicx}
+\lstset{
+    frame=single,
+    numbers=left,
+    tabsize=2
+}
+
+
+% \usepackage{listings,jlisting}
+
+% \lstset{%
+%   language={C},
+%   basicstyle={\small},%
+%   identifierstyle={\small},%
+%   commentstyle={\small\itshape},%
+%   keywordstyle={\small\bfseries},%
+%   ndkeywordstyle={\small},%
+%   stringstyle={\small\ttfamily},
+%   frame={tb},
+%   breaklines=true,
+%   columns=[l]{fullflexible},%
+%   numbers=left,%
+%   xrightmargin=0zw,%
+%   xleftmargin=3zw,%
+%   numberstyle={\scriptsize},%
+%   stepnumber=1,
+%   numbersep=1zw,%
+%   lineskip=-0.5ex%
+% }
+\lstset{
+  basicstyle={\ttfamily},
+  identifierstyle={\small},
+  commentstyle={\smallitshape},
+  keywordstyle={\small\bfseries},
+  ndkeywordstyle={\small},
+  stringstyle={\small\ttfamily},
+  frame={tb},
+  breaklines=true,
+  columns=[l]{fullflexible},
+  numbers=left,
+  xrightmargin=0zw,
+  xleftmargin=3zw,
+  numberstyle={\scriptsize},
+  stepnumber=1,
+  numbersep=1zw,
+  lineskip=-0.5ex
+}
+
+\bibliographystyle{ieice}
+\author{Ryuki Hiwada}
+\studentid{s1280076}
+\supervisor{Naohito Nakasato}
+
+\title{Domain Specific Language for high performance computing}
+
+\begin{document}
+\maketitle
+\begin{abstract}
+
+\end{abstract}
+\section{Introduction}
+テスト
+
+
+\section{Implementation}
+
+SIMDを行うには通常の計算と同じように、まずメモリからデータをloadし、そのデータをもとに計算し、結果をstoreする。
+しかし、SIMDの場合は、SIMD用のレジスタを使って計算をするためloadや計算、storeの仕方が違う. loadをするとき、SIMD用の\
+レジスタに同じ命令を行う複数の要素を格納する。そしてそれを使って同時に計算し、計算結果をそれぞれstoreする。\
+
+ 例えば、倍精度小数の配列x,yの要素を計算するC=X + Yのような計算を考えるとき,AVX2を使用してSIMDを行う\
+場合レジスタは256ビットのレジスタなので、xとyの要素をそれぞれ4つずつloadする。そしてそれを同時に足し、
+結果を格納する配列Cにstoreする。SIMDレジスタにloadをするとき、1次元配列なら連続するメモリをアクセスすればいいが、Figure 
+a.に示すArray of Structures(AoS)のデータ構造の場合、要素ごとにロードしてこなくてはいけない.
+
+例えば、粒子の3次元の座標を倍精度小数でpos[n][3](nは粒子の総数とし、pos[i][0],pos[i][1],pos[i][2]をそれぞれi番目の粒子
+のx座標,y座標,z座標)とするとき、粒子i, jのx座標の差を求めるとき、dx = pos[i][0] - pos[j][0]のようになるが、これをSIMDで
+並列化するとき、dx0 = pos[i][0] - pos[j][0], dx1 = pos[i+1][0] - pos[j][0], dx2 = pos[i+2][0] - pos[j][0],dx3 = 
+pos[i+3][0] - pos[j][0]としたいので、(pos[i][0], pos[i+1][0], pos[i+2][0], pos[i+3][0]), (pos[j][0],pos[j][0],pos[j][0],
+pos[j][0]),(dx0,dx1,dx2,dx3)とそれぞれパックして、同時に引き算を行う。しかし、SIMDレジスタにデータを一度にそれぞれ乗せなくては
+いけないので、gather命令を使い粒子iのデータをloadする。gather命令とは、アドレスを指定してメモリアドレス上の連続していないデータ
+要素を読み込むのに使用する。gather命令の説明を図xに示す。このようにloadしたデータをSIMDの命令を実行し同時に計算する。
+
+計算結果をstoreする際もアドレスが連続していない場合がある。その時は、scatter命令と呼ばれるgather命令と対象になる命令があるが、
+AVX2にはサポートされていないため、それぞれポインタを使ってデータをstoreする。このようにしてSIMDによる並列化をする。
+
+また、これらの命令はinstrinsincs関数を使うことでC,C++などの**high-level programming languageにおいて**明示的に扱える。
+C,C++においてinstrinsincs関数を扱うには、言語標準で使用できるimmintrin.hというファイルをインクルードする。そしてデータは
+simd_tmp.cppをx座標の差を計算するC++のコードを例として示す。{DSLの名前}は記述された数式をsimd_tmp.cppのようにSIMD命令を実行で
+きるようなC++のコードを生成する。次のセクションでは、{DSLの名前}の設計を説明する。
+
+
+\end{document}

@@ -35,24 +35,24 @@
 %   numbersep=1zw,%
 %   lineskip=-0.5ex%
 % }
-% \lstset{
-%   basicstyle={\ttfamily},
-%   identifierstyle={\small},
-%   commentstyle={\smallitshape},
-%   keywordstyle={\small\bfseries},
-%   ndkeywordstyle={\small},
-%   stringstyle={\small\ttfamily},
-%   frame={tb},
-%   breaklines=true,
-%   columns=[l]{fullflexible},
-%   numbers=left,
-%   xrightmargin=0zw,
-%   xleftmargin=3zw,
-%   numberstyle={\scriptsize},
-%   stepnumber=1,
-%   numbersep=1zw,
-%   lineskip=-0.5ex
-% }
+\lstset{
+  basicstyle={\ttfamily},
+  identifierstyle={\small},
+  commentstyle={\smallitshape},
+  keywordstyle={\small\bfseries},
+  ndkeywordstyle={\small},
+  stringstyle={\small\ttfamily},
+  frame={tb},
+  breaklines=true,
+  columns=[l]{fullflexible},
+  numbers=left,
+  xrightmargin=0zw,
+  xleftmargin=3zw,
+  numberstyle={\scriptsize},
+  stepnumber=1,
+  numbersep=1zw,
+  lineskip=-0.5ex
+}
 
 \bibliographystyle{ieice}
 \author{Ryuki Hiwada}
@@ -170,7 +170,7 @@ while EPJ represents particles that provide interactions. FORCE holds the result
 include softening parameters and the like. To perform calculations using these variables, in C++, it would be similar to \ref{fuga}.
 
 
-\begin{lstlisting*}[caption=hoge,label=fuga]
+\begin{lstlisting}[frame=single, caption=hoge, label=fuga]
 int kernel(EPI epi, EPJ epj, FORCE force, double eps2, int n){
 	// (1).preprocess
 	for(int i = 0;i < n;i += 1) {
@@ -182,7 +182,7 @@ int kernel(EPI epi, EPJ epj, FORCE force, double eps2, int n){
 		// (5). Store calculation result in the FORCE
 	}
 }
-\end{lstlisting*}
+\end{lstlisting}
 
 (1) involves preparatory steps such as defining variables necessary for the calculation. (2) 
 involves loading the variables of EPI. (3) is about initializing variables that temporarily
@@ -202,7 +202,7 @@ The definition of interaction formulas is written to accumulate the results in t
  alculates the gravitational interaction formula shown in Figure 1, it would be written in this DSL as figure1.pyker.
 
 
-\begin{lstlisting}
+\begin{lstlisting}[frame=single, caption=hoge, label=fuga]
 EPI.pos vec3<F64> xi
 EPJ.pos vec3<F64> xj
 EPJ.m F64 mass
