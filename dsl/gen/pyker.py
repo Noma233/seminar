@@ -118,25 +118,45 @@ def or_Integer(left_arg, right_arg):
     else:
         return None
 
+def pow_to_mul(expr, num):
+    new_expr = expr
+    for i in range(num - 1):
+        new_expr = Mul(new_expr, expr, evaluate=False)
 
-def pow_pattern(left_arg, right_arg):
-    arg = sqrt_op(left_arg, right_arg)
+    return new_expr
+
+def pow_pattern(base_arg, exp_arg):
+    arg = sqrt_op(base_arg, exp_arg)
+    
     if SIMD:
         if arg:
             return FunctionCall(SQRT_FUNCTION_NAME, [arg])
         else:
             #片方だけが整数だった場合
-            new_expr = or_Integer(left_arg, right_arg)
+            new_expr = or_Integer(base_arg, exp_arg)
 
             #べき乗の数だけ掛け算に変換
             if new_expr:
                 return new_expr
             else:
                 #TODO 整数ではなく、変数**変数の場合　とりあえず保留
-                return FunctionCall(POW_FUNCTION_NAME, [left_arg, right_arg])
+                return FunctionCall(POW_FUNCTION_NAME, [base_arg, exp_arg])
     else:
-         
-        return Pow(left_arg, right_arg)
+        if type(exp_arg) is Integer: 
+            new_expr = pow_to_mul(base_arg, int(exp_arg))
+            
+        elif type(exp_arg) is Rational:
+            num = exp_arg.numerator
+            deno = exp_arg.denominator
+            if num == 1:
+                new_expr = Pow(base_arg, exp_arg)
+            else:
+                new_expr = pow_to_mul(base_arg, num)
+                new_exp_arg = Rational(Integer(1), deno)
+                new_expr = Pow(new_expr, new_exp_arg, evaluate=False)
+        else:
+            new_expr = Pow(base_arg, exp_arg, evaluate=False)
+        return new_expr
 
 def get_func_name(expr):
     return str(expr.name)
@@ -183,8 +203,12 @@ def trans_mid_expr(arg, name_variable_map, i):
                             trans_mid_expr(arg.args[1], name_variable_map, i))
     
     elif type(arg) is Pow:
-        return pow_pattern(trans_mid_expr(arg.args[0], name_variable_map, i),
-                            trans_mid_expr(arg.args[1], name_variable_map, i))
+        exp = arg.exp
+        ba = arg.base
+        base_expr = trans_mid_expr(ba, name_variable_map, i)
+        new_exp_expr = trans_mid_expr(exp, name_variable_map, i)
+        new_expr = pow_pattern(base_expr, new_exp_expr) 
+        return new_expr
 
     elif type(arg) is Assignment:
         left_arg = arg.lhs
@@ -429,12 +453,15 @@ def get_include_text():
         text += "#include<x86intrin.h>"
     return text
 
-def assign_exprs(assign_list, name_variable_map):
-    cse_list = apply_cse(assign_list)
+def assign_exprs(assign_list, name_variable_map, need_prim_map=False):
+    cse_list = apply_cse(assign_list, name_variable_map)
     # cse_list = sympify(cse_list)
     arg_ret_map = get_arg_ret_map_list(cse_list, name_variable_map)
     prim_map = type_inference(cse_list, name_variable_map, arg_ret_map)
-    return cse_list
+    if need_prim_map == True:
+        return (cse_list, prim_map)
+    else:
+        return cse_list
 
 def CodeGen(expr_list, name_variable_map, prim_map):
 
@@ -471,8 +498,8 @@ def CodeGen(expr_list, name_variable_map, prim_map):
         for i in range(prim_var.vec):
             mid_expr = trans_mid_expr(expr, name_variable_map, i)
             mid_code_list.append(mid_expr)
-
-    # assign_list = assign_exprs(mid_code_list, name_variable_map)
+    if SIMD:
+        mid_code_list, prim_map = assign_exprs(mid_code_list, name_variable_map, need_prim_map=True)
     assign_list = CodeBlock(*mid_code_list) 
     global iwide
     iwide = loop_wide(name_variable_map)
@@ -771,7 +798,7 @@ def get_arg_ret_map(expr, arg_ret_map, name_variable_map):
             v = get_name_variable(expr, name_variable_map)
             arg_ret_map[expr] = v.vec
         else:
-            print('in get_arg_ret_map  expr =',expr)
+            # print('in get_arg_ret_map  expr =',expr)
             arg_ret_map[expr] = 1
         return arg_ret_map
     
@@ -812,7 +839,7 @@ def pow_dot_int(expr, arg_ret_map):
     int_arg = expr.exp
     new_arg = trans_dot(expr.base, arg_ret_map)
     vec = arg_ret_map[new_arg]
-    print('in pow_dot_int', new_arg, vec)
+    # print('in pow_dot_int', new_arg, vec)
     new_expr = None
     
     if int(int_arg) == 2 and vec == 3:
@@ -1001,16 +1028,21 @@ def main():
     expr_list = []
     name_variable_map = {}
     global SIMD
-    if len(sys.argv) == 1:
+    if len(sys.argv) == 2:
         SIMD = None
     else:
-        simd_arg = sys.argv[1].strip()
+        simd_arg = sys.argv[2].strip()
         SIMD = simd_arg
         Var.SIMD = SIMD
 
-    
+    input_file_name = None
+    if len(sys.argv) >= 2:
+        input_file_name = sys.argv[1].strip() 
+    else:
+        print("error!! no pyker file")
+        return
 
-    with open('test.pykg', 'r', encoding='utf-8') as f:
+    with open(input_file_name, 'r', encoding='utf-8') as f:
         s = f.read()
         expr_list, name_variable_map = Parse(s)
     
@@ -1018,20 +1050,20 @@ def main():
     # for i in name_variable_map.values():
     #     print(i)
 
-    
-    after_cse_expr_list = apply_cse(expr_list, name_variable_map)
+ 
     # print('after_cse_expr_list')
     # check_tree(after_cse_expr_list)
 
+    after_cse_expr_list = apply_cse(expr_list, name_variable_map)
     arg_ret_map_list = get_arg_ret_map_list(after_cse_expr_list, name_variable_map)
     #ここでdot演算子を変換
     new_op_expr_list = trans_new_op(after_cse_expr_list, arg_ret_map_list)
-    arg_ret_map_list = get_arg_ret_map_list(new_op_expr_list, name_variable_map)
-    check_tree(new_op_expr_list)
+    # arg_ret_map_list = get_arg_ret_map_list(new_op_expr_list, name_variable_map)
+    # check_tree(new_op_expr_list)
 
     #型推論　それから一次変数の型を決定
     prim_map = type_inference(new_op_expr_list, name_variable_map, arg_ret_map_list)
-    check_prim_map(prim_map) 
+    # check_prim_map(prim_map) 
      
     #構文木を完全2分木にする処理
     biexpr_list = expr_binary_tree(new_op_expr_list)

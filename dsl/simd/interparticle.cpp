@@ -9,8 +9,8 @@
 #include<set>
 using namespace std;
 
-// #include "../gen/gravity_code.hpp"
-#include "../gen/gen_0122_goodscore.hpp"
+#include "../gen/gravity_code.hpp"
+// #include "../gen/gen_0122_goodscore.hpp"
 // #include "../gen/gen_0122_simd_correctans.hpp"
 
 void evaluate_gravity(
