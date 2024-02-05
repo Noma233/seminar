@@ -47,7 +47,7 @@ def Parse(file_str):
             #空白等の式や変数宣言でない部分の処理を書く
             
             #変数宣言だった場合型の情報をVariableから取得
-            v = Var.Variable(col)
+            v = Var.Var(col)
             name_variable_map[v.name] = v
 
     return expr_list, name_variable_map
@@ -480,7 +480,7 @@ def CodeGen(expr_list, name_variable_map, prim_map):
 
     #引数の作成
     for v in name_variable_map.values():
-        if v.name in prim_map:
+        if v.prime == True:
             continue        
 
         sym_name = v.name
@@ -669,7 +669,7 @@ def type_inference(expr_list, name_variable_map, arg_ret_map_list):
                 prim_map[str(expr.lhs)] = v
             continue
 
-        prim_var = Var.Variable()
+        prim_var = Var.Var()
         prim_var.name = str(expr.lhs)
         prim_var.tmp_name = str(expr.lhs)
         #TODO とりあえず全部浮動小数
@@ -697,12 +697,18 @@ def type_inference(expr_list, name_variable_map, arg_ret_map_list):
                 
                 elif type(arg) in operator_list or arg is Integer(-1) or arg is Rational(1, 2) or type(arg) is Integer or type(arg) is Rational:
                     continue
+
+                
                 
                 else:
                     #エラー
                     print('error!! in type_interference', arg)
+                    # print(arg_ret_map_list)
+                    print(expr_list)
                     return 
-
+        if str(expr.lhs) == 'dr_v0':
+            print(prim_var)
+            
         prim_map[str(expr.lhs)] = prim_var
         name_variable_map[str(expr.lhs)] = prim_var
 
@@ -714,6 +720,13 @@ def apply_cse(expr_list, name_variable_map):
     new_list = []
     for expr in pre_culc:
         new_list.append(Assignment(expr[0], expr[1]))
+        # tmp_v = expr[0]
+        # for pre_expr in pre_culc:
+        #     rhs_expr = pre_expr.rhs
+        #     if tmp_v in rhs_expr.args:
+                
+        #ここに、pre_culcのなかに初めて一時変数が出てきたら、その直前に数式を挿入する処理を入れる
+        
     new_list += cse_list[1]
     prim_map = type_inference(new_list, name_variable_map, None)
     return new_list

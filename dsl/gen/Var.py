@@ -9,7 +9,7 @@ import sympy
 # var_name = 'xi'
 # SIMD = 'AVX2'
 SIMD = None
-class Variable:
+class Var:
     struct_name = ""
     memb_name = ""
     type_name = ""
@@ -19,7 +19,7 @@ class Variable:
     symbol = None
     tmp_name = ''
     index_name = ''
-    prime = None
+    prime = False
     argument = None
 
     def index_def(self):
