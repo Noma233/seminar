@@ -1,0 +1,4 @@
+PIKG_ROOT = ../../../PIKG/PIKG/
+
+
+-I ../../

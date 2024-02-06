@@ -27,6 +27,10 @@ int main() {
     int n = 1000;
     double a[n], b[n], c[n];
 
-    
 
+    int index_gather_0[4] = {0, 3, 6, 9};
+    __m128i vindex_gather_0 = _mm_load_si128((const __m128i*)index_gather_0);    
+    // printf("%lld %lld %lld \n", vindex_gather_0[0], vindex_gather_0[1], vindex_gather_0[2]);
+    printf("%d\n", vindex_gather_0);
+    // _mm256d xs = _mm256_i32gather_pd(&xi[i][0], vindex_gather_0, 8);
 }

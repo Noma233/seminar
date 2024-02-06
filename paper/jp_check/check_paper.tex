@@ -97,9 +97,9 @@ DSL in the next section to generate such parallelized code from the formulation 
 
 \section{Construction}
 私たちはDSLの実装にPythonの代数計算ライブラリのSympyを使った。
-Sympyには、様々な演算がサポートされていて、これらを用いた数式は内部で構文木として扱われている。
-私たちはその機能を用いて数式を読み込み、並列化に実行できるコードを生成することが出来る。並列化には、
-並列化をAdvanced Vector Extensions 2(AVX2)という命令セットを用いた。AVX2とは、
+Sympyでは、数式をシンボルと演算子を用いて構文木として扱うことが出来る。
+そしてその構文木から実行可能なコードを生成するモジュールがある。このDSLでは、それらの機能を用いて数式を読み込み、
+並列に実行できるコードを生成する。並列化には、Advanced Vector Extensions 2(AVX2)という命令セットを用いた。AVX2とは、
 インテル社のCPUに実装された拡張命令セットの一つである。次のセクションでは、どのようにAVX2で並列化を行うかを説明する。
 
 \subsection{AVX2 for parallelization}
@@ -165,13 +165,13 @@ C++では、template.cppのようになる。
   (1)では、計算に必要な変数の定義などの前準備。(2)では、EPIの変数をロードする。(3)では、相互作用の計算結果を一時的に保持する変数を初期化。
   (4)では、相互作用の計算を行い、結果をforceの一次変数に保存。(5)で，FORCEの変数に結果をstoreする。
 
-  このコードを生成するためには、変数の定義では、変数のclassと、型、次元の情報がそれぞれ必要になる。そのためpykerでは、変数の定義を以下とする。
+  このコードを生成するためには、変数の定義では、変数のclassと、型、次元の情報がそれぞれ必要になる。そのためpykerでは、変数の定義を正規表現で表すと以下のようになる。
   \begin{lstlisting}
-  ((EPI|EPJ|FORCE).(\w+))? (vec(3|4)<)?(F(32|64))>? \w+
+  ((EPI|EPJ|FORCE).(\w+))? (vec3<)?(F64)>? \w+
   \end{lstlisting}
   
-  1列目はclassであれば、classの名前とそのメンバ変数名を書く。2列目はベクトルの次元があれば、3次元と4次元を明示的に書き、
-  型は32bitと64bit浮動小数を書く。3列目では、pykg上で扱う変数の名前になる。例えば、”EPI.pos vec3<F64> xi”は、EPIのposというメンバ変数で、
+  1列目はclassであれば、classの名前とそのメンバ変数名を書く。2列目はベクトルの次元があれば、明示的に書き、
+  型は'F64'と書き、64bit浮動小数を表す。3列目では、pykg上で扱う変数の名前になる。例えば、”EPI.pos vec3<F64> xi”は、EPIのposというメンバ変数で、
   3次元の64bit浮動小数型のxiという変数名となる。
   
   相互作用の式の定義は、定義した変数を使って、FORCEの変数に結果をアキュムレートしていくように記述する。
@@ -192,7 +192,6 @@ C++では、template.cppのようになる。
 \end{lstlisting}
 
 次のセクションでは、どのようにして、このコードから目標のコードを生成するかを説明する。
-
 
 
 \subsection{Implementation}
@@ -236,7 +235,86 @@ simd演算はinstrcin関数で行う際2項演算なので引数が2つの関数
 オプションでevaluate=Falseにする。例えばa * b * c はMul(a, Mul(b, c, evaluate=False), evaluate=False)となる。
 
 
-\subsubsection{code generate}
+
+\subsubsection{code generation of SIMD}
+CodeGenでは、c++で実行可能な関数のコードを生成する。生成するコードの疑似コードをtemplate.cppに示す。
+
+\begin{lstlisting}[frame=single, caption=template.cpp]
+  //(1) include part
+  #include<math>
+  #include<immintrin.h>
+  int kernel( (2) double xi[][3], double xj[][3], double eps2, double ai[][3], ...) {
+    //(3) decleare tmp variable
+    int i;
+    int j;
+    __m256d xi_tmp_v0;
+    __m256d xi_tmp_v1;  
+    __m256d xi_tmp_v2;
+    __m256d eps2_tmp;
+    // ... 
+    // ... 
+    // ... 
+    //(4) def not class variables
+    eps2_tmp = _mm256_set1_pd(eps2);
+    // ... 
+    // ... 
+    // ... 
+    
+    // (5) loop increment
+    for(i = 0;i < (n);i += 4) {
+      // (6) Load EPI variable part
+      int index_gather_0[4] = {0, 3, 6, 9};
+      __m128i vindex_gather_0 = _mm_load_si128((const __m128i*)index_gather_0);    
+      xi_tmp_v0 = _mm256_i32gather_pd(&xi[i][0], vindex_gather_0, 8);
+      // ... 
+      // ... 
+      // ... 
+      // (7) initialize result temporary variable
+      ai_tmp_v0 = _mm256_set1_pd(0.0);
+      ai_tmp_v1 = _mm256_set1_pd(0.0);
+      ai_tmp_v2 = _mm256_set1_pd(0.0);
+  
+      for(j = 0;j < (n);j += 1) {
+        // (8) Load EPJ variable part
+           xj_tmp_v0 = _mm256_set1_pd(xj[j][0]);
+           xj_tmp_v1 = _mm256_set1_pd(xj[j][1]);
+           xj_tmp_v2 = _mm256_set1_pd(xj[j][2]);
+          // ... 
+          // ... 
+          // ... 
+           
+  
+        // (9) calculate interparticle
+      }
+  
+      // (10) Store result part
+  
+    }
+    return 0;
+  }
+  \end{lstlisting}
+
+
+コード生成の際に必要な要素をtemplate.cppに書かれた(1), (2),(3)の順に説明する。それぞれは(1)インクルード文の挿入、(2)関数の引数の定義、(3)相互作用の計算に必要な一時変数,(4)EPI,EPJ,FORCEでない変数の定義、(5)ループのインクリメント幅、(6)EPIの変数をloadする部分、(7)結果を一時的に保持する変数の初期化、(8) EPJの変数をロードする部分、(9)実際に計算する内容、(10)SIMDのstore部分である。またDSL上で定義したEPI,EPJ,FORCEの変数は、ソースコード上では単なる変数として扱われる。
+
+(1)では、SIMD演算などで必要となるインクルード文を挿入する。math.hは、SIMD化しない場合に、sqrt()を実行するために、immintrin.hでは、SIMD演算のための関数を呼び出すために必要となる.
+
+(2)では、DSLのコードで変数定義されていた変数を引数とする。そのために変数をすべてみて、DSLのコードで変数定義されていれば引数に追加する。
+
+(3)Sympyでは、変数の定義をVariableというクラスのオブジェクトをDeclarationというクラスのコンストラクタに渡して生成したオブジェクトで表す。
+
+一時変数の名前はベクトルであれば、(DSL上で記述した名前)\_tmp\_v{i}(iは次元数に合わせて0インデックスで定義), スカラーであれば、(DSL上で記述した名前) \_tmpとする。変数の型は今回は倍精度少数だけなので、\_\_m256dにする。\_\_m256dはAVX2の256bitのレジスタで要素が倍精度少数をセットできる型である.
+
+(4)では、classでない変数の定義では、定義とともにその変数の値を並列する数分初期化する。それには,\_mm256\_set1\_pd()という関数を使う。この関数は引数で与えられた倍精度少数の値を\_\_m256dに4つセットする関数で、eps2\_tmpのデータ構造は(eps2, eps2, eps2, eps2)のようになっている。これとループで使用するインデックスである,iとjを定義する.
+
+(5)では、並列数分だけインクリメントするようにする。今回は倍精度少数しか実装していないので並列数は常に4にする.
+
+(6)では、EPIの変数のloadを行う。loadには、AVX2 for Parallelizationのセクションで説明したようにgather命令を使用する。gather命令は、
+(6)に書かれている3行のコードはgather命令によるloadの一連の流れである。index\_gather\_0[]は\& xi[i][0]から何個分のメモリにあるかを示している。\&xi[i][0]から\&xi[i + 1][0]
+はdouble型の変数の3つ分先のメモリアドレスになる。\&xi[i + 2][0]も同様になるのでindex\_gather\_0[]には、{0, 3, 6,9}となる。vindex\_gather\_0はindex\_gather\_0を128ビットレジスタに乗せていて、
+これで\_mm256\_i32gather\_pdを使うことが出来る。\_mm256\_i32gather\_pdの第3引数の8は、要素が何バイトであるかを表し、double型なので8byteとしている。これにより、
+\&xi[i][0],\&xi[i + 1][0],\&xi[i + 2][0],\&xi[i + 3][0]をロードする。またEPIの要素がスカラーであれば、\_mm256\_load\_pd(\&m[i])という関数を使い、連続するm[i],m[i+1],m[i+2],m[i+3]を256ビットのレジスタにloadする。
+これをEPIの変数すべてに行う。
 % - このセクションでは、実行可能なコードを生成する。
 % - コードを生成するには、Codegenというモジュールを使う。
 %     - このモジュールはsympyの数式から実行可能なコードを生成するモジュールである。
