@@ -17,10 +17,11 @@ class Var:
     name = ""  
     vec = 1
     symbol = None
-    tmp_name = ''
     index_name = ''
     prime = False
     argument = None
+    vec_index = 1
+    origin = None
 
     def index_def(self):
         if self.struct_name == 'EPI' or self.struct_name == 'FORCE':
@@ -30,13 +31,26 @@ class Var:
         else:
             pass
 
+    
     #行を空白で区切りwordのリストにしそれをセットする
-    def __init__(self, str_type_col=None):
+    def __init__(self, str_type_col=None, init_v=None):
         if str_type_col:
             word_lst = str_type_col.split()
             self.set_var(word_lst)
+            origin = True
         
         self.index_def()
+
+        if init_v:
+            self.struct_name = init_v.struct_name
+            self.bit = init_v.bit
+            self.type_name = init_v.type_name
+            self.name = init_v.name
+            self.vec = init_v.vec
+            self.symbol = init_v.symbol
+            self.prime = init_v.prime
+            self.vec_index = init_v.vec_index
+            
 
     def __repr__(self) -> str:
         ret = f"name = {self.name} , struct = {self.struct_name},  member_name = {self.memb_name} \n" 

@@ -50,9 +50,6 @@ for (int i = 0; i < ni; i++) {
     acci[i][2] = az;
 }
 
-
-
-
 }
 void evaluate_gravity_simd(
     int ni,
@@ -128,7 +125,7 @@ vector<double> check_particles_v3_v3(double aix[][3], double aiy[][3], int n){
     bool flag = true;
     double eps = 0.000001;
     double max_relerr = 0.0;
-    double min_relerr = 10000000.0;
+    double min_relerr = 1000000.0;
     vector<double> ans = {0, 0};
     for(int i = 0;i < n;i++) {
 
@@ -157,10 +154,10 @@ vector<double> check_particles_v3_v3(double aix[][3], double aiy[][3], int n){
                                       abs(aiy[i][1] - aix[i][1]) / abs(ai1),
                                       abs(aiy[i][2] - aix[i][2]) / abs(ai2)});
         if(i % 1000 == 0){
-            // cout << "max is " << max_relerr << endl;
-            // cout << "min is " << min_relerr << endl;
-            // cout << aix[i][0] << endl;
-            // cout << aiy[i][0] << endl;
+            cout << "max is " << max_relerr << endl;
+            cout << "min is " << min_relerr << endl;
+            cout << aix[i][0] << endl;
+            cout << aiy[i][0] << endl;
         }
     }
 
@@ -235,7 +232,7 @@ int main() {
     //__attribute__((aligned(32))) 
     //pykg用のデータ
     __attribute__((aligned(32))) double xij[n][3];
-    __attribute__((aligned(32))) double pykg_m[n];
+    __attribute__((aligned(32))) double pyker_m[n];
     __attribute__((aligned(32))) double ai[n][3];
     __attribute__((aligned(32))) double g = 1;
     __attribute__((aligned(32))) double eps2 = pow(2, -5);
@@ -265,7 +262,7 @@ int main() {
         xij[i][0] = x;
         xij[i][1] = y;
         xij[i][2] = z;
-        pykg_m[i] = m;
+        pyker_m[i] = m;
 
         X[i] = x;
         Y[i] = y;
@@ -285,7 +282,7 @@ int main() {
     printf("evaluate_gravity of elapsed time = %lfsec\n", non_simd_elapsed);
 
     start = clock();
-    kernel(n, xij, xij, pykg_m, ai, eps2, g);
+    kernel(n, xij, xij, pyker_m, ai, eps2, g);
     end = clock();
     double gen_code_time = (double)(end - start) / CLOCKS_PER_SEC;
     printf("genarate code time = %lfsec\n", gen_code_time);
