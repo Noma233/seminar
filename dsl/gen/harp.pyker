@@ -13,7 +13,7 @@ dv = vi - vj
 
 r2 = dr*dr + eps2
 rv = dr*dv
-af = mj*(sqrt(r2)**3)
+af = mj/(sqrt(r2)**3)
 jf = 3.0*mj*rv/(sqrt(r2) ** 5)
 
 F = af*dr

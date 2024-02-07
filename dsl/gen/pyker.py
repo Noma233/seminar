@@ -124,12 +124,15 @@ def or_Integer(left_arg, right_arg):
 
 def pow_to_mul(expr, num):
     new_expr = expr
-    cnt = 0
-    if num < 0:
-        cnt = abs(num) 
 
-    for i in range(cnt - 1):
+    div_ = False
+    if num < 0:
+        div_ = True
+    for i in range(num - 1):
         new_expr = Mul(new_expr, expr, evaluate=False)
+    
+    if div_:
+        new_expr = Pow(new_expr, Integer(-1), evaluate=False)
 
     return new_expr
 
@@ -152,7 +155,7 @@ def pow_pattern(base_arg, exp_arg):
     else:
         if type(exp_arg) is Integer: 
             new_expr = pow_to_mul(base_arg, int(exp_arg))
-            
+            print(f'in pow_pattern {base_arg}, {exp_arg}')
         elif type(exp_arg) is Rational:
             num = exp_arg.numerator
             deno = exp_arg.denominator
@@ -162,6 +165,9 @@ def pow_pattern(base_arg, exp_arg):
                 new_expr = pow_to_mul(base_arg, num)
                 new_exp_arg = Rational(Integer(1), deno)
                 new_expr = Pow(new_expr, new_exp_arg, evaluate=False)
+            
+            print(new_expr)
+            
         else:
             new_expr = Pow(base_arg, exp_arg, evaluate=False)
         return new_expr

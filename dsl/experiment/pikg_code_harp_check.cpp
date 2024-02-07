@@ -1,3 +1,4 @@
+#include<x86intrin.h>
 #include<stdio.h>
 #include<pikg_vector.h>
 #include<pikg_vector.hpp>
@@ -25,8 +26,8 @@ struct FORCE {
 };
 
 #include "sample1_kernel.hpp"
-#include "harp_pyker_code.hpp"
-// #include "harp_pyker_simdcode.hpp"
+// #include "harp_pyker_code.hpp"
+#include "harp_pyker_simdcode.hpp"
 // #include "avx2_code.hpp"
 
 // 乱数を生成するための関数
@@ -44,7 +45,7 @@ double calculate_difference(double a, double b) {
 int main() {
    srand((unsigned)time(NULL)); // 乱数のシードを設定
 
-   int n = 500;
+   int n = 100000;
 
    //PIKG用のコード
    const int nepi = n; 
@@ -115,12 +116,12 @@ int main() {
 
    //PIKG
    clock_t start, end;
-   start = clock();
-   pikg_kernel(epi, nepi, epj, nepj, force); // ここで計算
-   end = clock();
-   double pikg_elapsed = (double)(end - start) / CLOCKS_PER_SEC;
-   printf("N = %d\n", n);
-   printf("pikg_kernel of elapsed time = %lfsec\n", pikg_elapsed);
+   // start = clock();
+   // pikg_kernel(epi, nepi, epj, nepj, force); // ここで計算
+   // end = clock();
+   // double pikg_elapsed = (double)(end - start) / CLOCKS_PER_SEC;
+   // printf("N = %d\n", n);
+   // printf("pikg_kernel of elapsed time = %lfsec\n", pikg_elapsed);
 
 
    start = clock();
@@ -145,16 +146,15 @@ int main() {
         total_diff_Jx = std::max(abs(force[i].j.x - J[i][0]) / force[i].j.x, total_diff_Jx);
         total_diff_Jy = std::max(abs(force[i].j.y - J[i][1]) / force[i].j.y, total_diff_Jy);
         total_diff_Jz = std::max(abs(force[i].j.z - J[i][2]) / force[i].j.z, total_diff_Jz);
-        if(i % 100 == 0) {
-            printf(" %lf %lf \n", force[i].f.x, F[i][0]);
-
-        }
+      //   if(i % 10 == 0) {
+      //       printf(" %lf %lf \n", force[i].f.x, F[i][0]);
+      //   }
     }
 
-   printf("max difference in F.x: %f\n", total_diff_Fx);
-   printf("max difference in F.y: %f\n", total_diff_Fy);
-   printf("max difference in F.z: %f\n", total_diff_Fz);
-   printf("Total difference in J.x: %f\n", total_diff_Jx);
-   printf("Total difference in J.y: %f\n", total_diff_Jy);
-   printf("Total difference in J.z: %f\n", total_diff_Jz);
+   // printf("max difference in F.x: %f\n", total_diff_Fx);
+   // printf("max difference in F.y: %f\n", total_diff_Fy);
+   // printf("max difference in F.z: %f\n", total_diff_Fz);
+   // printf("Total difference in J.x: %f\n", total_diff_Jx);
+   // printf("Total difference in J.y: %f\n", total_diff_Jy);
+   // printf("Total difference in J.z: %f\n", total_diff_Jz);
 }
