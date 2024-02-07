@@ -1,4 +1,3 @@
-#include<math.h>
 #include<x86intrin.h>;
 int kernel(int n, double xi[][3], double xj[][3], double mass[], double ai[][3], double eps2, double g){
    int i;

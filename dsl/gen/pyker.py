@@ -50,6 +50,9 @@ def Parse(file_str):
             #変数宣言だった場合型の情報をVariableから取得
             v = Var.Var(col)
             name_variable_map[v.name] = v
+    
+    if SIMD:
+        num_var_def(expr_list, name_variable_map)
 
     return expr_list, name_variable_map
 
@@ -83,6 +86,8 @@ def add_pattern(left_arg, right_arg):
 
 def mul_pattern(left_arg, right_arg):
     if SIMD:
+        # if type(left_arg) is Integer(-1) and type(right_arg) is Float:
+            
         left_arg, func_name1 = inv_op(left_arg, POW_FUNCTION_NAME, DIV_FUNCTION_NAME)
         right_arg, func_name2 = inv_op(right_arg, POW_FUNCTION_NAME, DIV_FUNCTION_NAME)
         if func_name1 == DIV_FUNCTION_NAME or func_name2 == DIV_FUNCTION_NAME:
@@ -388,8 +393,9 @@ def avx2_store(v, i):
             code_list.append(Assignment(Symbol(f'{v.name}[i{inc}][{i}]'), 
                                         Symbol(tmp_vec_name + f'[{ii}]')))
     else:
+        
         code_list.append(FunctionCall('_mm256_store_' + type_name, 
-                            [Symbol(f'&{v.name}[i]'), Symbol(v.tmp_name + tmp_vec_name)]))
+                            [Symbol(f'&{v.name}[i]'), Symbol(tmp_vec_name)]))
  
     return CodeBlock(*code_list)
 
@@ -429,8 +435,10 @@ def in_prim_map(v, prim_map):
         return False
 
 
+float_num = 0
 def declear_tmp_var(name_variable_map, prim_map):
-
+    # global float_num
+    # float_num = 0
     dec_list = []
 
     for v in name_variable_map.values():
@@ -452,13 +460,19 @@ def declear_tmp_var(name_variable_map, prim_map):
                 
                 # if tmp_var == '':
                     #debag
+                # if type(v.symbol) is Float:
+                #     tmp_var += str(float_num)
+                #     v.tmp_name = tmp_var
+                    
                 tmp = Variable(Symbol(tmp_var), type=type_)
 
                 tmp_dec = Declaration(Variable(Symbol(tmp_var), type=type_))
                 dec_list.append(tmp_dec)
                 if type(v.symbol) is Float:
                     set_method = FunctionCall('_mm256_set1_pd', [v.symbol])
+                    
                     tmp_assi = Assignment(Symbol(tmp_var), set_method)
+                    # float_num += 1
                     dec_list.append(tmp_assi)
                     # print(f'declear_tmp_var {tmp_assi}')
                 
@@ -1172,8 +1186,52 @@ def trans_mid_expr_list(expr_list, name_variable_map):
     #         new_mid_code_list.append(mid_expr)
     return mid_code_list
 
-def add_mul_num(arg, name_variable_map, int_num, float_num):
-    if type(arg) is Mul:
+def add_mul_num(arg, name_variable_map, int_num):
+    global float_num
+
+    # if type(arg) is Add:
+    #     for e in arg.args:
+    #         if e is Mul and Integer(-1) in e.args:
+    #             for ee in e.args:
+    #                 if type(ee) is Float:
+    #                     float_v = Var.Var()
+    #                     float_v.name = f'float_inv{float_num}'
+    #                     float_v.vec = 1
+    #                     float_v.type_name = 'F'
+    #                     float_v.prime = True
+    #                     float_v.bit = 64
+    #                     float_v.symbol = e
+    #                     name_variable_map[str(-e)] = float_v 
+    #                     float_num += 1 
+
+    if type(arg) is Mul or type(arg) is Add:
+        # args = arg.args
+        # if len(args) == 2:
+        #     for e in arg.args:
+        #         if e is Integer(-1):
+        #             continue
+        #         elif e is Float:
+        #             float_v = Var.Var()
+        #             float_v.name = f'float_inv{float_num}'
+        #             float_v.vec = 1
+        #             float_v.type_name = 'F'
+        #             float_v.prime = True
+        #             float_v.bit = 64
+        #             float_v.symbol = e
+        #             name_variable_map[str(e)] = float_v
+        #         elif type(e) is Integer:
+        #             int_v = Var.Var()
+        #             int_v.name = f'int_inv{int_num}'
+        #             int_v.vec = 1 
+        #             int_v.type_name = 'F'
+        #             int_v.prime = True
+        #             int_v.bit = 64
+        #             int_v.symbol = e
+        #             name_variable_map[str(e)] = int_v
+        #             int_num += 1
+        #         else:
+        #             add_mul_num(e, name_variable_map, int_num) 
+                    
         for e in arg.args:
             if type(e) is Integer and e is not Integer(-1):
                 int_v = Var.Var()
@@ -1186,6 +1244,7 @@ def add_mul_num(arg, name_variable_map, int_num, float_num):
                 name_variable_map[str(e)] = int_v
                 int_num += 1
             elif type(e) is Float:
+                # print('float', float(e))
                 float_v = Var.Var()
                 float_v.name = f'float_{float_num}'
                 float_v.vec = 1
@@ -1196,19 +1255,27 @@ def add_mul_num(arg, name_variable_map, int_num, float_num):
                 name_variable_map[str(e)] = float_v 
                 float_num += 1
             else:
-                add_mul_num(e, name_variable_map, int_num, float_num)
+                add_mul_num(e, name_variable_map, int_num)
+
+    # elif type(arg) is Add:
+    #     for e in arg.args:
+    #         if type(e) is Mul:
+                
+    
     elif not_op(arg):
         return
     else:
         for e in arg.args:
-            add_mul_num(e, name_variable_map, int_num, float_num)
+            add_mul_num(e, name_variable_map, int_num)
     return
 
 def num_var_def(expr_list, name_variable_map):
+    global float_num
+    float_num = 0
     for expr in expr_list:
         int_num = 0
-        float_num = 0
-        add_mul_num(expr.rhs, name_variable_map, int_num, float_num)      
+        
+        add_mul_num(expr.rhs, name_variable_map, int_num)      
     return
 
 def expr_op(expr, args):
@@ -1251,6 +1318,33 @@ def trans_var_names(expr_list, name_variable_map):
         new_expr_list.append(new_expr)
     return new_expr_list
 
+def trans_floatinv(expr):
+    if type(expr) is Add:
+        arg_list = []
+        for arg in expr.args:
+            
+            new_arg = None
+            if type(arg) is Mul and len(arg.args) == 2 and Integer(-1) in arg.args:
+                for e in arg.args:
+                    if e is Integer(-1):
+                        continue
+                    if type(e) is Float:
+                        new_arg = -e
+                    else:
+                        new_arg = e
+            if new_arg == None:
+                new_arg = arg
+            arg_list.append(new_arg)
+        return Add(*arg_list)
+    elif not_op(expr):
+        return expr
+    else:
+        new_args = []
+        for arg in expr.args:
+            new_args.append(trans_floatinv(arg))
+        return type(expr)(*new_args)
+            
+
 import sys
 def main():
     expr_list = []
@@ -1274,8 +1368,15 @@ def main():
         s = f.read()
         expr_list, name_variable_map = Parse(s)
     
-    if SIMD:
-        num_var_def(expr_list, name_variable_map)
+    
+    
+    # if SIMD:
+    #     num_var_def(expr_list, name_variable_map)
+        # new_expr_list = []
+        # for expr in expr_list:
+        #     new_expr_list.append(trans_floatinv(expr))
+        # expr_list = new_expr_list
+        # check_tree(expr_list)
         # print(name_variable_map)
     prim_map = type_inference(expr_list, name_variable_map) 
     arg_ret_map_list = get_arg_ret_map_list(expr_list, name_variable_map)
@@ -1286,12 +1387,12 @@ def main():
     # check_tree(new_op_expr_list)
 
     after_cse_expr_list = apply_cse(new_op_expr_list, name_variable_map)
+    prim_map = type_inference(biexpr_list, name_variable_map, arg_ret_map_list)
     #型推論　それから一次変数の型を決定
     # check_prim_map(prim_map) 
      
     #構文木を完全2分木にする処理
     biexpr_list = expr_binary_tree(after_cse_expr_list)
-    prim_map = type_inference(biexpr_list, name_variable_map, arg_ret_map_list)
     
     # expr_binary_treeのテスト用
     # check_new_bitree(biexpr_list)

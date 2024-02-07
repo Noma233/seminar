@@ -153,6 +153,12 @@ to be loaded onto SIMD registers all at once, the gather instruction is used to 
 to read non-contiguous data elements from memory addresses by specifying addresses. An explanation of the gather instruction is shown in 
 Figure x. Data loaded in this way are computed simultaneously using SIMD instructions. 
 
+\begin{lstlisting}[frame=single]
+  dx0 = pos[i][0] - pos[j][0]
+  dx1 = pos[i + 1][0] - pos[j][0]
+  dx2 = pos[i + 2][0] - pos[j][0]
+  dx3 = pos[i + 3][0] - pos[j][0]
+  \end{lstlisting}
 
 When storing computation results, addresses may 
 not be contiguous. In such cases, there is an instruction called scatter, which is the counterpart to gather, but it is not supported 

@@ -22,6 +22,7 @@ class Var:
     argument = None
     vec_index = 1
     origin = None
+    tmp_name = None
 
     def index_def(self):
         if self.struct_name == 'EPI' or self.struct_name == 'FORCE':
@@ -62,13 +63,13 @@ class Var:
     def set_var(self, word_lst):
 
         #EPI,EPJ,FORCEを正規表現で判定する
-        struct_name_pattern = r'(EP(I|J)|FORCE).\w+'
+        struct_name_pattern = r'(EP(I|J)|FORCE)'
         check_pat = re.match(struct_name_pattern, word_lst[0])
 
         #合えば、メンバー変数と構造体名をセットし、その後、変数宣言の処理
         if check_pat:
             s = check_pat.group()
-            self.struct_name, self.memb_name = s.split('.')
+            self.struct_name = s
             self.set_type(word_lst[1:])
         #合わなければ、変数宣言の処理
         else:
