@@ -7,6 +7,7 @@
 % \documentclass[a4j]{jarticle} %ここは関係ない
 \usepackage{listings,jvlisting} 
 \usepackage[dvipdfmx]{graphicx}
+
 \lstset{
     frame=single,
     numbers=left,
@@ -158,7 +159,13 @@ Figure x. Data loaded in this way are computed simultaneously using SIMD instruc
   dx1 = pos[i + 1][0] - pos[j][0]
   dx2 = pos[i + 2][0] - pos[j][0]
   dx3 = pos[i + 3][0] - pos[j][0]
-  \end{lstlisting}
+\end{lstlisting}
+
+\begin{lstlisting}[frame=single]
+  (x1, x2, x3, x4) + (y1, y2, y3, y)
+
+\end{lstlisting}
+
 
 When storing computation results, addresses may 
 not be contiguous. In such cases, there is an instruction called scatter, which is the counterpart to gather, but it is not supported 
@@ -176,16 +183,18 @@ while EPJ represents particles that provide interactions. FORCE holds the result
 include softening parameters and the like. To perform calculations using these variables, in C++, it would be similar to \ref{fuga}.
 
 
-\begin{lstlisting}[frame=single, caption=hoge, label=fuga]
+
+\begin{lstlisting}[frame=single, caption=skeleton code, label=fuga]
 int kernel(double xi[][3], double xj[][3], double ai[][3], double eps2, int n){
 	// (1).preprocess
-	for(int i = 0;i < n;i += 4) {
-		// (2).load EPI 
-		// (3).Initialization of tmporary force
+	for(int i = 0;i < n;i += 4) { // (2)Increment the number of parallels
+		// (3).load EPI
+		// (4).Initialization of tmporary force
 		for(int j = 0;j < n;j += 1) {
-				// (4). calculate interparticle interactions
+        // (5) load EPJ
+				// (6) calculate interparticle interactions
 		}
-		// (5). Store calculation result in the FORCE
+		// (7). Store calculation result in the FORCE
 	}
 }
 \end{lstlisting}

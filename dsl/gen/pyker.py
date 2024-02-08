@@ -1161,7 +1161,7 @@ def trans_new_op(expr_list, arg_ret_map_list):
     for expr in expr_list:
         arg_ret_map = arg_ret_map_list[expr.lhs]
         # new_expr = trans_sub(expr.rhs)
-
+        print(f'trans new op{arg_ret_map}')
         new_expr = trans_dot(expr.rhs, arg_ret_map)
         new_expr_list.append(Assignment(expr.lhs, new_expr))
          
@@ -1384,33 +1384,21 @@ def main():
     # print(arg_ret_map_list)
     new_op_expr_list = trans_new_op(expr_list, arg_ret_map_list)
     # arg_ret_map_list = get_arg_ret_map_list(new_op_expr_list, name_variable_map)
-    # check_tree(new_op_expr_list)
+    check_tree(new_op_expr_list)
 
     after_cse_expr_list = apply_cse(new_op_expr_list, name_variable_map)
-    prim_map = type_inference(biexpr_list, name_variable_map, arg_ret_map_list)
     #型推論　それから一次変数の型を決定
     # check_prim_map(prim_map) 
      
     #構文木を完全2分木にする処理
     biexpr_list = expr_binary_tree(after_cse_expr_list)
+    prim_map = type_inference(biexpr_list, name_variable_map, arg_ret_map_list)
     
-    # expr_binary_treeのテスト用
-    # check_new_bitree(biexpr_list)
-
-
-    # check_name_table(name_variable_map)
-    #type_inferenceのテスト用
-    # check_type_infer(prim_map) 
 
     # 木構造のチェック
     # check_tree(biexpr_list)
     mid_expr_list = trans_mid_expr_list(biexpr_list, name_variable_map)
-    # print('mid_expr_list')
-    # check_tree(mid_expr_list)
-    # if SIMD:
-    #     mid_expr_list = trans_var_names(mid_expr_list, name_variable_map)
-    # print(f'exe_expr_list {mid_expr_list}')
-    # check_tree(mid_expr_list[0])
+    
     s = CodeGen(mid_expr_list, name_variable_map, prim_map)
 
     file_name = 'gravity_code'

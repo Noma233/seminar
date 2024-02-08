@@ -62,3 +62,11 @@ int kernel(int n, double xi[][3], double xj[][3], double mass[], double ai[][3],
    };
    return 0;
 };
+
+void test_simd(double A[], double B[], double C[], int n){
+   for(int i = 0;i < n;i += 4) {
+      __m256d vec_a = _mm256_load_pd(&A[i]);
+      __m256d vec_b = _mm256_load_pd(&B[i]);
+      __m256d vec_a = _mm256_load_pd(&A[i]);
+   }
+}
