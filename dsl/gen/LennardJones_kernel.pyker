@@ -1,11 +1,23 @@
-EPI vec3<F64> ri
-EPJ vec3<F64> rj
-FORCE vec3<F64> fr
+EPI F64 rix
+EPI F64 riy
+EPI F64 riz
+EPJ F64 rjx
+EPJ F64 rjy
+EPJ F64 rjz
+EPJ F64 eps
+
+FORCE F64 fx
+FORCE F64 fy
+FORCE F64 fz
 FORCE F64 p
-F64 eps
-dr = ri - rj
-r2 = dr * dr + eps
+dx = rix - rjx
+dy = riy - rjy
+dz = riz - rjz
+r2 = dx * dx + dy * dy + dz * dz + eps
 r2i = 1.0 / r2
-f = (48.0*(r2i ** 3) - 24.0) * (r2i ** 4)
-fr = f * dr
-p = 4.0 * (r2i ** 3) * (r2i ** 3 - 1.0)
+r6i = r2i * r2i * r2i
+f = (48.0* r6i - 24.0) * r6i * r2i
+fx = f * dx
+fy = f * dy
+fz = f * dz
+p = 4.0 * (r6i) * (r6i - 1.0)

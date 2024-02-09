@@ -10,8 +10,8 @@ void initialize(){
 int kernel_id = 0;
 void operator()(const EPI* __restrict__ epi,const int ni,const EPJ* __restrict__ epj,const int nj,FORCE* __restrict__ force,const int kernel_select = 1){
 static_assert(sizeof(EPI) == 24,"check consistency of EPI member variable definition between PIKG source and original source");
-static_assert(sizeof(EPJ) == 40,"check consistency of EPJ member variable definition between PIKG source and original source");
-static_assert(sizeof(FORCE) == 24,"check consistency of FORCE member variable definition between PIKG source and original source");
+static_assert(sizeof(EPJ) == 32,"check consistency of EPJ member variable definition between PIKG source and original source");
+static_assert(sizeof(FORCE) == 32,"check consistency of FORCE member variable definition between PIKG source and original source");
 if(kernel_select>=0) kernel_id = kernel_select;
 if(kernel_id == 0){
 std::cout << "ni: " << ni << " nj:" << nj << std::endl;
@@ -38,29 +38,45 @@ void Kernel_I1_J1(const EPI* __restrict__ epi,const PIKG::S32 ni,const EPJ* __re
 PIKG::S32 i;
 PIKG::S32 j;
 for(i = 0;i < ni;++i){
-PIKG::F64vec ri;
+PIKG::F64 rix;
 
-ri.x = epi[i+0].r.x;
-ri.y = epi[i+0].r.y;
-ri.z = epi[i+0].r.z;
-PIKG::F64vec ai;
+rix = epi[i+0].rx;
+PIKG::F64 riy;
 
-ai.x = 0.0;
-ai.y = 0.0;
-ai.z = 0.0;
+riy = epi[i+0].ry;
+PIKG::F64 riz;
+
+riz = epi[i+0].rz;
+PIKG::F64 fx;
+
+fx = 0.0;
+PIKG::F64 fy;
+
+fy = 0.0;
+PIKG::F64 fz;
+
+fz = 0.0;
+PIKG::F64 p;
+
+p = 0.0;
 for(j = 0;j < nj;++j){
 PIKG::F64 eps2;
 
 eps2 = epj[j].eps;
-PIKG::F64 mj;
+PIKG::F64 rjx;
 
-mj = epj[j].m;
-PIKG::F64vec rj;
+rjx = epj[j].rx;
+PIKG::F64 rjy;
 
-rj.x = epj[j].r.x;
-rj.y = epj[j].r.y;
-rj.z = epj[j].r.z;
-PIKG::F64vec rij;
+rjy = epj[j].ry;
+PIKG::F64 rjz;
+
+rjz = epj[j].rz;
+PIKG::F64 dx;
+
+PIKG::F64 dy;
+
+PIKG::F64 dz;
 
 PIKG::F64 __fkg_tmp1;
 
@@ -68,32 +84,46 @@ PIKG::F64 __fkg_tmp0;
 
 PIKG::F64 r2;
 
-PIKG::F64 r_inv;
+PIKG::F64 r2i;
 
-PIKG::F64 r2_inv;
+PIKG::F64 __fkg_tmp2;
 
-PIKG::F64 mr_inv;
+PIKG::F64 r6i;
 
-PIKG::F64 mr3_inv;
+PIKG::F64 __fkg_tmp4;
 
-rij.x = (ri.x-rj.x);
-rij.y = (ri.y-rj.y);
-rij.z = (ri.z-rj.z);
-__fkg_tmp1 = (rij.x*rij.x+eps2);
-__fkg_tmp0 = (rij.y*rij.y+__fkg_tmp1);
-r2 = (rij.z*rij.z+__fkg_tmp0);
-r_inv = rsqrt(r2);
-r2_inv = (r_inv*r_inv);
-mr_inv = (mj*r_inv);
-mr3_inv = (r2_inv*mr_inv);
-ai.x = (mr3_inv*rij.x+ai.x);
-ai.y = (mr3_inv*rij.y+ai.y);
-ai.z = (mr3_inv*rij.z+ai.z);
+PIKG::F64 __fkg_tmp3;
+
+PIKG::F64 f;
+
+PIKG::F64 __fkg_tmp5;
+
+PIKG::F64 __fkg_tmp6;
+
+dx = (rix-rjx);
+dy = (riy-rjy);
+dz = (riz-rjz);
+__fkg_tmp1 = (dx*dx+eps2);
+__fkg_tmp0 = (dy*dy+__fkg_tmp1);
+r2 = (dz*dz+__fkg_tmp0);
+r2i = (1.0/r2);
+__fkg_tmp2 = (r2i*r2i);
+r6i = (__fkg_tmp2*r2i);
+__fkg_tmp4 = (48.0*r6i-24.0);
+__fkg_tmp3 = (__fkg_tmp4*r6i);
+f = (__fkg_tmp3*r2i);
+fx = (f*dx+fx);
+fy = (f*dy+fy);
+fz = (f*dz+fz);
+__fkg_tmp5 = (4.0*r6i);
+__fkg_tmp6 = (r6i-1.0);
+p = (__fkg_tmp5*__fkg_tmp6+p);
 } // loop of j
 
-force[i+0].acc.x = (force[i+0].acc.x+ai.x);
-force[i+0].acc.y = (force[i+0].acc.y+ai.y);
-force[i+0].acc.z = (force[i+0].acc.z+ai.z);
+force[i+0].fx = (force[i+0].fx+fx);
+force[i+0].fy = (force[i+0].fy+fy);
+force[i+0].fz = (force[i+0].fz+fz);
+force[i+0].p = (force[i+0].p+p);
 } // loop of i
 } // Kernel_I1_J1 definition 
 PIKG::F64 rsqrt(PIKG::F64 op){ return 1.0/std::sqrt(op); }

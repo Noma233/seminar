@@ -51,12 +51,7 @@ for (int i = 0; i < ni; i++) {
 }
 
 }
-void evaluate_gravity_simd(
-    int ni,
-    int nj,
-    double xi[],
-    double yi[],
-    double zi[],
+void evaluate_gravity_simd(int ni, int nj, double xi[], double yi[], double zi[],
     double xj[],
     double yj[],
     double zj[],

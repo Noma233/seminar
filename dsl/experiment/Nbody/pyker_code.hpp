@@ -1,22 +1,32 @@
 #include<math.h>
 ;
-int kernel(int n, double xi[][3], double xj[][3], double mass[], double ai[][3], double eps2, double g){
+int kernel(int n, double ri[][3], double rj[][3], double mj[], double eps2[], double ai[][3]){
    int i;
    int j;
-   double dr_v0;
-   double dr_v1;
-   double dr_v2;
+   double rij_v0;
+   double rij_v1;
+   double rij_v2;
+   double r2;
+   double r_inv;
+   double r2_inv;
+   double mr_inv;
+   double mr3_inv;
    for (i = 0; i < n; i += 1) {
       ;
       ;
       for (j = 0; j < n; j += 1) {
          ;
-         dr_v0 = -xi[i][0] + xj[j][0];
-         dr_v1 = -xi[i][1] + xj[j][1];
-         dr_v2 = -xi[i][2] + xj[j][2];
-         ai[i][0] += (mass[j]*(dr_v0*g))/sqrt(eps2 + (dr_v2*dr_v2 + (dr_v0*dr_v0 + dr_v1*dr_v1)));
-         ai[i][1] += (mass[j]*(dr_v1*g))/sqrt(eps2 + (dr_v2*dr_v2 + (dr_v0*dr_v0 + dr_v1*dr_v1)));
-         ai[i][2] += (mass[j]*(dr_v2*g))/sqrt(eps2 + (dr_v2*dr_v2 + (dr_v0*dr_v0 + dr_v1*dr_v1)));
+         rij_v0 = ri[i][0] - rj[j][0];
+         rij_v1 = ri[i][1] - rj[j][1];
+         rij_v2 = ri[i][2] - rj[j][2];
+         r2 = eps2[j] + (rij_v2*rij_v2 + (rij_v0*rij_v0 + rij_v1*rij_v1));
+         r_inv = 1.0/sqrt(r2);
+         r2_inv = r_inv*r_inv;
+         mr_inv = mj[j]*r_inv;
+         mr3_inv = mr_inv*r2_inv;
+         ai[i][0] += mr3_inv*rij_v0;
+         ai[i][1] += mr3_inv*rij_v1;
+         ai[i][2] += mr3_inv*rij_v2;
       };
       ;
    };

@@ -284,72 +284,165 @@ int kernel( (1) double xi[][3], double xj[][3], double eps2, double ai[][3], ...
 \subsubsection{code generatation of SIMD}
 
 
-\begin{lstlisting}[frame=single, caption=hoge]
-//(1) include part
-#include<math>
-#include<immintrin.h>
-int kernel( (2) double xi[][3], double xj[][3], double eps2, double ai[][3], ...) {
-  //(3) decleare tmp variable
-  int i;
-  int j;
-  __m256d xi_tmp_v0;
-  __m256d xi_tmp_v1;  
-  __m256d xi_tmp_v2;
-  __m256d eps2_tmp;
-  // ... 
-  // ... 
-  // ... 
-  //(4) def not class variables
-  eps2_tmp = _mm256_set1_pd(eps2);
-  // ... 
-  // ... 
-  // ... 
-  
-  // (5) loop increment
-  for(i = 0;i < n;i += 4) {
-    // (6) Load EPI variable part
-    int index_gather_0[4] = {0, 3, 6, 9};
-    __m128i vindex_gather_0 = _mm_load_si128((const __m128i*)index_gather_0);    
-    // ... 
-    // ... 
-    // ... 
-
-    // (7) initialize result temporary variable
-    ai_tmp_v0 = _mm256_set1_pd(0.0);
-    ai_tmp_v1 = _mm256_set1_pd(0.0);
-    ai_tmp_v2 = _mm256_set1_pd(0.0);
-
-
-    for(j = 0;j < n;j += 1) {
-      // (8) Load EPJ variable part
-         xj_tmp_v0 = _mm256_set1_pd(xj[j][0]);
-         xj_tmp_v1 = _mm256_set1_pd(xj[j][1]);
-         xj_tmp_v2 = _mm256_set1_pd(xj[j][2]);
-        // ... 
-        // ... 
-        // ... 
-         
-
-      // (9) calculate interparticle
-        dr_tmp_v0 = _mm256_sub_pd(xj_tmp_v0, xi_tmp_v0);
-        dr_tmp_v1 = _mm256_sub_pd(xj_tmp_v1, xi_tmp_v1);
-        dr_tmp_v2 = _mm256_sub_pd(xj_tmp_v2, xi_tmp_v2);
-        ai_tmp_v0 += _mm256_div_pd(_mm256_mul_pd(//.....));
-        ai_tmp_v1 += _mm256_div_pd(_mm256_mul_pd(//.....));
-        ai_tmp_v2 += _mm256_div_pd(_mm256_mul_pd(//.....));
-
-    }
-
-    // (10) Store result part
-
-  }
-  return 0;
-}
-\end{lstlisting}
 
 
 
 \section{Experiments}
+
+\subsection{gravity interparticle}
+ほぼ同じコードで実行
+
+
+\begin{lstlisting}[frame=single, caption=Nbody-kernel.pyker, label=Nbody-kernel.pyker]
+  EPI vec3<F64> ri
+  EPJ vec3<F64> rj
+  EPJ F64 mass
+  EPJ F64 eps2
+  FORCE vec3<F64> ai
+  rij = ri - rj
+  r2 = rij * rij + eps2
+  r_inv = 1.0 / sqrt(r2)
+  r2_inv = r_inv * r_inv
+  mr_inv = mass * r_inv
+  mr3_inv = r2_inv * mr_inv
+  ai = mr3_inv * rij
+  \end{lstlisting}
+
+\begin{lstlisting}[frame=single, caption=Nbody-kernel.pikg, label=Nbody-kernel.pikg]
+  EPI F64vec ri:r
+  EPJ F64vec rj:r
+  EPJ F64 mj:m
+  
+  EPJ F64 eps2:eps
+  
+  FORCE F64vec ai:acc
+  
+  rij = ri - rj
+  r2 = rij * rij + eps2
+  r_inv  = rsqrt(r2)
+  r2_inv = r_inv * r_inv
+  mr_inv  = mj * r_inv
+  mr3_inv = r2_inv * mr_inv
+  ai += mr3_inv * rij
+  
+\end{lstlisting}
+
+
+
+
+non-simd
+
+g++ -O3 
+
+\begin{tabular}{|l|r|r|} \hline
+  N & Pyker & PIKG \\ \hline
+  25000 & 6.725156 & 4.444766 \\
+  10000 & 0.738918sec & 0.517324sec \\
+
+
+ \\ \hline
+\end{tabular}
+
+
+\begin{lstlisting}[frame=single, caption=Nbody-kernel.pikg, label=Nbody-kernel.pikg]
+  g++ -O3 -I ~/school/PIKG/PIKG/inc -mavx2 -mfma gravity_interparticle.cpp
+  
+  \end{lstlisting}
+
+
+
+  \begin{tabular}{|l|r|r|} \hline
+    N & Pyker(sec) & PIKG(sec) \\ \hline
+    50000 & 5.119071 & 3.333270\\
+    25000 & 1.218129 & 1.148511 \\
+    10000 & 0.143777 & 0.101594 \\
+    1000 &  0.003521 & 0.002168 \\ \hline
+  \end{tabular}
+  
+% \begin{tabular}{lrr}
+%   N & pyker & PIKG \\
+%   10000 & 0.143777sec & 0.101594sec \\
+%   x & y & z 
+%  \end{tabular}
+
+\subsection{LennardJones}
+
+\begin{lstlisting}[frame=single, caption=LennardJones-kernel.pyker, label=LennardJones-kernel.pyker]
+EPI F64 rix
+EPI F64 riy
+EPI F64 riz
+EPJ F64 rjx
+EPJ F64 rjy
+EPJ F64 rjz
+EPJ F64 eps
+
+FORCE F64 fx
+FORCE F64 fy
+FORCE F64 fz
+FORCE F64 p
+dx = rix - rjx
+dy = riy - rjy
+dz = riz - rjz
+r2 = dx * dx + dy * dy + dz * dz + eps
+r2i = 1.0 / r2
+r6i = r2i * r2i * r2i
+f = (48.0* r6i - 24.0) * r6i * r2i
+fx = f * dx
+fy = f * dy
+fz = f * dz
+p = 4.0 * (r6i) * (r6i - 1.0)
+\end{lstlisting}
+\begin{lstlisting}[frame=single, caption=LennardJones-kernel.pyker, label=LennardJones-kernel.pyker]
+  EPI F64 rix:rx
+  EPI F64 riy:ry
+  EPI F64 riz:rz
+  
+  EPJ F64 rjx:rx
+  EPJ F64 rjy:ry
+  EPJ F64 rjz:rz
+  EPJ F64 eps2:eps
+  
+  FORCE F64 fx:fx
+  FORCE F64 fy:fy
+  FORCE F64 fz:fz
+  FORCE F64 p:p
+  
+  dx  = rix - rjx
+  dy = riy - rjy
+  dz  = riz - rjz
+  r2  = dx * dx + dy * dy + dz * dz + eps2
+  r2i = 1.0 / r2
+  r6i = r2i * r2i * r2i
+  f = (48.0 * r6i - 24.0) * r6i * r2i
+  fx += f * dx
+  fy += f * dy
+  fz += f * dz
+  p += 4.0 * r6i*(r6i - 1.0)
+
+\end{lstlisting}
+
+
+non-simd
+\begin{tabular}{|l|r|r|} \hline
+  N & Pyker & PIKG \\ \hline
+  50000 & 40.736862 & 11.656278 \\
+  25000 & 10.662050 & 3.521253 \\
+  10000 & 0.985475 & 0.442775 \\
+ \\ \hline
+\end{tabular}
+
+
+simd
+\begin{tabular}{|l|r|r|} \hline
+  N & Pyker & PIKG \\ \hline
+  50000 & 3.702871  & 2.838773\\
+  25000 & 0.838122 & 0.9904373 \\
+  10000 & 0.134388 & 0.215270 \\
+
+ \\ \hline
+\end{tabular}
+
+
 
 \section{Conclusion}
 \section{Acknowledgement}

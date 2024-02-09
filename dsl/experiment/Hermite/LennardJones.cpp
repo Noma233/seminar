@@ -25,10 +25,10 @@ struct FORCE {
    pikg_f64vec3 j;
 };
 
-#include "sample1_kernel.hpp"
-// #include "harp_pyker_code.hpp"
-#include "harp_pyker_simdcode.hpp"
-// #include "avx2_code.hpp"
+// #include "pikg_kernel.hpp"
+// #include "pikg_kernel_AVX2.hpp"
+// #include "pyker_kernel.hpp"
+// #include "pyker_kernel_AVX2.hpp"
 
 // 乱数を生成するための関数
 double rand_double(double min, double max) {
@@ -56,14 +56,20 @@ int main() {
    Kernel pikg_kernel;
 
 
-   double (*ri)[3] = static_cast<double(*)[3]>(aligned_alloc(32, n * 3 * sizeof(double))); 
-   double (*vi)[3] = static_cast<double(*)[3]>(aligned_alloc(32, n * 3 * sizeof(double))); 
+   double (*rix) = static_cast<double(*)>(aligned_alloc(32, n * sizeof(double))); 
+   double (*riy) = static_cast<double(*)>(aligned_alloc(32, n * sizeof(double))); 
+   double (*riz) = static_cast<double(*)>(aligned_alloc(32, n * sizeof(double))); 
+   double (*rjx) = static_cast<double(*)>(aligned_alloc(32, n * sizeof(double))); 
+   double (*rjy) = static_cast<double(*)>(aligned_alloc(32, n * sizeof(double))); 
+   double (*rjz) = static_cast<double(*)>(aligned_alloc(32, n * sizeof(double))); 
    double (*rj)[3] = static_cast<double(*)[3]>(aligned_alloc(32, n * 3 * sizeof(double))); 
    double (*vj)[3] = static_cast<double(*)[3]>(aligned_alloc(32, n * 3 * sizeof(double))); 
    double *mj = static_cast<double*>(aligned_alloc(32, n * sizeof(double)));
    double *eps2 = static_cast<double*>(aligned_alloc(32, n * sizeof(double)));
-   double (*F)[3] = static_cast<double(*)[3]>(aligned_alloc(32, n * 3 * sizeof(double)));
-   double (*J)[3] = static_cast<double(*)[3]>(aligned_alloc(32, n * 3 * sizeof(double)));
+   double (*fx) = static_cast<double(*)>(aligned_alloc(32, n * sizeof(double))); 
+   double (*fy) = static_cast<double(*)>(aligned_alloc(32, n * sizeof(double))); 
+   double (*fz) = static_cast<double(*)>(aligned_alloc(32, n * sizeof(double))); 
+   double (*p) = static_cast<double(*)>(aligned_alloc(32, n * sizeof(double))); 
 
    // epiとepjの変数を乱数で初期化
    for(int i = 0; i < nepi; ++i) {

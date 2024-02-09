@@ -14,7 +14,7 @@ struct EPI {
 struct EPJ{
    pikg_f64vec3 r;
    double m;
-   double eps
+   double eps;
 };
 
 struct FORCE {
@@ -23,6 +23,9 @@ struct FORCE {
 
 #include "pikg_kernel.hpp"
 #include "pyker_code.hpp"
+
+// #include "pikg_kernel_AVX2.hpp"
+// #include "pyker_kernel_AVX2.hpp"
 
 // 乱数を生成するための関数
 double rand_double(double min, double max) {
@@ -47,7 +50,7 @@ double calculate_difference(double a, double b) {
 int main() {
    srand((unsigned)time(NULL)); // 乱数のシードを設定
 
-   int n = 50000;
+   int n = 25000;
 
    //PIKG用のコード
    const int nepi = n; 
@@ -58,22 +61,19 @@ int main() {
    Kernel pikg_kernel;
 
 
-   double (*xi)[3] = static_cast<double(*)[3]>(aligned_alloc(32, n * 3 * sizeof(double))); 
+   double (*ri)[3] = static_cast<double(*)[3]>(aligned_alloc(32, n * 3 * sizeof(double))); 
    double (*vi)[3] = static_cast<double(*)[3]>(aligned_alloc(32, n * 3 * sizeof(double))); 
    double (*rj)[3] = static_cast<double(*)[3]>(aligned_alloc(32, n * 3 * sizeof(double))); 
    double (*vj)[3] = static_cast<double(*)[3]>(aligned_alloc(32, n * 3 * sizeof(double))); 
    double *mj = static_cast<double*>(aligned_alloc(32, n * sizeof(double)));
    double *eps2 = static_cast<double*>(aligned_alloc(32, n * sizeof(double)));
-   double (*F)[3] = static_cast<double(*)[3]>(aligned_alloc(32, n * 3 * sizeof(double)));
+   double (*ai)[3] = static_cast<double(*)[3]>(aligned_alloc(32, n * 3 * sizeof(double)));
    double (*J)[3] = static_cast<double(*)[3]>(aligned_alloc(32, n * 3 * sizeof(double)));
 
    // epiとepjの変数を乱数で初期化
    for(int i = 0; i < nepi; ++i) {
       epi[i].r = {rand_double(-1.0, 1.0), rand_double(-1.0, 1.0), rand_double(-1.0, 1.0)};
-      epi[i].v = {rand_double(-1.0, 1.0), rand_double(-1.0, 1.0), rand_double(-1.0, 1.0)};
-      epj[i].r = {rand_double(-1.0, 1.0), rand_double(-1.0, 1.0), rand_double(-1.0, 1.0)};
-      epj[i].r = {rand_double(-1.0, 1.0), rand_double(-1.0, 1.0), rand_double(-1.0, 1.0)};
-      epj[i].v = {rand_double(-1.0, 1.0), rand_double(-1.0, 1.0), rand_double(-1.0, 1.0)};
+      epj[i].r = {epi[i].r.x, epi[i].r.y, epi[i].r.z};
       epj[i].m = rand_double(0.5, 2.0);
       epj[i].eps = rand_double(0.01, 0.1);
       ri[i][0] = epi[i].r.x;
@@ -122,7 +122,7 @@ int main() {
 
 
    start = clock();
-   kernel(n, xi, xi, mj, F, eps2[0], 1.0);
+   kernel(n, ri, rj, mj, eps2, ai);
    end = clock();
    double pyker_code_elapsed = (double)(end - start) / CLOCKS_PER_SEC;
    printf("N = %d\n", n);
@@ -130,24 +130,27 @@ int main() {
 
 
 
-   // double total_diff_Fx = 0.0;
-   // double total_diff_Fy = 0.0;
-   // double total_diff_Fz = 0.0;
-   // double total_diff_Jx = 0.0;
-   // double total_diff_Jy = 0.0;
-   // double total_diff_Jz = 0.0;
-   //  for (int i = 0; i < n; i++) {
-   //      total_diff_Fx = std::max(abs(force[i].f.x - F[i][0]) / force[i].f.x, total_diff_Fx);
-   //      total_diff_Fy = std::max(abs(force[i].f.y - F[i][0]) / force[i].f.y, total_diff_Fy);
-   //      total_diff_Fz = std::max(abs(force[i].f.z - F[i][0]) / force[i].f.z, total_diff_Fz);
-   //      total_diff_Jx = std::max(abs(force[i].j.x - J[i][0]) / force[i].j.x, total_diff_Jx);
-   //      total_diff_Jy = std::max(abs(force[i].j.y - J[i][0]) / force[i].j.y, total_diff_Jy);
-   //      total_diff_Jz = std::max(abs(force[i].j.z - J[i][0]) / force[i].j.z, total_diff_Jz);
-   //  }
+   double total_diff_Fx = 0.0;
+   double total_diff_Fy = 0.0;
+   double total_diff_Fz = 0.0;
+   double total_diff_Jx = 0.0;
+   double total_diff_Jy = 0.0;
+   double total_diff_Jz = 0.0;
+    for (int i = 0; i < n; i++) {
+        total_diff_Fx = std::max(abs(force[i].acc.x - ai[i][0]) / force[i].acc.x, total_diff_Fx);
+        total_diff_Fy = std::max(abs(force[i].acc.y - ai[i][1]) / force[i].acc.y, total_diff_Fy);
+        total_diff_Fz = std::max(abs(force[i].acc.z - ai[i][2]) / force[i].acc.z, total_diff_Fz);
+      //   total_diff_Jx = std::max(abs(force[i].j.x - J[i][0]) / force[i].j.x, total_diff_Jx);
+      //   total_diff_Jy = std::max(abs(force[i].j.y - J[i][0]) / force[i].j.y, total_diff_Jy);
+      //   total_diff_Jz = std::max(abs(force[i].j.z - J[i][0]) / force[i].j.z, total_diff_Jz);
+      if(i % 1000 == 0) {
+         printf("%lf %lf\n", force[i].acc.y, ai[i][1]);
+      }
+    }
 
-   // printf("Total difference in F.x: %f\n", total_diff_Fx / n);
-   // printf("Total difference in F.y: %f\n", total_diff_Fy / n);
-   // printf("Total difference in F.z: %f\n", total_diff_Fz / n);
+   printf("Total difference in F.x: %f\n", total_diff_Fx);
+   printf("Total difference in F.y: %f\n", total_diff_Fy);
+   printf("Total difference in F.z: %f\n", total_diff_Fz);
    // printf("Total difference in J.x: %f\n", total_diff_Jx / n);
    // printf("Total difference in J.y: %f\n", total_diff_Jy / n);
    // printf("Total difference in J.z: %f\n", total_diff_Jz / n);

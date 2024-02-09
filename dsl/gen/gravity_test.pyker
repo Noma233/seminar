@@ -5,5 +5,4 @@ FORCE vec3<F64> ai
 F64 eps2
 F64 g
 dr = xj -xi
-nor_inv = 1.0 / sqrt(dr ** 2 + eps2)
-ai = g * mass *  dr / nor_inv ** 3
+ai = g * mass *  dr / sqrt(dr ** 2 + eps2) ** 3
