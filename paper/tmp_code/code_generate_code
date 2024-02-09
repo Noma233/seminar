@@ -1,0 +1,28 @@
+
+\begin{lstlisting}[frame=single, caption=hoge]
+
+#include<math>
+int kernel( (1) double xi[][3], double xj[][3], double eps2, double ai[][3], ...) {
+  //(2)
+  int i;
+  int j;
+  double dr_v0;
+  double dr_v1;
+  double dr_v2;
+  // ... 
+  // ... 
+  // ... 
+
+  for(i = 0;i < n;i += 1) {
+    for(j = 0;j < n;j += 1) {
+      //(3)
+      dr_v0 = -xi[i][0] + xj[j][0];
+      dr_v1 = -xi[i][1] + xj[j][1];
+      dr_v2 = -xi[i][2] + xj[j][2];
+      // ... 
+      // ... 
+      // ... 
+    }
+  }
+}
+\end{lstlisting}

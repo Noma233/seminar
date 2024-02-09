@@ -1,0 +1,15 @@
+\begin{thebibliography}{1}
+
+\bibitem{GRAPE-explain-thesis}
+J.~Makino, K.~Hiraki, and M.~Inaba, ``Grape-dr: 2-pflops massively-parallel
+  computer with 512-core, 512-gflops processor chips for scientific
+  computing,'' Proceedings of the 2007 ACM/IEEE Conference on Supercomputing,
+  SC '07, New York, NY, USA, Association for Computing Machinery, 2007.
+
+\bibitem{GRAPE-DR-thesis}
+小池邦昭, 藤野健, 福重俊幸, 台坂博, 菅原豊, 稲葉真理, 平木敬, 牧野淳一郎, {\em
+  et~al.}, ``超並列準汎用計算機 grape-dr
+  による重力多体問題シミュレーションおよび lu 分解,''
+  研究報告計算機アーキテクチャ (ARC), vol.2009, no.26, pp.1--11, 2009.
+
+\end{thebibliography}
