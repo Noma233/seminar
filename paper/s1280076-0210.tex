@@ -1,4 +1,7 @@
-\documentclass[ams, a4j]{U-AizuGT}
+\documentclass[ams]{article}
+\usepackage[margin=20truemm]{geometry}
+\usepackage{setspace}
+\doublespacing
 \usepackage{pifont}
 % \usepackage{graphicx}
 \usepackage{cite}
@@ -8,12 +11,11 @@
 \usepackage{listings,jvlisting} 
 \usepackage[dvipdfmx]{graphicx}
 \usepackage{physics}
-\usepackage{tikz}
+
 \usepackage[utf8]{inputenc}
 \usepackage{booktabs} % きれいな表を作成するためのパッケージ
-\usetikzlibrary{shapes,arrows,positioning}
+
 \bibliographystyle{ieicetr}
-\usetikzlibrary{positioning, arrows.meta, shapes.geometric}
 
 \lstset{
     frame=single,
@@ -21,6 +23,28 @@
     tabsize=2
 }
 
+
+% \usepackage{listings,jlisting}
+
+% \lstset{%
+%   language={C},
+%   basicstyle={\small},%
+%   identifierstyle={\small},%
+%   commentstyle={\small\itshape},%
+%   keywordstyle={\small\bfseries},%
+%   ndkeywordstyle={\small},%
+%   stringstyle={\small\ttfamily},
+%   frame={tb},
+%   breaklines=true,
+%   columns=[l]{fullflexible},%
+%   numbers=left,%
+%   xrightmargin=0zw,%
+%   xleftmargin=3zw,%
+%   numberstyle={\scriptsize},%
+%   stepnumber=1,
+%   numbersep=1zw,%
+%   lineskip=-0.5ex%
+% }
 \lstset{
   basicstyle={\ttfamily},
   identifierstyle={\small},
@@ -42,8 +66,8 @@
 
 % \bibliographystyle{ieice}
 \author{Ryuki Hiwada}
-\studentid{s1280076}
-\supervisor{Naohito Nakasato}
+% \studentid{s1280076}
+% \supervisor{Naohito Nakasato}
 
 \title{Domain Specific Language for high performance computing}
 
@@ -200,21 +224,36 @@ Variable type is 'F64' for double-precision.In Pyker, Variable type is only 'F64
 Finally, the name of the variable is written.
 
 
-次に相互作用記述の説明をする。
-相互作用の記述に使える演算は以下の図に示す。
+Next, the interaction description is explained.
+
+In Pyker, you can use four arithmetic operations and sqrt(), power 
+multiplication, vector inner product, assignment, and '+=' for formulas.
+The operations that can be used to describe interactions are 
+shown in the following figure.
 \begin{lstlisting}[frame=single]
  +, -, /, *, **, sqrt(), =, +=
 \end{lstlisting}
-$+, -, *, /$ はそれぞれ 加算、減算、乗算、徐算を表す。
-$**$ はべき乗を表し、sqrt()は平方根を表す。
-$*$の項がどちらもベクトルの時、$**$の底がベクトル、指数が2の場合にそれぞれ内積の計算と判断される。
-$=$は一時変数を定義する際に使用する。一時変数は定義する際に型を定義する必要はなく、すでに定義されている変数の型とベクトルから
-推論を行い決定する。
-$+=$はFORCEの変数に計算結果を加算することを示す。
-原則、要素がベクトルの場合は、ベクトルの要素ごとに演算を行う。
-記述に使えるオブジェクトは、変数定義を行った変数とその記述より前に定義された一時変数と浮動小数である。
+\begin{itemize}
+  \item The $+, -, *,  /$ denote addition, subtraction, 
+  multiplication, and division, respectively. 
+  \item $**$ denotes a power
+  \item sqrt() denotes a square root.
+  \item When both terms of $*$ are vectors and the base of $**$ is 
+  a vector and the exponent is 2, respectively, the calculation is
+   determined to be an inner product.
+  \item The $+=$ indicates that the result of the calculation is added to the FORCE variable. 
+  \item $=$ is Assignment
+\end{itemize}
 
-以下に\label{eq:gravity}の計算をPyker記述した例を示す。
+In principle, if the elements are vectors, the operation is
+performed on each element of the vector.
+
+
+ The objects that can be used for the description are variables 
+ that have been defined and temporary variables and floats defined 
+ prior to the description.
+ The following is an example of a Pyker description 
+ of the calculation of the table \label{eq:gravity}
 \begin{lstlisting}[frame=single, caption=gravity\_interparticle, label=fuga]
   EPI vec3<F64> ri
   EPJ vec3<F64> rj
@@ -232,172 +271,16 @@ $+=$はFORCEの変数に計算結果を加算することを示す。
 
 次に、これらの記述からSIMD命令を行えるコードを生成する説明をする。
 
-
-
 \section{Parser of Pyker}
 Pykerでは、
 このセクションでは、まずどのようにしてSIMDによる並列化を行うか説明し、その後Pykerの記述の読み込みからコード生成までの処理内容と流れを説明します。
 
 
-
-
-\begin{tikzpicture}
-  \tikzset{
-    block/.style={
-      rectangle, draw, text centered, text width=3cm,
-      minimum height=1.5cm
-    },
-    line/.style={
-      draw, very thick, color=black!50, -Latex
-    }
-  }
-  
-  % Place nodes
-  \node[block] (parse) {Parse};
-  \node[block, right=of parse] (type_inference) {type\_inference};
-  \node[block, right=of type_inference] (bitree) {bitree};
-  \node[block, right=of bitree] (codegen) {Codegen};
-
-  % Draw edges
-  \path[line] (parse) -- (type_inference);
-  \path[line] (type_inference) -- (bitree);
-  \path[line] (bitree) -- (codegen);
-\end{tikzpicture}
-
 \subsubsection{AVX2 for parallelization}
-% _mm256dの説明はここですべきか？ codegen で説明すべきか
-To perform SIMD operations, just like with regular computations, data is first loaded from memory, computed based on that data,
-and the results are stored. However, in the case of SIMD, computations are performed using SIMD-specific registers, so the 
-methods of loading, computing, and storing differ. When loading, multiple elements that will undergo the same instruction are
-stored in a SIMD-specific register. These are then used to perform computations simultaneously, and the results are stored for
-each. 
+
+\subsubsection{Flow of Parse}
 
 
-For instance, consider a calculation like C = X + Y, where elements of double-precision floating arrays x and y are computed
-. When using AVX2 for SIMD, since the registers are 256 bits, four elements from x and y are loaded each. These are then added 
-simultaneously, and the results are stored in the array C. When loading into SIMD registers, if it's a 1-dimensional array, 
-contiguous memory access is sufficient, but for data structures like Array of Structures \lparen AoS \rparen shown in Figure a., elements need
-to be loaded individually. 
-
-
-For example, when considering the 3-dimensional coordinates of particles as double-precision floats 
-in pos\lbrack n\rbrack \lbrack 3\rbrack  \lparen where n is the total number of particles, and pos\lbrack i \rbrack \lbrack 0\rbrack , pos\lbrack i\rbrack \lbrack 1\rbrack , 
-pos\lbrack i\rbrack \lbrack 2\rbrack  represent the x, y, z coordinates 
-of the i-th particle, respectively\rparen, and calculating the difference in x coordinates between particles i and j, it becomes dx = 
-pos\lbrack i\rbrack \lbrack 0\rbrack  - pos\lbrack j\rbrack \lbrack 0\rbrack . However, for parallelization with SIMD, desiring dx0 = pos\lbrack i\rbrack \lbrack 0\rbrack  - pos\lbrack j \rbrack \lbrack 0\rbrack , dx1 = pos\lbrack i+1\rbrack \lbrack 0\rbrack  - pos\lbrack j\rbrack \lbrack 0\rbrack 
-, dx2 = pos\lbrack i+2\rbrack \lbrack 0\rbrack  - pos\lbrack j\rbrack \lbrack 0\rbrack , dx3 = pos\lbrack i+3\rbrack \lbrack 0\rbrack  - pos\lbrack j\rbrack \lbrack 0\rbrack , 
-the data are packed as \lparen pos\lbrack i\rbrack \lbrack 0\rbrack , pos\lbrack i+1\rbrack \lbrack 0\rbrack , pos\lbrack i+2\rbrack \lbrack  0\rbrack , pos\lbrack  i+3\rbrack \lbrack  0\rbrack \rparen,
-\lparen pos\lbrack  j\rbrack \lbrack  0\rbrack , pos\lbrack  j\rbrack \lbrack  0\rbrack , pos\lbrack  j\rbrack \lbrack  0\rbrack , pos\lbrack  j\rbrack \lbrack  0\rparen, \lparen dx0, dx1, dx2, dx3\rparen and subtraction is performed simultaneously. However, since data needs
-to be loaded onto SIMD registers all at once, the gather instruction is used to load data for particle i. The gather instruction is used
-to read non-contiguous data elements from memory addresses by specifying addresses. An explanation of the gather instruction is shown in 
-Figure x. Data loaded in this way are computed simultaneously using SIMD instructions. 
-
-\begin{lstlisting}[frame=single]
-  dx0 = pos[i][0] - pos[j][0]
-  dx1 = pos[i + 1][0] - pos[j][0]
-  dx2 = pos[i + 2][0] - pos[j][0]
-  dx3 = pos[i + 3][0] - pos[j][0]
-\end{lstlisting}
-
-\begin{lstlisting}[frame=single]
-  (x1, x2, x3, x4) + (y1, y2, y3, y)
-
-\end{lstlisting}
-
-
-When storing computation results, addresses may 
-not be contiguous. In such cases, there is an instruction called scatter, which is the counterpart to gather, but it is not supported 
-in AVX2, so data are stored using pointers individually. In this way, parallelization is achieved with SIMD. Moreover, these instructions
-can be explicitly handled in high-level programming languages like C and C++ using intrinsic functions. To handle intrinsic functions 
-in C and C++, include the file immintrin.h, which is available as a standard in the language. An example of C++ code that calculates the difference in x coordinates, simd\_tmp.cpp, is shown. { Pyker}  generates C++ code capable of executing SIMD instructions like simd\_tmp.cpp
-from the described formulas. The next section will explain the Pyker.
-
-
-\subsection{Pyker}
-In this DSL, code is generated by writing and compiling two definitions: the definition of variables and the definition of interaction formulas. First, let us explain the variable definition.
-
-
-In this DSL, variables are classified into classes: EPI, EPJ, FORCE, and others. EPI represents particles that receive interactions, 
-while EPJ represents particles that provide interactions. FORCE holds the results of the interaction calculations, and other variables 
-include softening parameters and the like. To perform calculations using these variables, in C++, it would be similar to \ref{fuga}.
-
-
-
-\begin{lstlisting}[frame=single, caption=skeleton code, label=fuga]
-int kernel(double xi[][3], double xj[][3], double ai[][3], double eps2, int n){
-	// (1).preprocess
-	for(int i = 0;i < n;i += 4) { // (2)Increment the number of parallels
-		// (3).load EPI
-		// (4).Initialization of tmporary force
-		for(int j = 0;j < n;j += 1) {
-        // (5) load EPJ
-				// (6) calculate interparticle interactions
-		}
-		// (7). Store calculation result in the FORCE
-	}
-}
-\end{lstlisting}
-
-(1) involves preparatory steps such as defining variables necessary for the calculation. (2) 
-involves loading the variables of EPI. (3) is about initializing variables that temporarily
- hold the results of the interaction calculation. (4) involves performing the interaction 
- calculation and saving the results in the primary variable of force. (5) involves storing the results in the FORCE variables.
-To generate this code, in variable definition, information about the class of the variable,
- its type, and its dimension is necessary. Therefore, in pyker, variable definitions are written as follows. .
-The first column, if it is a class, writes the name of the class and its member variable
- name. The second column explicitly writes the dimensions of the vector if there are any, 
- specifying 3 or 4 dimensions, and the type is either 32-bit or 64-bit floating-point. The 
- third column becomes the name of the variable handled on pykg. For example, "EPI.pos vec3<F64> xi" 
- would be a member variable of EPI named pos, a 3-dimensional 64-bit floating-point variable named xi.
-The definition of interaction formulas is written to accumulate the results in the FORCE variable using
- the defined variables. Primary variables necessary for the mathematical description can be newly defined 
- using previously defined variables. Available operations include basic arithmetic, sqrt, and the power 
- symbol "**". The result is stored in the FORCE variable using '='.For instance, to generate code that c
- alculates the gravitational interaction formula shown in Figure 1, it would be written in this DSL as figure1.pyker.
-
-
-\begin{lstlisting}[frame=single, caption=hoge, label=fuga]
-EPI.pos vec3<F64> xi
-EPJ.pos vec3<F64> xj
-EPJ.m F64 mass
-FORCE.acc vec3<F64> ai
-F64 eps2
-F64 g
-dr = xj - xi
-ai = g * mass *  dr / sqrt(dr ** 2 + eps2) ** 3
-\end{lstlisting}
-\subsection{Implementation}
-The process of generating code is illustrated in the following flowchart. In Parsing, the information
-of the variables defined in the DSL code is converted into a hash with the variable names as keys. 
-Formulas are converted into syntax trees using the sympify() method of Sympy, and a list of these 
-trees is obtained. Next, Common Subexpression Elimination (CSE) is performed on the syntax trees of the converted formulas. CSE is the process 
-of reducing the number of operations by pre-calculating common subexpressions in formulas and using 
-their results in subsequent calculations. In type inference, the types of the primary variables in the 
-formulas are inferred. Afterward, all syntax trees are converted into binary trees to align them with 
-SIMD operations. Finally, the code for calculating interactions is generated by traversing the processed 
-syntax trees. The following sections describe how the implementation was carried out in the order of
-Parsing, CSE, type inference, conversion to binary trees, and Code generation.
-\includegraphics[width=0.2\textwidth]{flowchartver3.jpg}
-\subsubsection{Parsing}
-In Parsing, the process is divided between variable definition and formula handling. In variable definition, 
-objects with class, vector, type, and variable name are created respectively. A hash with the variable name
-as the key is then made (name\_variable\_map). Formulas use the sympify() method from the Sympy library to convert
-the code read as a string into a syntax tree of formulas, obtaining a list of these syntax trees (expr\_list). Next, 
-Common Subexpression Elimination (CSE) is performed.
-\subsubsection{CSE}
-
-\subsubsection{type inference}
-\subsubsection{convert to binary trees}
-
-\subsubsection{code generatation of non SIMD}
-
-
-\subsubsection{code generatation of SIMD}
-
-
-
-
-  
 \section{Experiments}
 
 \subsection{gravity interparticle}
@@ -551,6 +434,7 @@ simd
 
 \section{Conclusion}
 \section{Acknowledgement}
+
 
 \begin{thebibliography}{99}
 \end{thebibliography}
