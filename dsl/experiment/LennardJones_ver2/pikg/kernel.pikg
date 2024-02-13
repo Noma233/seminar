@@ -1,17 +1,14 @@
 EPI F64 rix:rx
 EPI F64 riy:ry
 EPI F64 riz:rz
-
 EPJ F64 rjx:rx
 EPJ F64 rjy:ry
 EPJ F64 rjz:rz
 EPJ F64 eps2:eps
-
 FORCE F64 fx:fx
 FORCE F64 fy:fy
 FORCE F64 fz:fz
 FORCE F64 p:p
-
 dx  = rix - rjx
 dy = riy - rjy
 dz  = riz - rjz

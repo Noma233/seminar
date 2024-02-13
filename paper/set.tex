@@ -1,0 +1,30 @@
+\documentclass[a4j]{jarticle} %ここは関係ない
+\usepackage{pifont}
+% \usepackage{graphicx}
+\usepackage{cite}
+\usepackage{mathtools}
+% \usepackage{listings,jvlisting}
+\usepackage{listings,jvlisting} 
+\usepackage[dvipdfmx]{graphicx}
+\usepackage{physics}
+\usepackage{tikz}
+\usepackage[utf8]{inputenc}
+\usepackage{booktabs} % きれいな表を作成するためのパッケージ
+\usetikzlibrary{shapes,arrows,positioning}
+\bibliographystyle{ieicetr}
+\usetikzlibrary{positioning, arrows.meta, shapes.geometric}
+\begin{document}
+
+\begin{table}[h]
+    \centering
+    \caption{表のタイトル}
+    \label{tab:hogehoge}
+    \begin{tabular}{|c|c|c|}
+        \hline  
+        50000 & 5.282461100 & 4.059262 \\
+  25000 & 1.322715200 & 1.008046 \\
+  10000 & 0.213696 & 0.161884 \\
+  1000 & 0.002116 & 0.001713 \\
+    \end{tabular}
+\end{table}
+\end{document}

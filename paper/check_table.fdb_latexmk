@@ -1,0 +1,17 @@
+# Fdb version 3
+["pdflatex"] 1707633206 "/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex" "/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.pdf" "check_table" 1707633206
+  "/etc/texmf/web2c/texmf.cnf" 1705469744 475 c0e671620eb5563b2130f56340a5fde8 ""
+  "/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.aux" 1707633206 8 a94a2480d3289e625eea47cd1b285758 ""
+  "/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex" 1707633205 3246 975c2f4d2604d0bc5685032837910e8e ""
+  "/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdfmode.def" 1580854751 25404 9d60f463a00d154207ec0048dee27cf0 ""
+  "/usr/share/texlive/texmf-dist/tex/platex/base/jarticle.cls" 1580682660 25871 bf40341a488374276f7be0edb3ef0bb8 ""
+  "/usr/share/texlive/texmf-dist/web2c/texmf.cnf" 1581979058 38841 ce3692aa899bb693b90b87eaa5d4d84e ""
+  "/usr/share/texmf/web2c/texmf.cnf" 1581979058 38841 ce3692aa899bb693b90b87eaa5d4d84e ""
+  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1705899341 8258535 9c006ec3f502acfd03b5435f6c406985 ""
+  "check_table.aux" 1707633206 8 a94a2480d3289e625eea47cd1b285758 "pdflatex"
+  "check_table.tex" 1707633205 3246 975c2f4d2604d0bc5685032837910e8e ""
+  (generated)
+  "/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.log"
+  "check_table.log"
+  "/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.pdf"
+  "check_table.aux"

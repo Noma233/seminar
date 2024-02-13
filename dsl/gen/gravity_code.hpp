@@ -1,31 +1,32 @@
 #include<math.h>
 ;
-int kernel(int n, double rix[], double riy[], double riz[], double rjx[], double rjy[], double rjz[], double eps[], double fx[], double fy[], double fz[], double p[]){
+int kernel(int n, double ri[][3], double rj[][3], double m[], double eps2[], double ai[][3]){
    int i;
    int j;
-   double dx;
-   double dy;
-   double dz;
+   double rij_v0;
+   double rij_v1;
+   double rij_v2;
    double r2;
-   double r2i;
-   double r6i;
-   double f;
+   double r_inv;
+   double r2_inv;
+   double mr_inv;
+   double mr3_inv;
    for (i = 0; i < n; i += 1) {
       ;
       ;
       for (j = 0; j < n; j += 1) {
          ;
-         dx = rix[i] - rjx[j];
-         dy = riy[i] - rjy[j];
-         dz = riz[i] - rjz[j];
-         r2 = dz*dz + (dy*dy + (dx*dx + eps[j]));
-         r2i = 1.0/r2;
-         r6i = r2i*(r2i*r2i);
-         f = (r2i*r6i)*(48.0*r6i - 24.0);
-         fx[i] += dx*f;
-         fy[i] += dy*f;
-         fz[i] += dz*f;
-         p[i] += (4.0*r6i)*(r6i - 1.0);
+         rij_v0 = ri[i][0] - rj[j][0];
+         rij_v1 = ri[i][1] - rj[j][1];
+         rij_v2 = ri[i][2] - rj[j][2];
+         r2 = eps2[j] + (rij_v2*rij_v2 + (rij_v0*rij_v0 + rij_v1*rij_v1));
+         r_inv = 1.0/sqrt(r2);
+         r2_inv = r_inv*r_inv;
+         mr_inv = m[j]*r_inv;
+         mr3_inv = mr_inv*r2_inv;
+         ai[i][0] += mr3_inv*rij_v0;
+         ai[i][1] += mr3_inv*rij_v1;
+         ai[i][2] += mr3_inv*rij_v2;
       };
       ;
    };

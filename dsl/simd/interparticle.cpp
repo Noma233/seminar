@@ -23,20 +23,16 @@ double acci[][3],
 double eps2) {
                   
 for (int i = 0; i < ni; i++) {
-    double xi = posi[i][0];
-    double yi = posi[i][1];
-    double zi = posi[i][2];
     double ax = 0.0;
     double ay = 0.0;
     double az = 0.0;
 
     for (int j = 0; j < nj; j++) {
-        double dx = double(posj[j][0] - xi);
-        double dy = double(posj[j][1] - yi);
-        double dz = double(posj[j][2] - zi);
+        double dx = double(posj[j][0] - posi[i][0]);
+        double dy = double(posj[j][1] - posi[i][1]);
+        double dz = double(posj[j][2] - posi[i][2]);
         double r2 = dx * dx + dy * dy + dz * dz + eps2;
-        double ri2 = 1.0f / sqrt(r2); // <- 1.0f / r2 となっていて
-                                      //evaluate_gravityが速くなっていた
+        double ri2 = 1.0f / sqrt(r2); 
         
         double mr = mj[j] * ri2 * ri2 * ri2;
 

@@ -1,0 +1,12 @@
+PWD /home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper
+INPUT /etc/texmf/web2c/texmf.cnf
+INPUT /usr/share/texmf/web2c/texmf.cnf
+INPUT /usr/share/texlive/texmf-dist/web2c/texmf.cnf
+INPUT /var/lib/texmf/web2c/pdftex/pdflatex.fmt
+INPUT /home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex
+OUTPUT /home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.log
+INPUT /usr/share/texlive/texmf-dist/tex/platex/base/jarticle.cls
+INPUT /usr/share/texlive/texmf-dist/tex/platex/base/jarticle.cls
+INPUT /usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdfmode.def
+INPUT /usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdfmode.def
+OUTPUT /home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.aux

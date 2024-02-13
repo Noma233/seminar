@@ -7,6 +7,7 @@
 // #include<algorithm>
 #include<cmath>
 #include<time.h>
+#include<iostream>
 
 struct EPI {
    pikg_f64vec3 r;
@@ -26,9 +27,9 @@ struct FORCE {
 };
 
 // #include "pikg_kernel.hpp"
-// #include "pikg_kernel_AVX2.hpp"
 // #include "pyker_kernel.hpp"
-// #include "pyker_kernel_AVX2.hpp"
+#include "pikg_kernel_AVX2.hpp"
+#include "pyker_kernel_AVX2.hpp"
 
 // 乱数を生成するための関数
 double rand_double(double min, double max) {
@@ -42,11 +43,13 @@ double calculate_difference(double a, double b) {
    return diff;
 }
 
+
 int main() {
    srand((unsigned)time(NULL)); // 乱数のシードを設定
 
-   int n = 100000;
-
+   int n = 0;
+   
+   std::cin >> n;
    //PIKG用のコード
    const int nepi = n; 
    const int nepj = n; 
@@ -55,15 +58,13 @@ int main() {
    FORCE *force = new FORCE[n];
    Kernel pikg_kernel;
 
-
-   double (*rix) = static_cast<double(*)>(aligned_alloc(32, n * sizeof(double))); 
-   double (*riy) = static_cast<double(*)>(aligned_alloc(32, n * sizeof(double))); 
-   double (*riz) = static_cast<double(*)>(aligned_alloc(32, n * sizeof(double))); 
-   double (*rjx) = static_cast<double(*)>(aligned_alloc(32, n * sizeof(double))); 
-   double (*rjy) = static_cast<double(*)>(aligned_alloc(32, n * sizeof(double))); 
-   double (*rjz) = static_cast<double(*)>(aligned_alloc(32, n * sizeof(double))); 
+   double (*ri)[3] = static_cast<double(*)[3]>(aligned_alloc(32, n * 3 * sizeof(double))); 
+   double (*vi)[3] = static_cast<double(*)[3]>(aligned_alloc(32, n * 3 * sizeof(double))); 
    double (*rj)[3] = static_cast<double(*)[3]>(aligned_alloc(32, n * 3 * sizeof(double))); 
    double (*vj)[3] = static_cast<double(*)[3]>(aligned_alloc(32, n * 3 * sizeof(double))); 
+   double (*F)[3] = static_cast<double(*)[3]>(aligned_alloc(32, n * 3 * sizeof(double))); 
+   double (*J)[3] = static_cast<double(*)[3]>(aligned_alloc(32, n * 3 * sizeof(double))); 
+
    double *mj = static_cast<double*>(aligned_alloc(32, n * sizeof(double)));
    double *eps2 = static_cast<double*>(aligned_alloc(32, n * sizeof(double)));
    double (*fx) = static_cast<double(*)>(aligned_alloc(32, n * sizeof(double))); 
@@ -122,12 +123,12 @@ int main() {
 
    //PIKG
    clock_t start, end;
-   // start = clock();
-   // pikg_kernel(epi, nepi, epj, nepj, force); // ここで計算
-   // end = clock();
-   // double pikg_elapsed = (double)(end - start) / CLOCKS_PER_SEC;
-   // printf("N = %d\n", n);
-   // printf("pikg_kernel of elapsed time = %lfsec\n", pikg_elapsed);
+   start = clock();
+   pikg_kernel(epi, nepi, epj, nepj, force); // ここで計算
+   end = clock();
+   double pikg_elapsed = (double)(end - start) / CLOCKS_PER_SEC;
+   printf("N = %d\n", n);
+   printf("pikg_kernel of elapsed time = %lfsec\n", pikg_elapsed);
 
 
    start = clock();
@@ -157,10 +158,10 @@ int main() {
       //   }
     }
 
-   // printf("max difference in F.x: %f\n", total_diff_Fx);
-   // printf("max difference in F.y: %f\n", total_diff_Fy);
-   // printf("max difference in F.z: %f\n", total_diff_Fz);
-   // printf("Total difference in J.x: %f\n", total_diff_Jx);
-   // printf("Total difference in J.y: %f\n", total_diff_Jy);
-   // printf("Total difference in J.z: %f\n", total_diff_Jz);
+   printf("max difference in F.x: %f\n", total_diff_Fx);
+   printf("max difference in F.y: %f\n", total_diff_Fy);
+   printf("max difference in F.z: %f\n", total_diff_Fz);
+   printf("Total difference in J.x: %f\n", total_diff_Jx);
+   printf("Total difference in J.y: %f\n", total_diff_Jy);
+   printf("Total difference in J.z: %f\n", total_diff_Jz);
 }

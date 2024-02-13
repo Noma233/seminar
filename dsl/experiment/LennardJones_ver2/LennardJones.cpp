@@ -25,10 +25,10 @@ struct FORCE{
   double p;
 };
 
-// #include "pikg_kernel.hpp"
-// #include "pyker_kernel.hpp"
-#include "pikg_kernel_AVX2.hpp"
-#include "pyker_kernel_AVX2.hpp"
+#include "pikg_kernel.hpp"
+#include "pyker_kernel.hpp"
+// #include "pikg_kernel_AVX2.hpp"
+// #include "pyker_kernel_AVX2.hpp"
 
 // 乱数を生成するための関数
 double rand_double(double min, double max) {

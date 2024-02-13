@@ -1,11 +1,8 @@
 EPI F64vec ri:r
 EPJ F64vec rj:r
 EPJ F64 mj:m
-
 EPJ F64 eps2:eps
-
 FORCE F64vec ai:acc
-
 rij = ri - rj
 r2 = rij * rij + eps2
 r_inv  = rsqrt(r2)

@@ -1,0 +1,1181 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.20 (TeX Live 2019/Debian) (preloaded format=pdflatex 2024.1.22)  11 FEB 2024 15:33
+entering extended mode
+ restricted \write18 enabled.
+ file:line:error style messages enabled.
+ %&-line parsing enabled.
+**/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex
+(/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex
+LaTeX2e <2020-02-02> patch level 2
+L3 programming layer <2020-02-14> (/usr/share/texlive/texmf-dist/tex/platex/base/jarticle.cls
+
+/usr/share/texlive/texmf-dist/tex/platex/base/jarticle.cls:16: LaTeX Error: This file needs format `pLaTeX2e'
+               but this is `LaTeX2e'.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.16 \NeedsTeXFormat{pLaTeX2e}
+                              
+The current input file will not be processed further,
+because it was written for some other flavor of TeX.
+You're in trouble here.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+) (/usr/share/texlive/texmf-dist/tex/latex/l3backend/l3backend-pdfmode.def
+File: l3backend-pdfmode.def 2020-02-03 L3 backend support: PDF mode
+\l__kernel_color_stack_int=\count167
+\l__pdf_internal_box=\box45
+)
+No file check_table.aux.
+\openout1 = `check_table.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 4.
+LaTeX Font Info:    ... okay on input line 4.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 4.
+LaTeX Font Info:    ... okay on input line 4.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 4.
+LaTeX Font Info:    ... okay on input line 4.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 4.
+LaTeX Font Info:    ... okay on input line 4.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 4.
+LaTeX Font Info:    ... okay on input line 4.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 4.
+LaTeX Font Info:    ... okay on input line 4.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 4.
+LaTeX Font Info:    ... okay on input line 4.
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:4: LaTeX Error: The font size command \normalsize is not defined:
+               there is probably something wrong with the class file.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.4   \begin{document}
+                      
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:5: LaTeX Error: Environment table undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.5   \begin{table}
+                   [ht]
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:7: LaTeX Error: \caption outside float.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.7     \caption
+                {サンプル表} % 表のタイトル
+You're in trouble here.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:7: Package inputenc Error: Unicode character サ (U+30B5)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.7     \caption{サ
+                    ンプル表} % 表のタイトル
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:7: Package inputenc Error: Unicode character ン (U+30F3)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.7     \caption{サン
+                       プル表} % 表のタイトル
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:7: Package inputenc Error: Unicode character プ (U+30D7)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.7     \caption{サンプ
+                          ル表} % 表のタイトル
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:7: Package inputenc Error: Unicode character ル (U+30EB)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.7     \caption{サンプル
+                             表} % 表のタイトル
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:7: Package inputenc Error: Unicode character 表 (U+8868)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.7     \caption{サンプル表
+                                } % 表のタイトル
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 9.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 9.
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:10: Undefined control sequence.
+l.10     \toprule
+                 
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:12: Undefined control sequence.
+<recently read> \midrule 
+                         
+l.12     \midrule
+                 
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:17: Undefined control sequence.
+<recently read> \bottomrule 
+                            
+l.17   \bottomrule
+                  
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:19: LaTeX Error: \begin{document} ended by \end{table}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.19   \end{table}
+                  
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:20: LaTeX Error: Environment table undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.20   \begin{table}
+                    [ht]
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:22: LaTeX Error: \caption outside float.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.22     \caption
+                 {サンプル表} % 表のタイトル
+You're in trouble here.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:22: Package inputenc Error: Unicode character サ (U+30B5)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.22     \caption{サ
+                     ンプル表} % 表のタイトル
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:22: Package inputenc Error: Unicode character ン (U+30F3)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.22     \caption{サン
+                        プル表} % 表のタイトル
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:22: Package inputenc Error: Unicode character プ (U+30D7)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.22     \caption{サンプ
+                           ル表} % 表のタイトル
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:22: Package inputenc Error: Unicode character ル (U+30EB)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.22     \caption{サンプル
+                              表} % 表のタイトル
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:22: Package inputenc Error: Unicode character 表 (U+8868)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.22     \caption{サンプル表
+                                 } % 表のタイトル
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:25: Undefined control sequence.
+l.25     \toprule
+                 
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:26: Package inputenc Error: Unicode character 項 (U+9805)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.26     項
+            目 & 値 & 単位 \\
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:26: Package inputenc Error: Unicode character 目 (U+76EE)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.26     項目
+                & 値 & 単位 \\
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:26: Package inputenc Error: Unicode character 値 (U+5024)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.26     項目 & 値
+                      & 単位 \\
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:26: Package inputenc Error: Unicode character 単 (U+5358)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.26     項目 & 値 & 単
+                           位 \\
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:26: Package inputenc Error: Unicode character 位 (U+4F4D)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.26     項目 & 値 & 単位
+                               \\
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:27: Undefined control sequence.
+<recently read> \midrule 
+                         
+l.27     \midrule
+                 
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:28: Package inputenc Error: Unicode character 項 (U+9805)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.28     項
+            目1 & 100 & kg \\
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:28: Package inputenc Error: Unicode character 目 (U+76EE)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.28     項目
+               1 & 100 & kg \\
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:29: Package inputenc Error: Unicode character 項 (U+9805)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.29     項
+            目2 & 200 & g \\
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:29: Package inputenc Error: Unicode character 目 (U+76EE)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.29     項目
+               2 & 200 & g \\
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:30: Package inputenc Error: Unicode character 項 (U+9805)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.30     項
+            目3 & 300 & mg \\
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:30: Package inputenc Error: Unicode character 目 (U+76EE)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.30     項目
+               3 & 300 & mg \\
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:31: Undefined control sequence.
+<recently read> \bottomrule 
+                            
+l.31   \bottomrule
+                  
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:33: LaTeX Error: \begin{document} ended by \end{table}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.33   \end{table}
+                  
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:36: LaTeX Error: Environment table undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.36   \begin{table}
+                    [ht]
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:38: LaTeX Error: \caption outside float.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.38     \caption
+                 {サンプル表} % 表のタイトル
+You're in trouble here.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:38: Package inputenc Error: Unicode character サ (U+30B5)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.38     \caption{サ
+                     ンプル表} % 表のタイトル
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:38: Package inputenc Error: Unicode character ン (U+30F3)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.38     \caption{サン
+                        プル表} % 表のタイトル
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:38: Package inputenc Error: Unicode character プ (U+30D7)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.38     \caption{サンプ
+                           ル表} % 表のタイトル
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:38: Package inputenc Error: Unicode character ル (U+30EB)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.38     \caption{サンプル
+                              表} % 表のタイトル
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:38: Package inputenc Error: Unicode character 表 (U+8868)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.38     \caption{サンプル表
+                                 } % 表のタイトル
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:41: Undefined control sequence.
+l.41     \toprule
+                 
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:43: Undefined control sequence.
+<recently read> \midrule 
+                         
+l.43     \midrule
+                 
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:48: Undefined control sequence.
+<recently read> \bottomrule 
+                            
+l.48   \bottomrule
+                  
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:50: LaTeX Error: \begin{document} ended by \end{table}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.50   \end{table}
+                  
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:52: LaTeX Error: Environment table undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.52   \begin{table}
+                    [ht]
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:54: LaTeX Error: \caption outside float.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.54     \caption
+                 {サンプル表} % 表のタイトル
+You're in trouble here.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:54: Package inputenc Error: Unicode character サ (U+30B5)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.54     \caption{サ
+                     ンプル表} % 表のタイトル
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:54: Package inputenc Error: Unicode character ン (U+30F3)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.54     \caption{サン
+                        プル表} % 表のタイトル
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:54: Package inputenc Error: Unicode character プ (U+30D7)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.54     \caption{サンプ
+                           ル表} % 表のタイトル
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:54: Package inputenc Error: Unicode character ル (U+30EB)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.54     \caption{サンプル
+                              表} % 表のタイトル
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:54: Package inputenc Error: Unicode character 表 (U+8868)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.54     \caption{サンプル表
+                                 } % 表のタイトル
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:57: Undefined control sequence.
+l.57     \toprule
+                 
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:59: Undefined control sequence.
+<recently read> \midrule 
+                         
+l.59     \midrule
+                 
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:64: Undefined control sequence.
+<recently read> \bottomrule 
+                            
+l.64   \bottomrule
+                  
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:66: LaTeX Error: \begin{document} ended by \end{table}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.66   \end{table}
+                  
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:72: LaTeX Error: Environment table undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.72   \begin{table}
+                    [ht]
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:74: LaTeX Error: \caption outside float.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.74     \caption
+                 {サンプル表} % 表のタイトル
+You're in trouble here.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:74: Package inputenc Error: Unicode character サ (U+30B5)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.74     \caption{サ
+                     ンプル表} % 表のタイトル
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:74: Package inputenc Error: Unicode character ン (U+30F3)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.74     \caption{サン
+                        プル表} % 表のタイトル
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:74: Package inputenc Error: Unicode character プ (U+30D7)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.74     \caption{サンプ
+                           ル表} % 表のタイトル
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:74: Package inputenc Error: Unicode character ル (U+30EB)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.74     \caption{サンプル
+                              表} % 表のタイトル
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:74: Package inputenc Error: Unicode character 表 (U+8868)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.74     \caption{サンプル表
+                                 } % 表のタイトル
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:77: Undefined control sequence.
+l.77     \toprule
+                 
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:79: Undefined control sequence.
+<recently read> \midrule 
+                         
+l.79     \midrule
+                 
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:84: Undefined control sequence.
+<recently read> \bottomrule 
+                            
+l.84   \bottomrule
+                  
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:86: LaTeX Error: \begin{document} ended by \end{table}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.86   \end{table}
+                  
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:89: LaTeX Error: Environment table undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.89   \begin{table}
+                    [ht]
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:91: LaTeX Error: \caption outside float.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.91     \caption
+                 {サンプル表} % 表のタイトル
+You're in trouble here.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:91: Package inputenc Error: Unicode character サ (U+30B5)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.91     \caption{サ
+                     ンプル表} % 表のタイトル
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:91: Package inputenc Error: Unicode character ン (U+30F3)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.91     \caption{サン
+                        プル表} % 表のタイトル
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:91: Package inputenc Error: Unicode character プ (U+30D7)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.91     \caption{サンプ
+                           ル表} % 表のタイトル
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:91: Package inputenc Error: Unicode character ル (U+30EB)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.91     \caption{サンプル
+                              表} % 表のタイトル
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:91: Package inputenc Error: Unicode character 表 (U+8868)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.91     \caption{サンプル表
+                                 } % 表のタイトル
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:94: Undefined control sequence.
+l.94     \toprule
+                 
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:96: Undefined control sequence.
+<recently read> \midrule 
+                         
+l.96     \midrule
+                 
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:101: Undefined control sequence.
+<recently read> \bottomrule 
+                            
+l.101   \bottomrule
+                   
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:103: LaTeX Error: \begin{document} ended by \end{table}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.103   \end{table}
+                   
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:104: LaTeX Error: Environment table undefined.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.104   \begin{table}
+                     [ht]
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:106: LaTeX Error: \caption outside float.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.106     \caption
+                  {サンプル表} % 表のタイトル
+You're in trouble here.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:106: Package inputenc Error: Unicode character サ (U+30B5)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.106     \caption{サ
+                      ンプル表} % 表のタイトル
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:106: Package inputenc Error: Unicode character ン (U+30F3)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.106     \caption{サン
+                         プル表} % 表のタイトル
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:106: Package inputenc Error: Unicode character プ (U+30D7)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.106     \caption{サンプ
+                            ル表} % 表のタイトル
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:106: Package inputenc Error: Unicode character ル (U+30EB)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.106     \caption{サンプル
+                               表} % 表のタイトル
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:106: Package inputenc Error: Unicode character 表 (U+8868)
+(inputenc)                not set up for use with LaTeX.
+
+See the inputenc package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.106     \caption{サンプル表
+                                  } % 表のタイトル
+You may provide a definition with
+\DeclareUnicodeCharacter 
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:109: Undefined control sequence.
+l.109     \toprule
+                  
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:111: Undefined control sequence.
+<recently read> \midrule 
+                         
+l.111     \midrule
+                  
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:116: Undefined control sequence.
+<recently read> \bottomrule 
+                            
+l.116   \bottomrule
+                   
+The control sequence at the end of the top line
+of your error message was never \def'ed. If you have
+misspelled it (e.g., `\hobx'), type `I' and the correct
+spelling (e.g., `I\hbox'). Otherwise just continue,
+and I'll forget about whatever was undefined.
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:118: LaTeX Error: \begin{document} ended by \end{table}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.118   \end{table}
+                   
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:119: LaTeX Error: \begin{document} ended by \end{table}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.119   \end{table}
+                   
+Your command was ignored.
+Type  I <command> <return>  to replace it with another command,
+or  <return>  to continue without it.
+
+/home/noma/school/seminar_origin/seminar/seminar_0209/seminar/paper/check_table.tex:119: Extra \endgroup.
+<recently read> \endgroup 
+                          
+l.119   \end{table}
+                   
+Things are pretty mixed up, but I think the worst is over.
+
+)
+! Emergency stop.
+<*> .../seminar_0209/seminar/paper/check_table.tex
+                                                  
+*** (job aborted, no legal \end found)
+
+ 
+Here is how much of TeX's memory you used:
+ 182 strings out of 481239
+ 4709 string characters out of 5920377
+ 242561 words of memory out of 5000000
+ 15540 multiletter control sequences out of 15000+600000
+ 532338 words of font info for 24 fonts, out of 8000000 for 9000
+ 1141 hyphenation exceptions out of 8191
+ 19i,6n,19p,202b,110s stack positions out of 5000i,500n,10000p,200000b,80000s
+!  ==> Fatal error occurred, no output PDF file produced!

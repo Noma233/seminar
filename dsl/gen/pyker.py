@@ -37,9 +37,13 @@ def Parse(file_str):
     expr_list = []
     name_variable_map = {}
 
+    # file_list.replace('+=', '=')
+
     #ファイルから読み取ったコードを一行ずつ
     for col in file_list:
-        
+
+        col = col.replace('+=', '=')        
+
         #＝演算子があれば、式なので、その時、sympyの式に変換
         if col.find('=') != -1:
             expr_list.append(expr_part(col))

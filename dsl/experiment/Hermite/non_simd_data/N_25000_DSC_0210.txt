@@ -1,0 +1,10 @@
+N = 25000
+pikg_kernel of elapsed time = 5.740028sec
+N = 25000
+pyker code of elapsed time = 6.136025sec
+max difference in F.x: 0.000000
+max difference in F.y: 0.000000
+max difference in F.z: 0.000000
+Total difference in J.x: 0.000000
+Total difference in J.y: 0.000000
+Total difference in J.z: 0.000000

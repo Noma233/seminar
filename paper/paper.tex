@@ -470,6 +470,10 @@ g++ -O3
 %   x & y & z 
 %  \end{tabular}
 
+\subsection{Hermite}
+
+
+
 \subsection{LennardJones}
 
 \begin{lstlisting}[frame=single, caption=LennardJones-kernel.pyker, label=LennardJones-kernel.pyker]
@@ -544,10 +548,121 @@ simd
   25000 & 0.838122 & 0.9904373 \\
   10000 & 0.134388 & 0.215270 \\
 
- \\ \hline
+
+
+\begin{table}
+  \centering % 表を中央揃えにする
+  \caption{サンプル表} % 表のタイトル
+  \label{tab:sampleTable}
+  \begin{tabular}{ccc} % ここで列の数とテキストの配置を指定
+  \toprule
+  N & Pyker & PIKG \\
+  \midrule
+  50000 & 5.282461100 & 4.059262 \\
+  25000 & 1.322715200 & 1.008046 \\
+  10000 & 0.213696 & 0.161884 \\
+  1000 & 0.002116 & 0.001713 \\
+\bottomrule
 \end{tabular}
+\end{table}
+\begin{table}[ht]
+  \centering % 表を中央揃えにする
+  \caption{サンプル表} % 表のタイトル
+  \label{tab:sampleTable}
+  \begin{tabular}{ccc} % ここで列の数とテキストの配置を指定
+  \toprule
+  項目 & 値 & 単位 \\
+  \midrule
+  項目1 & 100 & kg \\
+  項目2 & 200 & g \\
+  項目3 & 300 & mg \\
+\bottomrule
+\end{tabular}
+\end{table}
 
 
+\begin{table}[ht]
+  \centering % 表を中央揃えにする
+  \caption{サンプル表} % 表のタイトル
+  \label{tab:sampleTable}
+  \begin{tabular}{ccc} % ここで列の数とテキストの配置を指定
+  \toprule
+  N & Pyker & PIKG \\
+  \midrule
+  50000 & 24.755255 & 22.767920 \\
+  25000 & 6.136025 & 5.740028 \\
+  10000 & 1.044833 & 0.901585\\
+  1000 & 0.010176 & 0.009109 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[ht]
+  \centering % 表を中央揃えにする
+  \caption{サンプル表} % 表のタイトル
+  \label{tab:sampleTable}
+  \begin{tabular}{ccc} % ここで列の数とテキストの配置を指定
+  \toprule
+  N & Pyker & PIKG \\
+  \midrule
+  50000 & 13.796789& 10.794405\\
+  25000 & 3.472925 & 2.693424\\
+  10000 & 0.557972 & 0.424820\\
+  1000 & 0.005405& 0.004240\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+
+\begin{table}[ht]
+  \centering % 表を中央揃えにする
+  \caption{サンプル表} % 表のタイトル
+  \label{tab:sampleTable}
+  \begin{tabular}{ccc} % ここで列の数とテキストの配置を指定
+  \toprule
+  N & Pyker & PIKG \\
+  \midrule
+  50000 & 2.476695 & 2.439798\\
+  25000 & 0.617220 & 0.598798\\
+  10000 & 0.094859 & 0.094860\\
+  1000 & 0.000939& 0.000988\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\begin{table}[ht]
+  \centering % 表を中央揃えにする
+  \caption{サンプル表} % 表のタイトル
+  \label{tab:sampleTable}
+  \begin{tabular}{ccc} % ここで列の数とテキストの配置を指定
+  \toprule
+  N & Pyker & PIKG \\
+  \midrule
+  50000 & 2.153937 & 2.194700\\
+  25000 &0.542478 & 0.554280\\
+  10000 & 0.085537 &0.087284\\
+  1000 & 0.000869&0.000874\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[ht]
+  \centering % 表を中央揃えにする
+  \caption{サンプル表} % 表のタイトル
+  \label{tab:sampleTable}
+  \begin{tabular}{ccc} % ここで列の数とテキストの配置を指定
+  \toprule
+  N & Pyker & PIKG \\
+  \midrule
+  50000 & 15.103493& 9.904044\\
+  25000 &3.736596 & 2.480025\\
+  10000 &0.543367 &0.398513\\
+  1000 & 0.005392&0.003911\\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \section{Conclusion}
 \section{Acknowledgement}
@@ -555,6 +670,10 @@ simd
 \begin{thebibliography}{99}
 \end{thebibliography}
 \bibliography{biblist}
+
+
+
+
 
 
 \end{document}

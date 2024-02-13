@@ -1,12 +1,12 @@
 EPI vec3<F64> ri
 EPJ vec3<F64> rj
-EPJ F64 mass
+EPJ F64 m
 EPJ F64 eps2
 FORCE vec3<F64> ai
 rij = ri - rj
 r2 = rij * rij + eps2
 r_inv = 1.0 / sqrt(r2)
 r2_inv = r_inv * r_inv
-mr_inv = mass * r_inv
+mr_inv = m * r_inv
 mr3_inv = r2_inv * mr_inv
-ai = mr3_inv * rij
+ai += mr3_inv * rij

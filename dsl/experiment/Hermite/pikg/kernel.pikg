@@ -1,0 +1,20 @@
+EPI F64vec ri:r
+EPI F64vec vi:v
+EPJ F64vec rj:r
+EPJ F64vec vj:v
+EPJ F64 mj:m
+EPJ F64 eps2:eps
+FORCE F64vec F:f
+FORCE F64vec J:j
+dr = ri - rj
+dv = vi - vj
+r2 = dr*dr + eps2
+r1i = 1.0/sqrt(r2)
+r2i = r1i*r1i
+r3i= r2i*r1i
+r5i= r3i*r2i
+rv = dr*dv
+af = mj*r3i
+jf = 3.0*mj*rv*r5i
+F += af*dr
+J += af*dv - jf*dr

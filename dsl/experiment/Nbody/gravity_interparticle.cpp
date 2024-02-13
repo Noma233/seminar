@@ -6,6 +6,7 @@
 // #include<algorithm>
 #include<cmath>
 #include<time.h>
+#include<iostream>
 
 struct EPI {
    pikg_f64vec3 r;
@@ -50,8 +51,8 @@ double calculate_difference(double a, double b) {
 int main() {
    srand((unsigned)time(NULL)); // 乱数のシードを設定
 
-   int n = 25000;
-
+   int n = 0;
+   std::cin >>  n;
    //PIKG用のコード
    const int nepi = n; 
    const int nepj = n; 
@@ -148,9 +149,9 @@ int main() {
       }
     }
 
-   printf("Total difference in F.x: %f\n", total_diff_Fx);
-   printf("Total difference in F.y: %f\n", total_diff_Fy);
-   printf("Total difference in F.z: %f\n", total_diff_Fz);
+   // printf("Total difference in F.x: %f\n", total_diff_Fx);
+   // printf("Total difference in F.y: %f\n", total_diff_Fy);
+   // printf("Total difference in F.z: %f\n", total_diff_Fz);
    // printf("Total difference in J.x: %f\n", total_diff_Jx / n);
    // printf("Total difference in J.y: %f\n", total_diff_Jy / n);
    // printf("Total difference in J.z: %f\n", total_diff_Jz / n);

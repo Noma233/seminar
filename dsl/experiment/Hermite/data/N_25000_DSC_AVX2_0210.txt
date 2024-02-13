@@ -1,0 +1,50 @@
+N = 25000
+pikg_kernel of elapsed time = 1.007212sec
+N = 25000
+pyker code of elapsed time = 1.321815sec
+max difference in F.x: 0.000000
+max difference in F.y: 0.000000
+max difference in F.z: 0.000000
+Total difference in J.x: 0.000000
+Total difference in J.y: 0.000000
+Total difference in J.z: 0.000000
+N = 25000
+pikg_kernel of elapsed time = 1.016837sec
+N = 25000
+pyker code of elapsed time = 1.340311sec
+max difference in F.x: 0.000000
+max difference in F.y: 0.000000
+max difference in F.z: 0.000000
+Total difference in J.x: 0.000000
+Total difference in J.y: 0.000000
+Total difference in J.z: 0.000000
+N = 25000
+pikg_kernel of elapsed time = 1.008046sec
+N = 25000
+pyker code of elapsed time = 1.319513sec
+max difference in F.x: 0.000000
+max difference in F.y: 0.000000
+max difference in F.z: 0.000000
+Total difference in J.x: 0.000000
+Total difference in J.y: 0.000000
+Total difference in J.z: 0.000000
+N = 25000
+pikg_kernel of elapsed time = 1.001490sec
+N = 25000
+pyker code of elapsed time = 1.322715sec
+max difference in F.x: 0.000000
+max difference in F.y: 0.000000
+max difference in F.z: 0.000000
+Total difference in J.x: 0.000000
+Total difference in J.y: 0.000000
+Total difference in J.z: 0.000000
+N = 25000
+pikg_kernel of elapsed time = 1.021234sec
+N = 25000
+pyker code of elapsed time = 1.322199sec
+max difference in F.x: 0.000000
+max difference in F.y: 0.000000
+max difference in F.z: 0.000000
+Total difference in J.x: 0.000000
+Total difference in J.y: 0.000000
+Total difference in J.z: 0.000000

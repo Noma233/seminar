@@ -5,7 +5,6 @@ EPJ F64 rjx
 EPJ F64 rjy
 EPJ F64 rjz
 EPJ F64 eps
-
 FORCE F64 fx
 FORCE F64 fy
 FORCE F64 fz
@@ -20,4 +19,4 @@ f = (48.0* r6i - 24.0) * r6i * r2i
 fx = f * dx
 fy = f * dy
 fz = f * dz
-p = 4.0 * (r6i) * (r6i - 1.0)
+p += 4.0 * (r6i) * (r6i - 1.0)
