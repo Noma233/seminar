@@ -1,34 +1,34 @@
 #include<math.h>
-;
-int kernel(int n, double ri[][3], double rj[][3], double m[], double eps2[], double ai[][3]){
+#include<x86intrin.h>;
+int kernel(int n, double xi[][3], double yi[][3], double f[]){
    int i;
    int j;
-   double rij_v0;
-   double rij_v1;
-   double rij_v2;
-   double r2;
-   double r_inv;
-   double r2_inv;
-   double mr_inv;
-   double mr3_inv;
-   for (i = 0; i < n; i += 1) {
-      ;
-      ;
+   __m256d xi_tmp_v0;
+   __m256d xi_tmp_v1;
+   __m256d xi_tmp_v2;
+   __m256d yi_tmp_v0;
+   __m256d yi_tmp_v1;
+   __m256d yi_tmp_v2;
+   __m256d f_tmp;
+   for (i = 0; i < n; i += 4) {
+      int index_gather_0[4] = {0, 3, 6, 9};
+      __m128i vindex_gather_0 = _mm_load_si128((const __m128i*)index_gather_0);
+      xi_tmp_v0 = _mm256_i32gather_pd(&xi[i][0], vindex_gather_0, 8);
+      int index_gather_1[4] = {0, 3, 6, 9};
+      __m128i vindex_gather_1 = _mm_load_si128((const __m128i*)index_gather_1);
+      xi_tmp_v1 = _mm256_i32gather_pd(&xi[i][1], vindex_gather_1, 8);
+      int index_gather_2[4] = {0, 3, 6, 9};
+      __m128i vindex_gather_2 = _mm_load_si128((const __m128i*)index_gather_2);
+      xi_tmp_v2 = _mm256_i32gather_pd(&xi[i][2], vindex_gather_2, 8);
+      f_tmp = _mm256_set1_pd(0.0);
       for (j = 0; j < n; j += 1) {
-         ;
-         rij_v0 = ri[i][0] - rj[j][0];
-         rij_v1 = ri[i][1] - rj[j][1];
-         rij_v2 = ri[i][2] - rj[j][2];
-         r2 = eps2[j] + (rij_v2*rij_v2 + (rij_v0*rij_v0 + rij_v1*rij_v1));
-         r_inv = 1.0/sqrt(r2);
-         r2_inv = r_inv*r_inv;
-         mr_inv = m[j]*r_inv;
-         mr3_inv = mr_inv*r2_inv;
-         ai[i][0] += mr3_inv*rij_v0;
-         ai[i][1] += mr3_inv*rij_v1;
-         ai[i][2] += mr3_inv*rij_v2;
+         yi_tmp_v0 = _mm256_set1_pd(yi[j][0]);
+         yi_tmp_v1 = _mm256_set1_pd(yi[j][1]);
+         yi_tmp_v2 = _mm256_set1_pd(yi[j][2]);
+         f_tmp += _mm256_add_pd(_mm256_add_pd(_mm256_mul_pd(xi_tmp_v0, yi_tmp_v0),
+          _mm256_mul_pd(xi_tmp_v1, yi_tmp_v1)), _mm256_mul_pd(xi_tmp_v2, yi_tmp_v2));
       };
-      ;
+      _mm256_store_pd(&f[i], f_tmp);
    };
    return 0;
 };

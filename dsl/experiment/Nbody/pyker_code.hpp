@@ -16,6 +16,7 @@ int kernel(int n, double ri[][3], double rj[][3], double mj[], double eps2[], do
       ;
       for (j = 0; j < n; j += 1) {
          ;
+      
          rij_v0 = ri[i][0] - rj[j][0];
          rij_v1 = ri[i][1] - rj[j][1];
          rij_v2 = ri[i][2] - rj[j][2];
