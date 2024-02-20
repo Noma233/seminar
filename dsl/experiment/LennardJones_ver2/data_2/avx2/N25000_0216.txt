@@ -1,0 +1,32 @@
+N = 25000
+pikg_kernel of elapsed time = 0.889959sec
+N = 25000
+pyker code of elapsed time = 0.824033sec
+max difference in F.x: 0.000000
+max difference in F.y: 0.000000
+max difference in F.z: 0.000000
+Total difference in p: 0.000000
+N = 25000
+pikg_kernel of elapsed time = 0.887213sec
+N = 25000
+pyker code of elapsed time = 0.830508sec
+max difference in F.x: 0.000000
+max difference in F.y: 0.000000
+max difference in F.z: 0.000000
+Total difference in p: 0.000000
+N = 25000
+pikg_kernel of elapsed time = 0.888320sec
+N = 25000
+pyker code of elapsed time = 0.829535sec
+max difference in F.x: 0.000000
+max difference in F.y: 0.000000
+max difference in F.z: 0.000000
+Total difference in p: 0.000000
+N = 25000
+pikg_kernel of elapsed time = 0.888562sec
+N = 25000
+pyker code of elapsed time = 0.831182sec
+max difference in F.x: 0.000000
+max difference in F.y: 0.000000
+max difference in F.z: 0.000000
+Total difference in p: 0.000000

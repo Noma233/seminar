@@ -4,19 +4,20 @@ EPI F64 riz
 EPJ F64 rjx
 EPJ F64 rjy
 EPJ F64 rjz
-EPJ F64 eps
+EPJ F64 eps2
 FORCE F64 fx
 FORCE F64 fy
 FORCE F64 fz
 FORCE F64 p
-dx = rix - rjx
+dx  = rix - rjx
 dy = riy - rjy
-dz = riz - rjz
-r2 = dx * dx + dy * dy + dz * dz + eps
-r2i = 1.0 / r2
-r6i = r2i * r2i * r2i
-f = (48.0* r6i - 24.0) * r6i * r2i
-fx = f * dx
-fy = f * dy
-fz = f * dz
-p += 4.0 * (r6i) * (r6i - 1.0)
+dz  = riz - rjz
+r2  = dx * dx + dy * dy + dz * dz + eps2
+r2_inv = 1.0 / sqrt(r2)
+r2_inv3 = r2_inv * r2_inv * r2_inv
+r2_inv6 = r2_inv3 * r2_inv3
+f = (48.0 * r2_inv6 - 24.0) * r2_inv3 * r2_inv * r2_inv
+fx += f * dx
+fy += f * dy
+fz += f * dz
+p += 4.0 * r2_inv6*(r2_inv6 - 1.0)

@@ -108,11 +108,15 @@ __m256d __fkg_tmp0;
 
 __m256d r2;
 
-__m256d r2i;
+__m256d r2_inv;
 
 __m256d __fkg_tmp2;
 
-__m256d r6i;
+__m256d r2_inv3;
+
+__m256d r2_inv6;
+
+__m256d __fkg_tmp5;
 
 __m256d __fkg_tmp4;
 
@@ -120,9 +124,9 @@ __m256d __fkg_tmp3;
 
 __m256d f;
 
-__m256d __fkg_tmp5;
-
 __m256d __fkg_tmp6;
+
+__m256d __fkg_tmp7;
 
 dx = _mm256_sub_pd(rix,rjx);
 dy = _mm256_sub_pd(riy,rjy);
@@ -130,18 +134,20 @@ dz = _mm256_sub_pd(riz,rjz);
 __fkg_tmp1 = _mm256_fmadd_pd(dx,dx,eps2);
 __fkg_tmp0 = _mm256_fmadd_pd(dy,dy,__fkg_tmp1);
 r2 = _mm256_fmadd_pd(dz,dz,__fkg_tmp0);
-r2i = _mm256_div_pd(_mm256_set1_pd(1.0),r2);
-__fkg_tmp2 = _mm256_mul_pd(r2i,r2i);
-r6i = _mm256_mul_pd(__fkg_tmp2,r2i);
-__fkg_tmp4 = _mm256_fmsub_pd(_mm256_set1_pd(48.0),r6i,_mm256_set1_pd(24.0));
-__fkg_tmp3 = _mm256_mul_pd(__fkg_tmp4,r6i);
-f = _mm256_mul_pd(__fkg_tmp3,r2i);
+r2_inv = _mm256_div_pd(_mm256_set1_pd(1.0),sqrt(r2));
+__fkg_tmp2 = _mm256_mul_pd(r2_inv,r2_inv);
+r2_inv3 = _mm256_mul_pd(__fkg_tmp2,r2_inv);
+r2_inv6 = _mm256_mul_pd(r2_inv3,r2_inv3);
+__fkg_tmp5 = _mm256_fmsub_pd(_mm256_set1_pd(48.0),r2_inv6,_mm256_set1_pd(24.0));
+__fkg_tmp4 = _mm256_mul_pd(__fkg_tmp5,r2_inv3);
+__fkg_tmp3 = _mm256_mul_pd(__fkg_tmp4,r2_inv);
+f = _mm256_mul_pd(__fkg_tmp3,r2_inv);
 fx = _mm256_fmadd_pd(f,dx,fx);
 fy = _mm256_fmadd_pd(f,dy,fy);
 fz = _mm256_fmadd_pd(f,dz,fz);
-__fkg_tmp5 = _mm256_mul_pd(_mm256_set1_pd(4.0),r6i);
-__fkg_tmp6 = _mm256_sub_pd(r6i,_mm256_set1_pd(1.0));
-p = _mm256_fmadd_pd(__fkg_tmp5,__fkg_tmp6,p);
+__fkg_tmp6 = _mm256_mul_pd(_mm256_set1_pd(4.0),r2_inv6);
+__fkg_tmp7 = _mm256_sub_pd(r2_inv6,_mm256_set1_pd(1.0));
+p = _mm256_fmadd_pd(__fkg_tmp6,__fkg_tmp7,p);
 } // loop of j
 
 {
@@ -257,11 +263,15 @@ PIKG::F64 __fkg_tmp0;
 
 PIKG::F64 r2;
 
-PIKG::F64 r2i;
+PIKG::F64 r2_inv;
 
 PIKG::F64 __fkg_tmp2;
 
-PIKG::F64 r6i;
+PIKG::F64 r2_inv3;
+
+PIKG::F64 r2_inv6;
+
+PIKG::F64 __fkg_tmp5;
 
 PIKG::F64 __fkg_tmp4;
 
@@ -269,9 +279,9 @@ PIKG::F64 __fkg_tmp3;
 
 PIKG::F64 f;
 
-PIKG::F64 __fkg_tmp5;
-
 PIKG::F64 __fkg_tmp6;
+
+PIKG::F64 __fkg_tmp7;
 
 dx = (rix-rjx);
 dy = (riy-rjy);
@@ -279,18 +289,20 @@ dz = (riz-rjz);
 __fkg_tmp1 = (dx*dx+eps2);
 __fkg_tmp0 = (dy*dy+__fkg_tmp1);
 r2 = (dz*dz+__fkg_tmp0);
-r2i = (1.0/r2);
-__fkg_tmp2 = (r2i*r2i);
-r6i = (__fkg_tmp2*r2i);
-__fkg_tmp4 = (48.0*r6i-24.0);
-__fkg_tmp3 = (__fkg_tmp4*r6i);
-f = (__fkg_tmp3*r2i);
+r2_inv = (1.0/sqrt(r2));
+__fkg_tmp2 = (r2_inv*r2_inv);
+r2_inv3 = (__fkg_tmp2*r2_inv);
+r2_inv6 = (r2_inv3*r2_inv3);
+__fkg_tmp5 = (48.0*r2_inv6-24.0);
+__fkg_tmp4 = (__fkg_tmp5*r2_inv3);
+__fkg_tmp3 = (__fkg_tmp4*r2_inv);
+f = (__fkg_tmp3*r2_inv);
 fx = (f*dx+fx);
 fy = (f*dy+fy);
 fz = (f*dz+fz);
-__fkg_tmp5 = (4.0*r6i);
-__fkg_tmp6 = (r6i-1.0);
-p = (__fkg_tmp5*__fkg_tmp6+p);
+__fkg_tmp6 = (4.0*r2_inv6);
+__fkg_tmp7 = (r2_inv6-1.0);
+p = (__fkg_tmp6*__fkg_tmp7+p);
 } // loop of j
 
 force[i+0].fx = (force[i+0].fx+fx);
@@ -361,11 +373,15 @@ __m256d __fkg_tmp0;
 
 __m256d r2;
 
-__m256d r2i;
+__m256d r2_inv;
 
 __m256d __fkg_tmp2;
 
-__m256d r6i;
+__m256d r2_inv3;
+
+__m256d r2_inv6;
+
+__m256d __fkg_tmp5;
 
 __m256d __fkg_tmp4;
 
@@ -373,9 +389,9 @@ __m256d __fkg_tmp3;
 
 __m256d f;
 
-__m256d __fkg_tmp5;
-
 __m256d __fkg_tmp6;
+
+__m256d __fkg_tmp7;
 
 dx = _mm256_sub_pd(rix,rjx);
 dy = _mm256_sub_pd(riy,rjy);
@@ -383,33 +399,35 @@ dz = _mm256_sub_pd(riz,rjz);
 __fkg_tmp1 = _mm256_fmadd_pd(dx,dx,eps2);
 __fkg_tmp0 = _mm256_fmadd_pd(dy,dy,__fkg_tmp1);
 r2 = _mm256_fmadd_pd(dz,dz,__fkg_tmp0);
-r2i = _mm256_div_pd(_mm256_set1_pd(1.0),r2);
-__fkg_tmp2 = _mm256_mul_pd(r2i,r2i);
-r6i = _mm256_mul_pd(__fkg_tmp2,r2i);
-__fkg_tmp4 = _mm256_fmsub_pd(_mm256_set1_pd(48.0),r6i,_mm256_set1_pd(24.0));
-__fkg_tmp3 = _mm256_mul_pd(__fkg_tmp4,r6i);
-f = _mm256_mul_pd(__fkg_tmp3,r2i);
+r2_inv = _mm256_div_pd(_mm256_set1_pd(1.0),sqrt(r2));
+__fkg_tmp2 = _mm256_mul_pd(r2_inv,r2_inv);
+r2_inv3 = _mm256_mul_pd(__fkg_tmp2,r2_inv);
+r2_inv6 = _mm256_mul_pd(r2_inv3,r2_inv3);
+__fkg_tmp5 = _mm256_fmsub_pd(_mm256_set1_pd(48.0),r2_inv6,_mm256_set1_pd(24.0));
+__fkg_tmp4 = _mm256_mul_pd(__fkg_tmp5,r2_inv3);
+__fkg_tmp3 = _mm256_mul_pd(__fkg_tmp4,r2_inv);
+f = _mm256_mul_pd(__fkg_tmp3,r2_inv);
 fx = _mm256_fmadd_pd(f,dx,fx);
 fy = _mm256_fmadd_pd(f,dy,fy);
 fz = _mm256_fmadd_pd(f,dz,fz);
-__fkg_tmp5 = _mm256_mul_pd(_mm256_set1_pd(4.0),r6i);
-__fkg_tmp6 = _mm256_sub_pd(r6i,_mm256_set1_pd(1.0));
-p = _mm256_fmadd_pd(__fkg_tmp5,__fkg_tmp6,p);
+__fkg_tmp6 = _mm256_mul_pd(_mm256_set1_pd(4.0),r2_inv6);
+__fkg_tmp7 = _mm256_sub_pd(r2_inv6,_mm256_set1_pd(1.0));
+p = _mm256_fmadd_pd(__fkg_tmp6,__fkg_tmp7,p);
 } // loop of j
 
 if(j<nj){ // tail j loop
-__m256d __fkg_tmp7;
-
-__fkg_tmp7 = fx;
 __m256d __fkg_tmp8;
 
-__fkg_tmp8 = fy;
+__fkg_tmp8 = fx;
 __m256d __fkg_tmp9;
 
-__fkg_tmp9 = fz;
+__fkg_tmp9 = fy;
 __m256d __fkg_tmp10;
 
-__fkg_tmp10 = p;
+__fkg_tmp10 = fz;
+__m256d __fkg_tmp11;
+
+__fkg_tmp11 = p;
 for(;j < nj;++j){
 __m256d eps2;
 
@@ -439,11 +457,15 @@ __m256d __fkg_tmp0;
 
 __m256d r2;
 
-__m256d r2i;
+__m256d r2_inv;
 
 __m256d __fkg_tmp2;
 
-__m256d r6i;
+__m256d r2_inv3;
+
+__m256d r2_inv6;
+
+__m256d __fkg_tmp5;
 
 __m256d __fkg_tmp4;
 
@@ -451,9 +473,9 @@ __m256d __fkg_tmp3;
 
 __m256d f;
 
-__m256d __fkg_tmp5;
-
 __m256d __fkg_tmp6;
+
+__m256d __fkg_tmp7;
 
 dx = _mm256_sub_pd(rix,rjx);
 dy = _mm256_sub_pd(riy,rjy);
@@ -461,23 +483,25 @@ dz = _mm256_sub_pd(riz,rjz);
 __fkg_tmp1 = _mm256_fmadd_pd(dx,dx,eps2);
 __fkg_tmp0 = _mm256_fmadd_pd(dy,dy,__fkg_tmp1);
 r2 = _mm256_fmadd_pd(dz,dz,__fkg_tmp0);
-r2i = _mm256_div_pd(_mm256_set1_pd(1.0),r2);
-__fkg_tmp2 = _mm256_mul_pd(r2i,r2i);
-r6i = _mm256_mul_pd(__fkg_tmp2,r2i);
-__fkg_tmp4 = _mm256_fmsub_pd(_mm256_set1_pd(48.0),r6i,_mm256_set1_pd(24.0));
-__fkg_tmp3 = _mm256_mul_pd(__fkg_tmp4,r6i);
-f = _mm256_mul_pd(__fkg_tmp3,r2i);
+r2_inv = _mm256_div_pd(_mm256_set1_pd(1.0),sqrt(r2));
+__fkg_tmp2 = _mm256_mul_pd(r2_inv,r2_inv);
+r2_inv3 = _mm256_mul_pd(__fkg_tmp2,r2_inv);
+r2_inv6 = _mm256_mul_pd(r2_inv3,r2_inv3);
+__fkg_tmp5 = _mm256_fmsub_pd(_mm256_set1_pd(48.0),r2_inv6,_mm256_set1_pd(24.0));
+__fkg_tmp4 = _mm256_mul_pd(__fkg_tmp5,r2_inv3);
+__fkg_tmp3 = _mm256_mul_pd(__fkg_tmp4,r2_inv);
+f = _mm256_mul_pd(__fkg_tmp3,r2_inv);
 fx = _mm256_fmadd_pd(f,dx,fx);
 fy = _mm256_fmadd_pd(f,dy,fy);
 fz = _mm256_fmadd_pd(f,dz,fz);
-__fkg_tmp5 = _mm256_mul_pd(_mm256_set1_pd(4.0),r6i);
-__fkg_tmp6 = _mm256_sub_pd(r6i,_mm256_set1_pd(1.0));
-p = _mm256_fmadd_pd(__fkg_tmp5,__fkg_tmp6,p);
+__fkg_tmp6 = _mm256_mul_pd(_mm256_set1_pd(4.0),r2_inv6);
+__fkg_tmp7 = _mm256_sub_pd(r2_inv6,_mm256_set1_pd(1.0));
+p = _mm256_fmadd_pd(__fkg_tmp6,__fkg_tmp7,p);
 } // loop of j
-fx = _mm256_blend_pd(__fkg_tmp7,fx,0b00000001);
-fy = _mm256_blend_pd(__fkg_tmp8,fy,0b00000001);
-fz = _mm256_blend_pd(__fkg_tmp9,fz,0b00000001);
-p = _mm256_blend_pd(__fkg_tmp10,p,0b00000001);
+fx = _mm256_blend_pd(__fkg_tmp8,fx,0b00000001);
+fy = _mm256_blend_pd(__fkg_tmp9,fy,0b00000001);
+fz = _mm256_blend_pd(__fkg_tmp10,fz,0b00000001);
+p = _mm256_blend_pd(__fkg_tmp11,p,0b00000001);
 } // if of j tail loop
 
 {
@@ -553,11 +577,15 @@ PIKG::F64 __fkg_tmp0;
 
 PIKG::F64 r2;
 
-PIKG::F64 r2i;
+PIKG::F64 r2_inv;
 
 PIKG::F64 __fkg_tmp2;
 
-PIKG::F64 r6i;
+PIKG::F64 r2_inv3;
+
+PIKG::F64 r2_inv6;
+
+PIKG::F64 __fkg_tmp5;
 
 PIKG::F64 __fkg_tmp4;
 
@@ -565,9 +593,9 @@ PIKG::F64 __fkg_tmp3;
 
 PIKG::F64 f;
 
-PIKG::F64 __fkg_tmp5;
-
 PIKG::F64 __fkg_tmp6;
+
+PIKG::F64 __fkg_tmp7;
 
 dx = (rix-rjx);
 dy = (riy-rjy);
@@ -575,18 +603,20 @@ dz = (riz-rjz);
 __fkg_tmp1 = (dx*dx+eps2);
 __fkg_tmp0 = (dy*dy+__fkg_tmp1);
 r2 = (dz*dz+__fkg_tmp0);
-r2i = (1.0/r2);
-__fkg_tmp2 = (r2i*r2i);
-r6i = (__fkg_tmp2*r2i);
-__fkg_tmp4 = (48.0*r6i-24.0);
-__fkg_tmp3 = (__fkg_tmp4*r6i);
-f = (__fkg_tmp3*r2i);
+r2_inv = (1.0/sqrt(r2));
+__fkg_tmp2 = (r2_inv*r2_inv);
+r2_inv3 = (__fkg_tmp2*r2_inv);
+r2_inv6 = (r2_inv3*r2_inv3);
+__fkg_tmp5 = (48.0*r2_inv6-24.0);
+__fkg_tmp4 = (__fkg_tmp5*r2_inv3);
+__fkg_tmp3 = (__fkg_tmp4*r2_inv);
+f = (__fkg_tmp3*r2_inv);
 fx = (f*dx+fx);
 fy = (f*dy+fy);
 fz = (f*dz+fz);
-__fkg_tmp5 = (4.0*r6i);
-__fkg_tmp6 = (r6i-1.0);
-p = (__fkg_tmp5*__fkg_tmp6+p);
+__fkg_tmp6 = (4.0*r2_inv6);
+__fkg_tmp7 = (r2_inv6-1.0);
+p = (__fkg_tmp6*__fkg_tmp7+p);
 } // loop of j
 
 force[i+0].fx = (force[i+0].fx+fx);

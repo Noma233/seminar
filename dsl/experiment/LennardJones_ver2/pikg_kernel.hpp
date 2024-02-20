@@ -84,11 +84,15 @@ PIKG::F64 __fkg_tmp0;
 
 PIKG::F64 r2;
 
-PIKG::F64 r2i;
+PIKG::F64 r2_inv;
 
 PIKG::F64 __fkg_tmp2;
 
-PIKG::F64 r6i;
+PIKG::F64 r2_inv3;
+
+PIKG::F64 r2_inv6;
+
+PIKG::F64 __fkg_tmp5;
 
 PIKG::F64 __fkg_tmp4;
 
@@ -96,9 +100,9 @@ PIKG::F64 __fkg_tmp3;
 
 PIKG::F64 f;
 
-PIKG::F64 __fkg_tmp5;
-
 PIKG::F64 __fkg_tmp6;
+
+PIKG::F64 __fkg_tmp7;
 
 dx = (rix-rjx);
 dy = (riy-rjy);
@@ -106,18 +110,20 @@ dz = (riz-rjz);
 __fkg_tmp1 = (dx*dx+eps2);
 __fkg_tmp0 = (dy*dy+__fkg_tmp1);
 r2 = (dz*dz+__fkg_tmp0);
-r2i = (1.0/r2);
-__fkg_tmp2 = (r2i*r2i);
-r6i = (__fkg_tmp2*r2i);
-__fkg_tmp4 = (48.0*r6i-24.0);
-__fkg_tmp3 = (__fkg_tmp4*r6i);
-f = (__fkg_tmp3*r2i);
+r2_inv = (1.0/sqrt(r2));
+__fkg_tmp2 = (r2_inv*r2_inv);
+r2_inv3 = (__fkg_tmp2*r2_inv);
+r2_inv6 = (r2_inv3*r2_inv3);
+__fkg_tmp5 = (48.0*r2_inv6-24.0);
+__fkg_tmp4 = (__fkg_tmp5*r2_inv3);
+__fkg_tmp3 = (__fkg_tmp4*r2_inv);
+f = (__fkg_tmp3*r2_inv);
 fx = (f*dx+fx);
 fy = (f*dy+fy);
 fz = (f*dz+fz);
-__fkg_tmp5 = (4.0*r6i);
-__fkg_tmp6 = (r6i-1.0);
-p = (__fkg_tmp5*__fkg_tmp6+p);
+__fkg_tmp6 = (4.0*r2_inv6);
+__fkg_tmp7 = (r2_inv6-1.0);
+p = (__fkg_tmp6*__fkg_tmp7+p);
 } // loop of j
 
 force[i+0].fx = (force[i+0].fx+fx);
