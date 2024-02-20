@@ -46,12 +46,14 @@ int kernel(int n, double ri[][3], double rj[][3], double mass[], double eps2[], 
          rij_tmp_v0 = _mm256_sub_pd(ri_tmp_v0, rj_tmp_v0);
          rij_tmp_v1 = _mm256_sub_pd(ri_tmp_v1, rj_tmp_v1);
          rij_tmp_v2 = _mm256_sub_pd(ri_tmp_v2, rj_tmp_v2);
-         
-         r2_tmp = _mm256_add_pd(eps2_tmp, _mm256_add_pd(_mm256_add_pd(
+         r2_tmp = _mm256_add_pd(eps2_tmp, 
+         _mm256_add_pd(
+            _mm256_add_pd(
                                  _mm256_mul_pd(rij_tmp_v0, rij_tmp_v0), 
                                  _mm256_mul_pd(rij_tmp_v1, rij_tmp_v1)), 
                                  _mm256_mul_pd(rij_tmp_v2, rij_tmp_v2)));
-         r_inv_tmp = _mm256_div_pd(float_0_tmp, _mm256_sqrt_pd(r2_tmp));
+         r_inv_tmp = _mm256_div_pd(float_0_tmp, 
+         _mm256_sqrt_pd(r2_tmp));
          r2_inv_tmp = _mm256_mul_pd(r_inv_tmp, r_inv_tmp);
          mr_inv_tmp = _mm256_mul_pd(mass_tmp, r_inv_tmp);
          mr3_inv_tmp = _mm256_mul_pd(mr_inv_tmp, r2_inv_tmp);

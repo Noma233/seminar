@@ -1,4 +1,4 @@
 EPI vec3<F64> xi
 EPJ vec3<F64> yi
 FORCE F64 f
-f += xi * yi
+f += xi + yi

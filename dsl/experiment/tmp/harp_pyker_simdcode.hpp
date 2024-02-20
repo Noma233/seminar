@@ -1,5 +1,5 @@
 #include<math.h>
-#include<x86intrin.h>
+#include<x86intrin.h>;
 int kernel(int n, double ri[][3], double vi[][3], double rj[][3], double vj[][3], double mj[], double eps2[], double F[][3], double J[][3]){
    int i;
    int j;
@@ -77,7 +77,7 @@ int kernel(int n, double ri[][3], double vi[][3], double rj[][3], double vj[][3]
          dv_tmp_v2 = _mm256_sub_pd(vi_tmp_v2, vj_tmp_v2);
          r2_tmp = _mm256_add_pd(eps2_tmp, _mm256_add_pd(_mm256_add_pd(_mm256_mul_pd(dr_tmp_v0, dr_tmp_v0), _mm256_mul_pd(dr_tmp_v1, dr_tmp_v1)), _mm256_mul_pd(dr_tmp_v2, dr_tmp_v2)));
          rv_tmp = _mm256_add_pd(_mm256_add_pd(_mm256_mul_pd(dr_tmp_v0, dv_tmp_v0), _mm256_mul_pd(dr_tmp_v1, dv_tmp_v1)), _mm256_mul_pd(dr_tmp_v2, dv_tmp_v2));
-         af_tmp = _mm256_mul_pd(mj_tmp, _mm256_mul_pd(_mm256_sqrt_pd(r2_tmp), _mm256_mul_pd(_mm256_sqrt_pd(r2_tmp), _mm256_sqrt_pd(r2_tmp))));
+         af_tmp = _mm256_div_pd(mj_tmp, _mm256_mul_pd(_mm256_sqrt_pd(r2_tmp), _mm256_mul_pd(_mm256_sqrt_pd(r2_tmp), _mm256_sqrt_pd(r2_tmp))));
          jf_tmp = _mm256_div_pd(_mm256_mul_pd(_mm256_mul_pd(float_0_tmp, mj_tmp), rv_tmp), _mm256_mul_pd(_mm256_sqrt_pd(r2_tmp), _mm256_mul_pd(_mm256_sqrt_pd(r2_tmp), _mm256_mul_pd(_mm256_sqrt_pd(r2_tmp), _mm256_mul_pd(_mm256_sqrt_pd(r2_tmp), _mm256_sqrt_pd(r2_tmp))))));
          F_tmp_v0 += _mm256_mul_pd(af_tmp, dr_tmp_v0);
          F_tmp_v1 += _mm256_mul_pd(af_tmp, dr_tmp_v1);

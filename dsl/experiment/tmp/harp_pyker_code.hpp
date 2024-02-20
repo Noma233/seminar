@@ -26,7 +26,7 @@ int kernel(int n, double ri[][3], double vi[][3], double rj[][3], double vj[][3]
          dv_v2 = vi[i][2] - vj[j][2];
          r2 = eps2[j] + (dr_v2*dr_v2 + (dr_v0*dr_v0 + dr_v1*dr_v1));
          rv = dr_v2*dv_v2 + (dr_v0*dv_v0 + dr_v1*dv_v1);
-         af = mj[j]/(sqrt(r2)*(sqrt(r2)*sqrt(r2)));
+         af = mj[j]/((sqrt(r2)*(sqrt(r2)*sqrt(r2))));
          jf = ((3.0*mj[j])*rv)/((sqrt(r2)*(sqrt(r2)*(sqrt(r2)*(sqrt(r2)*sqrt(r2))))));
          F[i][0] += af*dr_v0;
          F[i][1] += af*dr_v1;

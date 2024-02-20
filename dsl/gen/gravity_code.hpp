@@ -25,8 +25,7 @@ int kernel(int n, double xi[][3], double yi[][3], double f[]){
          yi_tmp_v0 = _mm256_set1_pd(yi[j][0]);
          yi_tmp_v1 = _mm256_set1_pd(yi[j][1]);
          yi_tmp_v2 = _mm256_set1_pd(yi[j][2]);
-         f_tmp += _mm256_add_pd(_mm256_add_pd(_mm256_mul_pd(xi_tmp_v0, yi_tmp_v0),
-          _mm256_mul_pd(xi_tmp_v1, yi_tmp_v1)), _mm256_mul_pd(xi_tmp_v2, yi_tmp_v2));
+         f_tmp += _mm256_add_pd(xi_tmp_v0, yi_tmp_v0);
       };
       _mm256_store_pd(&f[i], f_tmp);
    };
